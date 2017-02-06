@@ -6,4 +6,9 @@ class QuizzesController < ApplicationController
   def show
     render json: Quiz.find(params[:id])
   end
+
+  def create
+    @quiz = Quiz.create!(params[:quiz])
+    render json: @quiz
+  end
 end
