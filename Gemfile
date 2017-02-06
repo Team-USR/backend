@@ -35,7 +35,7 @@ group :development, :test do
   gem 'sqlite3'
   gem 'pry'
   gem 'rspec-rails'
-  gem 'factory_girl_rails'
+  gem 'factory_girl_rails', require: false
 end
 
 group :development do
