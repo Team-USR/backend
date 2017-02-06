@@ -1,0 +1,10 @@
+language: ruby
+rvm:
+- 2.4.0
+install:
+  gem update --system
+  bundle install --jobs=2
+script:
+  - bundle exec rake db:setup
+  - bundle exec rake spec
+cache: bundler
