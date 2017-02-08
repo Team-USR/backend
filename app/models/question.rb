@@ -7,7 +7,7 @@ class Question < ApplicationRecord
 
   def check_answer(answer_id)
     answer = Answer.find(answer_id)
-    return false if answer.question_id != self.id
+    return false if answer.question_id != id
     answer.is_correct
   end
 end
