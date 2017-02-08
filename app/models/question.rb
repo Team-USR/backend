@@ -6,6 +6,8 @@ class Question < ApplicationRecord
   validates_presence_of :question
 
   def check_answer(answer_id)
-    answers.where(is_correct: true).first.id == answer_id
+    answer = Answer.find(answer_id)
+    return false if answer.question_id != self.id
+    answer.is_correct
   end
 end
