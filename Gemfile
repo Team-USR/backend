@@ -22,7 +22,7 @@ gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 # gem 'capistrano-rails', group: :development
 
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
-# gem 'rack-cors'
+gem 'rack-cors'
 
 gem 'knock'
 
@@ -48,7 +48,7 @@ group :development do
 end
 
 group :production do
-  gem 'pg'
+  # gem 'pg'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
