@@ -4,8 +4,8 @@ class Questions::MatchSerializer < ActiveModel::Serializer
   def left
     object.pairs.map do |pair|
       {
-        id: pair.left_choice.uuid,
-        test: pair.left_choice.title
+        id: pair.left_choice_uuid,
+        test: pair.left_choice
       }
     end.shuffle
   end
@@ -13,8 +13,8 @@ class Questions::MatchSerializer < ActiveModel::Serializer
   def right
     object.pairs.map do |pair|
       {
-        id: pair.right_choice.uuid,
-        test: pair.right_choice.title
+        id: pair.right_choice_uuid,
+        test: pair.right_choice
       }
     end.shuffle
   end
