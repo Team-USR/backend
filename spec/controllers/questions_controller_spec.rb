@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe QuestionsController, type: :controller do
-  let(:question) { create(:question, :with_answers) }
+  let(:question) { create(:single_choice_question, :with_answers) }
 
   describe "GET #check_answer" do
     it "returns status false when the answer provided is false" do

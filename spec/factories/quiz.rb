@@ -1,11 +1,13 @@
+require 'faker'
+
 FactoryGirl.define do
   factory :quiz do
     sequence(:title) { |n| "question#{n}" }
   end
 
-  factory :question do
+  factory :single_choice_question, class: Questions::SingleChoice do
     sequence(:question) { |n| "question#{n}" }
-    quiz FactoryGirl.create(:quiz)
+    quiz
     trait :with_answers do
       after(:create) do |question|
         create(:answer, is_correct: true, question: question)
@@ -15,9 +17,24 @@ FactoryGirl.define do
     end
   end
 
+  factory :match_question, class: Questions::Match do
+    sequence(:question) { |n| "question#{n}" }
+    quiz
+  end
+
   factory :answer do
     sequence(:answer) { |n| "answer#{n}" }
     is_correct false
-    question FactoryGirl.create(:question)
+    question FactoryGirl.create(:single_choice_question)
+  end
+
+  factory :pair_choice, aliases: [:left_choice, :right_choice] do
+    title Faker::Lorem.word
+  end
+
+  factory :pair do
+    question FactoryGirl.create(:match_question)
+    left_choice
+    right_choice
   end
 end

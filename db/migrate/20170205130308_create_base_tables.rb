@@ -22,7 +22,7 @@ class CreateBaseTables < ActiveRecord::Migration[5.0]
     create_table :answers do |t|
       t.timestamps
       t.string :answer, null: false
-      t.belongs_to :question, null: false
+      t.references :question, polymorphic: true, index: true, null: false
       t.boolean :is_correct, null: false
     end
   end

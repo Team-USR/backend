@@ -8,6 +8,7 @@ RSpec.describe QuizzesController, type: :controller do
         questions_attributes: [
           {
             question: "Question 1",
+            type: "single_choice",
             answers_attributes: [
               {
                 answer: "Answer 1",
@@ -21,14 +22,15 @@ RSpec.describe QuizzesController, type: :controller do
           },
           {
             question: "Question 2",
-            answers_attributes: [
+            type: "match",
+            pairs_attributes: [
               {
-                answer: "Answer 3",
-                is_correct: false
+                "left_choice_attributes": { "title": "left 1" },
+                "right_choice_attributes": { "title": "right 1" }
               },
               {
-                answer: "Answer 4",
-                is_correct: false
+                "left_choice_attributes": { "title": "left 2" },
+                "right_choice_attributes": { "title": "right 2" }
               }
             ]
           }
@@ -46,6 +48,7 @@ RSpec.describe QuizzesController, type: :controller do
       expect(assigns(:quiz).questions.first.answers.size).to eq(2)
       expect(assigns(:quiz).questions.first.question).to eq("Question 1")
       expect(assigns(:quiz).questions.first.answers.first.answer).to eq("Answer 1")
+      expect(assigns(:quiz).questions.last.pairs.first.left_choice.title).to eq("left 1")
     end
   end
 end
