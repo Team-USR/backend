@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211183612) do
+ActiveRecord::Schema.define(version: 20170211210211) do
 
   create_table "answers", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -22,23 +22,16 @@ ActiveRecord::Schema.define(version: 20170211183612) do
     t.index ["question_type", "question_id"], name: "index_answers_on_question_type_and_question_id"
   end
 
-  create_table "pair_choices", force: :cascade do |t|
-    t.string  "title"
-    t.string  "uuid"
-    t.integer "pair_id"
-    t.index ["pair_id"], name: "index_pair_choices_on_pair_id"
-  end
-
   create_table "pairs", force: :cascade do |t|
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
-    t.string   "question_type",   null: false
-    t.integer  "question_id",     null: false
-    t.integer  "left_choice_id"
-    t.integer  "right_choice_id"
-    t.index ["left_choice_id"], name: "index_pairs_on_left_choice_id"
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+    t.string   "question_type",                  null: false
+    t.integer  "question_id",                    null: false
+    t.string   "left_choice",       default: "", null: false
+    t.string   "left_choice_uuid",  default: "", null: false
+    t.string   "right_choice",      default: "", null: false
+    t.string   "right_choice_uuid", default: "", null: false
     t.index ["question_type", "question_id"], name: "index_pairs_on_question_type_and_question_id"
-    t.index ["right_choice_id"], name: "index_pairs_on_right_choice_id"
   end
 
   create_table "questions", force: :cascade do |t|

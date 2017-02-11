@@ -25,12 +25,12 @@ RSpec.describe QuizzesController, type: :controller do
             type: "match",
             pairs_attributes: [
               {
-                "left_choice_attributes": { "title": "left 1" },
-                "right_choice_attributes": { "title": "right 1" }
+                left_choice: "left 1",
+                right_choice: "right 1"
               },
               {
-                "left_choice_attributes": { "title": "left 2" },
-                "right_choice_attributes": { "title": "right 2" }
+                left_choice: "left 2",
+                right_choice: "right 2"
               }
             ]
           }
@@ -48,7 +48,8 @@ RSpec.describe QuizzesController, type: :controller do
       expect(assigns(:quiz).questions.first.answers.size).to eq(2)
       expect(assigns(:quiz).questions.first.question).to eq("Question 1")
       expect(assigns(:quiz).questions.first.answers.first.answer).to eq("Answer 1")
-      expect(assigns(:quiz).questions.last.pairs.first.left_choice.title).to eq("left 1")
+      expect(assigns(:quiz).questions.last.pairs.first.left_choice).to eq("left 1")
+      expect(assigns(:quiz).questions.last.pairs.last.left_choice).to eq("left 2")
     end
   end
 end

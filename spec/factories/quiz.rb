@@ -28,13 +28,9 @@ FactoryGirl.define do
     question FactoryGirl.create(:single_choice_question)
   end
 
-  factory :pair_choice, aliases: [:left_choice, :right_choice] do
-    title Faker::Lorem.word
-  end
-
   factory :pair do
     question FactoryGirl.create(:match_question)
-    left_choice
-    right_choice
+    left_choice Faker::Lorem.word
+    right_choice Faker::Lorem.word
   end
 end
