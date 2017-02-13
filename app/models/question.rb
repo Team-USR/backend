@@ -5,7 +5,8 @@ class Question < ApplicationRecord
   def self.type_from_api(type_from_api)
     {
       "match" => "Questions::Match",
-      "single_choice" => "Questions::SingleChoice"
+      "single_choice" => "Questions::SingleChoice",
+      "multiple_choice" => "Questions::MultipleChoice"
     }[type_from_api]
   end
 end
