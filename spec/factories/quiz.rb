@@ -17,6 +17,18 @@ FactoryGirl.define do
     end
   end
 
+  factory :multiple_choice_question, class: Questions::MultipleChoice do
+    sequence(:question) { |n| "question#{n}" }
+    quiz
+    trait :with_answers do
+      after(:create) do |question|
+        create(:answer, is_correct: true, question: question)
+        create(:answer, is_correct: true, question: question)
+        create(:answer, is_correct: false, question: question)
+      end
+    end
+  end
+
   factory :match_question, class: Questions::Match do
     sequence(:question) { |n| "question#{n}" }
     quiz
