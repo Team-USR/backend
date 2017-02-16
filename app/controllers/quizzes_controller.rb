@@ -13,6 +13,25 @@ class QuizzesController < ApplicationController
     render json: @quiz
   end
 
+  def check
+    @quiz = Quiz.find(params[:id])
+    result = []
+    params[:questions].each do |question_param|
+      question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
+      if question.nil?
+        result << {
+          id: question_param[:id],
+          status: "Error; Question not found"
+        }
+      else
+        result << {
+          id: question.id,
+        }.merge(question.check(question_param))
+      end
+    end
+    render json: result
+  end
+
   private
 
   def transform_question_type

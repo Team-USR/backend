@@ -16,7 +16,7 @@ RSpec.describe QuizzesController, type: :controller do
               },
               {
                 answer: "Answer 2",
-                is_correct: false
+                is_correct: true
               }
             ]
           },
@@ -64,10 +64,10 @@ RSpec.describe QuizzesController, type: :controller do
       }
     }
   end
+
   describe "POST #create" do
     it "assigns @quiz" do
-      request.env['CONTENT_TYPE'] = 'application/json'
-      post :create, params: pa
+      post :create, params: pa, as: :json
       expect(assigns(:quiz)).to be_a(Quiz)
       expect(assigns(:quiz).title).to eq("My quiz")
       expect(assigns(:quiz).questions.size).to eq(3)
@@ -78,6 +78,84 @@ RSpec.describe QuizzesController, type: :controller do
       expect(assigns(:quiz).questions.second.pairs.last.left_choice).to eq("left 2")
       expect(assigns(:quiz).questions.last.question).to eq("Question 3")
       expect(assigns(:quiz).questions.last.answers.first.answer).to eq("Answer 1")
+    end
+  end
+
+  describe "GET #check" do
+    let(:quiz) do
+      pa[:quiz][:questions_attributes].try(:each) do |question_params|
+        question_params[:type] = Question.type_from_api(question_params[:type])
+      end
+
+      Quiz.create(pa[:quiz])
+    end
+
+    let(:check_params) do
+      {
+        "id": quiz.id,
+        "questions": [
+          {
+            "id": quiz.questions[0].id,
+            "answer_id": quiz.questions[0].answers.last.id
+          },
+          {
+            "id": quiz.questions[1].id,
+            "pairs": [
+              {
+                "left_choice_id": quiz.questions[1].pairs.first.left_choice_uuid,
+                "right_choice_id": quiz.questions[1].pairs.first.right_choice_uuid,
+              },
+              {
+                "left_choice_id": quiz.questions[1].pairs.last.left_choice_uuid,
+                "right_choice_id": quiz.questions[1].pairs.last.right_choice_uuid,
+              }
+            ]
+          },
+          {
+            "id": quiz.questions[2].id,
+            "answer_ids": [-1, -2]
+          },
+          {
+            "id": -3
+          },
+        ]
+      }
+    end
+
+    it "returns the correct array" do
+      post :check, params: check_params, as: :json
+      expect(JSON.parse(response.body)).to eq(
+        [
+          {
+            "id" => quiz.questions[0].id,
+            "correct" => true,
+            "correct_answer" => quiz.questions[0].answers.last.id
+          },
+          {
+            "id" => quiz.questions[1].id,
+            "correct" => true,
+            "correct_pairs" => [
+              {
+                "left_choice_id" => quiz.questions[1].pairs.first.left_choice_uuid,
+                "right_choice_id" => quiz.questions[1].pairs.first.right_choice_uuid,
+              },
+              {
+                "left_choice_id" => quiz.questions[1].pairs.last.left_choice_uuid,
+                "right_choice_id" => quiz.questions[1].pairs.last.right_choice_uuid,
+              }
+            ]
+          },
+          {
+            "id" => quiz.questions[2].id,
+            "correct" => false,
+            "correct_answers" => quiz.questions[2].answers.where(is_correct: true).map(&:id)
+          },
+          {
+            "id" => -3,
+            "status" => "Error; Question not found"
+          }
+        ]
+      )
     end
   end
 end
