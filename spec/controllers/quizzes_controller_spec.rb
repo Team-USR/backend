@@ -59,6 +59,25 @@ RSpec.describe QuizzesController, type: :controller do
                 is_correct: false
               }
             ]
+          },
+          {
+            question: "Question 4",
+            type: "mix",
+            sentences_attributes: [
+              {
+      				"text": "main sentence is here",
+      				"is_main": true
+      			  },
+      			  {
+      				"text": "sentence main here is slbboz",
+      				"is_main": false
+      			  },
+      			  {
+      				"text": "main sentence here is",
+      				"is_main": false
+      			  }
+
+      			]
           }
         ]
       }
@@ -118,6 +137,10 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "id": -3
           },
+          {
+            "id": quiz.questions[3].id,
+            "sentence": "main sentence is here"
+          }
         ]
       }
     end
@@ -153,6 +176,15 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "id" => -3,
             "status" => "Error; Question not found"
+          },
+          {
+            "id" => quiz.questions[3].id,
+            "correct" => true,
+            "correct_sentences" => [
+              "main sentence is here",
+              "sentence main here is",
+              "main sentence here is"
+            ]
           }
         ]
       )
