@@ -1,10 +1,9 @@
 Rails.application.routes.draw do
   post 'user_token' => 'user_token#create'
-  resources :quizzes, only: [:show, :index, :create]
-  resources :users, only: [:create]
-  resources :questions, only: [:none] do
+  resources :quizzes, only: [:show, :index, :create] do
     member do
-      get 'check_answer'
+      post 'check', to: :check
     end
   end
+  resources :users, only: [:create]
 end

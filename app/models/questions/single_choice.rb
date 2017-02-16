@@ -3,9 +3,17 @@ class Questions::SingleChoice < Question
   has_many :answers, inverse_of: :question, as: :question
   accepts_nested_attributes_for :answers
 
-  def check_answer(answer_id)
-    answer = Answer.find_by(id: answer_id)
-    return false if answer.nil? || answer.question_id != id
-    answer.is_correct
+  def check(question_params)
+    answer = Answer.find_by(id: question_params[:answer_id], question_id: id)
+    {
+      correct: answer == correct_answer,
+      correct_answer: correct_answer.id
+    }
+  end
+
+  private
+
+  def correct_answer
+    answers.find_by(is_correct: true)
   end
 end
