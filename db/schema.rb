@@ -10,16 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170211210211) do
+ActiveRecord::Schema.define(version: 20170216180406) do
 
   create_table "answers", force: :cascade do |t|
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.string   "answer",        null: false
-    t.string   "question_type", null: false
-    t.integer  "question_id",   null: false
-    t.boolean  "is_correct",    null: false
-    t.index ["question_type", "question_id"], name: "index_answers_on_question_type_and_question_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+    t.string   "answer",      null: false
+    t.integer  "question_id", null: false
+    t.boolean  "is_correct",  null: false
+    t.index ["question_id"], name: "index_answers_on_question_id"
   end
 
   create_table "pairs", force: :cascade do |t|
@@ -47,6 +46,16 @@ ActiveRecord::Schema.define(version: 20170211210211) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "title",      null: false
+  end
+
+  create_table "sentences", force: :cascade do |t|
+    t.string   "text"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.string   "question_type", null: false
+    t.integer  "question_id",   null: false
+    t.boolean  "is_main"
+    t.index ["question_type", "question_id"], name: "index_sentences_on_question_type_and_question_id"
   end
 
   create_table "users", force: :cascade do |t|
