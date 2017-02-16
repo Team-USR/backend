@@ -59,6 +59,24 @@ RSpec.describe QuizzesController, type: :controller do
                 is_correct: false
               }
             ]
+          },
+          {
+            question: "Question 4",
+            type: "mix",
+            sentences_attributes: [
+              {
+                "text": "main sentence is here",
+                "is_main": true
+              },
+              {
+                "text": "sentence main here is",
+                "is_main": false
+              },
+              {
+                "text": "main sentence here is",
+                "is_main": false
+              }
+            ]
           }
         ]
       }
@@ -70,14 +88,14 @@ RSpec.describe QuizzesController, type: :controller do
       post :create, params: pa, as: :json
       expect(assigns(:quiz)).to be_a(Quiz)
       expect(assigns(:quiz).title).to eq("My quiz")
-      expect(assigns(:quiz).questions.size).to eq(3)
+      expect(assigns(:quiz).questions.size).to eq(4)
       expect(assigns(:quiz).questions.first.answers.size).to eq(2)
       expect(assigns(:quiz).questions.first.question).to eq("Question 1")
       expect(assigns(:quiz).questions.first.answers.first.answer).to eq("Answer 1")
       expect(assigns(:quiz).questions.second.pairs.first.left_choice).to eq("left 1")
       expect(assigns(:quiz).questions.second.pairs.last.left_choice).to eq("left 2")
-      expect(assigns(:quiz).questions.last.question).to eq("Question 3")
-      expect(assigns(:quiz).questions.last.answers.first.answer).to eq("Answer 1")
+      expect(assigns(:quiz).questions[2].question).to eq("Question 3")
+      expect(assigns(:quiz).questions[2].answers.first.answer).to eq("Answer 1")
     end
   end
 
@@ -118,6 +136,10 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "id": -3
           },
+          {
+            "id": quiz.questions[3].id,
+            "answer": "main sentence is here"
+          }
         ]
       }
     end
@@ -153,6 +175,15 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "id" => -3,
             "status" => "Error; Question not found"
+          },
+          {
+            "id" => quiz.questions[3].id,
+            "correct" => true,
+            "correct_sentences" => [
+              "main sentence is here",
+              "sentence main here is",
+              "main sentence here is"
+            ]
           }
         ]
       )
