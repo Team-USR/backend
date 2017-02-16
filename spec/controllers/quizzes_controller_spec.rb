@@ -65,19 +65,18 @@ RSpec.describe QuizzesController, type: :controller do
             type: "mix",
             sentences_attributes: [
               {
-      				"text": "main sentence is here",
-      				"is_main": true
-      			  },
-      			  {
-      				"text": "sentence main here is slbboz",
-      				"is_main": false
-      			  },
-      			  {
-      				"text": "main sentence here is",
-      				"is_main": false
-      			  }
-
-      			]
+                "text": "main sentence is here",
+                "is_main": true
+              },
+              {
+                "text": "sentence main here is slbboz",
+                "is_main": false
+              },
+              {
+                "text": "main sentence here is",
+                "is_main": false
+              }
+            ]
           }
         ]
       }

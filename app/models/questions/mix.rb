@@ -22,7 +22,7 @@ class Questions::Mix < Question
     sentences.each do |sentence|
       sentence_words = sentence.text.split(" ").sort
       if sentence_words != first_sentence_words
-        errors.add(:sentences,"has different words")
+        errors.add(:sentences, "has different words")
       end
     end
   end

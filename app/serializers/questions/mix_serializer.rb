@@ -5,8 +5,4 @@ class Questions::MixSerializer < ActiveModel::Serializer
   def type
     "multiple_choice"
   end
-
-  # def words
-  #   
-  # end
 end
