@@ -9,8 +9,6 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    # binding.pry
-    puts params
     @quiz = Quiz.create!(params[:quiz])
     render json: @quiz
   end
