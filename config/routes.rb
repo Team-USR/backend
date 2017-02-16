@@ -6,9 +6,4 @@ Rails.application.routes.draw do
     end
   end
   resources :users, only: [:create]
-  resources :questions, only: [:none] do
-    member do
-      get 'check_answer'
-    end
-  end
 end
