@@ -6,4 +6,12 @@ Rails.application.routes.draw do
     end
   end
   resources :users, only: [:create]
+
+  namespace :v2 do
+    resources :quizzes, only: [:show, :index, :create] do
+      member do
+        post 'check', to: :check
+      end
+    end
+  end
 end
