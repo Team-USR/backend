@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170220172407) do
+ActiveRecord::Schema.define(version: 20170220195444) do
 
   create_table "answers", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -20,6 +20,24 @@ ActiveRecord::Schema.define(version: 20170220172407) do
     t.integer  "question_id",   null: false
     t.boolean  "is_correct",    null: false
     t.index ["question_type", "question_id"], name: "index_answers_on_question_type_and_question_id"
+  end
+
+  create_table "gaps", force: :cascade do |t|
+    t.string   "gap_text"
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.string   "question_type", null: false
+    t.integer  "question_id",   null: false
+    t.index ["question_type", "question_id"], name: "index_gaps_on_question_type_and_question_id"
+  end
+
+  create_table "hints", force: :cascade do |t|
+    t.string   "hint_text"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "gap_type"
+    t.integer  "gap_id"
+    t.index ["gap_type", "gap_id"], name: "index_hints_on_gap_type_and_gap_id"
   end
 
   create_table "pairs", force: :cascade do |t|
