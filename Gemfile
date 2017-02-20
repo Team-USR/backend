@@ -26,6 +26,8 @@ gem 'rack-cors'
 
 gem 'knock'
 
+gem 'cancan'
+
 group :test do
   gem 'shoulda'
   gem 'rails-controller-testing'
