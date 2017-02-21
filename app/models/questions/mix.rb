@@ -1,8 +1,11 @@
 class Questions::Mix < Question
   belongs_to :quiz
+
   has_many :sentences, inverse_of: :question, as: :question
   accepts_nested_attributes_for :sentences
+  validates_presence_of :sentences
   validate :sentences_have_same_words
+  validate :has_one_main_sentence
 
   def words
     sentences.first.text.split(" ").shuffle
@@ -20,10 +23,22 @@ class Questions::Mix < Question
   def sentences_have_same_words
     first_sentence_words = words.sort
     sentences.each do |sentence|
-      sentence_words = sentence.text.split(" ").sort
-      if sentence_words != first_sentence_words
-        errors.add(:sentences, "has different words")
+      if sentence.valid?
+        sentence_words = sentence.text.split(" ").sort
+        if sentence_words != first_sentence_words
+          errors.add(:sentences, "has different words")
+        end
       end
+    end
+  end
+
+  def has_one_main_sentence
+    if sentences.map(&:is_main).select { |is_main| is_main == true }.count > 1
+      errors.add(:sentences, "have multiple main sentences")
+    end
+
+    if sentences.map(&:is_main).select { |is_main| is_main == true }.empty?
+      errors.add(:sentences, "doesnt' have a main sentences")
     end
   end
 end

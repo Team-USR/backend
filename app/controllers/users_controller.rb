@@ -1,11 +1,11 @@
 class UsersController < ApplicationController
   def create
-    @user = User.new(params[:user])
+    @user = User.new(user_params)
 
     if @user.save
       render json: @user, status: :created
     else
-      render json: @user.errors, status: :unprocessable_unity
+      render_activemodel_validations(@user.errors)
     end
   end
 

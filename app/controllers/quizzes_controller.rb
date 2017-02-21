@@ -4,13 +4,18 @@ class QuizzesController < ApplicationController
   end
 
   def show
-    render json: Quiz.find(params[:id])
+    render json: Quiz.find(params.require(:id))
   end
 
   def create
     transform_question_type
-    @quiz = Quiz.create!(params[:quiz])
-    render json: @quiz
+    @quiz = Quiz.new(quiz_create_params)
+
+    if @quiz.save
+      render json: @quiz
+    else
+      render_activemodel_validations(@quiz.errors)
+    end
   end
 
   def check
@@ -36,7 +41,35 @@ class QuizzesController < ApplicationController
 
   def transform_question_type
     params[:quiz][:questions_attributes].try(:each) do |question_params|
-      question_params[:type] = Question.type_from_api(question_params[:type])
+      type = Question.type_from_api(question_params[:type])
+
+      if type.nil?
+        raise InvalidParameter.new("#{question_params[:type]} is not a valid question type")
+      end
+
+      question_params[:type] = type
     end
+  end
+
+  def quiz_create_params
+    params.require(:quiz).permit(
+      :title,
+      questions_attributes: [
+        :question,
+        :type,
+        answers_attributes: [
+          :answer,
+          :is_correct
+        ],
+        pairs_attributes: [
+          :left_choice,
+          :right_choice
+        ],
+        sentences_attributes: [
+          :text,
+          :is_main
+        ]
+      ]
+    )
   end
 end
