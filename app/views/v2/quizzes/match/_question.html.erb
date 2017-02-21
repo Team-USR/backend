@@ -1,0 +1,21 @@
+<div class="card mb-2">
+  <div class="card-block">
+    <%= f.hidden_field :type, value: "Questions::Match" %>
+
+    <div class="form-group">
+      <%= f.label :question %>
+      <%= f.text_field :question, class: "form-control", placeholder: "Question title" %>
+    </div>
+    <div class="quiz-new-answers">
+      <%= fields_for :pairs do |answer| %>
+        <%= link_to_add_association(
+          "Add pair",
+          f,
+          :pairs,
+          partial: "v2/quizzes/match/pair",
+          class: "btn btn-primary mt-3"
+        ) %>
+      <% end %>
+    </div>
+  </div>
+</div>

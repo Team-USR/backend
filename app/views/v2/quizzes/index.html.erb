@@ -1,0 +1,20 @@
+<div class="container">
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Link</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @quizzes.each do |quiz| %>
+        <tr>
+          <td><%= quiz.title %></td>
+          <td><%= link_to "Link", v2_quiz_path(quiz) %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= link_to "Create new quiz", new_v2_quiz_path %>
+</div>
