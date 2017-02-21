@@ -27,7 +27,8 @@
           "Add multiple choice question",
           f,
           :questions,
-          partial: "v2/quizzes/match_choice_form",
+          partial: "v2/quizzes/match/question",
+          :wrap_object => Proc.new { |question| question = Questions::Match.new }
         ) %>
       <% end %>
     </div>

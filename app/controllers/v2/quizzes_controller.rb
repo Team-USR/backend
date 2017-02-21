@@ -37,8 +37,12 @@ class V2::QuizzesController < V2::ApplicationController
         :type,
         answers_attributes: [
           :answer,
-          :is_correct
-        ]
+          :is_correct,
+        ],
+        pairs_attributes: [
+          :left_choice,
+          :right_choice
+        ],
       ]
     )
   end
