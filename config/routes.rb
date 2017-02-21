@@ -8,7 +8,7 @@ Rails.application.routes.draw do
   resources :users, only: [:create]
 
   namespace :v2 do
-    resources :quizzes, only: [:show, :index, :create] do
+    resources :quizzes, only: [:show, :index, :create, :new] do
       member do
         post 'check', to: :check
       end

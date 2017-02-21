@@ -7,10 +7,13 @@ class V2::QuizzesController < V2::ApplicationController
     @quiz = Quiz.find_by!(id: params[:id])
   end
 
+  def new
+    @quiz = Quiz.new
+  end
+
   def create
-    transform_question_type
-    @quiz = Quiz.create!(params[:quiz])
-    render json: @quiz
+    @quiz = Quiz.create!(quiz_params)
+    redirect_to @quiz
   end
 
   def check
@@ -26,9 +29,17 @@ class V2::QuizzesController < V2::ApplicationController
 
   private
 
-  def transform_question_type
-    params[:quiz][:questions_attributes].try(:each) do |question_params|
-      question_params[:type] = Question.type_from_api(question_params[:type])
-    end
+  def quiz_params
+    params.require(:quiz).permit(
+      :title,
+      questions_attributes: [
+        :question,
+        :type,
+        answers_attributes: [
+          :answer,
+          :is_correct
+        ]
+      ]
+    )
   end
 end

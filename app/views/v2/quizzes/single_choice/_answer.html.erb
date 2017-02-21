@@ -1,0 +1,12 @@
+<div class="quiz-new-answer">
+  <div class="form-group">
+    <%= f.label :answer %>
+    <%= f.text_field :answer, class: "form-control", placeholder: "Answer" %>
+  </div>
+  <div class="form-group">
+    <%= f.label :is_correct, "Incorrect" %>
+    <%= f.radio_button :is_correct, class: "form-control", value: "false" %>
+    <%= f.label :is_correct, "Correct" %>
+    <%= f.radio_button :is_correct, class: "form-control", value: "true" %>
+  </div>
+</div>

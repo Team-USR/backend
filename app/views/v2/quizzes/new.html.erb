@@ -1,0 +1,36 @@
+<div class="container">
+  <h2>Quiz</h2>
+  <%= form_for @quiz, url: v2_quizzes_path do |f| %>
+    <div class="form-group">
+      <%= f.label :title %>
+      <%= f.text_field :title, placeholder: "Quiz title", class: "form-control" %>
+    </div>
+    <div class="questions">
+      <%= fields_for :questions do |question| %>
+        <%= link_to_add_association(
+          "Add single choice question",
+          f,
+          :questions,
+          partial: "v2/quizzes/single_choice/question",
+          :wrap_object => Proc.new { |question| question = Questions::SingleChoice.new }
+        ) %>
+
+        <%= link_to_add_association(
+          "Add multiple choice question",
+          f,
+          :questions,
+          partial: "v2/quizzes/multiple_choice_form",
+        ) %>
+
+        <%= link_to_add_association(
+          "Add multiple choice question",
+          f,
+          :questions,
+          partial: "v2/quizzes/match_choice_form",
+        ) %>
+      <% end %>
+    </div>
+
+    <%= submit_tag "Submit", class: "btn btn-primary" %>
+  <% end %>
+</div>

@@ -32,6 +32,7 @@ gem 'jquery-rails'
 gem 'bootstrap', '~> 4.0.0.alpha6'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
+gem "cocoon"
 
 group :test do
   gem 'shoulda'
