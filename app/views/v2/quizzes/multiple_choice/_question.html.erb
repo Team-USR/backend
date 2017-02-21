@@ -1,6 +1,6 @@
 <div class="card mb-2">
   <div class="card-block">
-    <%= f.hidden_field :type, value: "Questions::SingleChoice" %>
+    <%= f.hidden_field :type, value: "Questions::MultipleChoice" %>
 
     <div class="form-group">
       <%= f.label :question %>
@@ -12,7 +12,7 @@
           "Add answer",
           f,
           :answers,
-          partial: "v2/quizzes/single_choice/answer",
+          partial: "v2/quizzes/multiple_choice/answer",
           class: "btn btn-primary mt-3"
         ) %>
       <% end %>
