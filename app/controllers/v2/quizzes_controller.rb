@@ -13,7 +13,7 @@ class V2::QuizzesController < V2::ApplicationController
 
   def create
     @quiz = Quiz.create!(quiz_params)
-    redirect_to @quiz
+    redirect_to v2_quiz(@quiz)
   end
 
   def check
