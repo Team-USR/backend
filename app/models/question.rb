@@ -7,7 +7,8 @@ class Question < ApplicationRecord
       "match" => "Questions::Match",
       "single_choice" => "Questions::SingleChoice",
       "multiple_choice" => "Questions::MultipleChoice",
-      "mix" => "Questions::Mix"
+      "mix" => "Questions::Mix",
+      "cloze" => "Questions::Cloze"
     }[type_from_api]
   end
 end

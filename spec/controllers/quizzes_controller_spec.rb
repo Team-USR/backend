@@ -77,6 +77,25 @@ RSpec.describe QuizzesController, type: :controller do
                 "is_main": false
               }
             ]
+          },
+          {
+            question: "Question 5",
+            type: "cloze",
+            gaps_attributes: [
+              {
+                "gap_text": "text 1",
+                hint_attributes:
+                  {
+                    "hint_text": "hint 1"
+                  }
+              },
+              {
+                "gap_text": "text 2"
+              },
+              {
+                "gap_text": "text 3"
+              }
+            ]
           }
         ]
       }
@@ -88,7 +107,7 @@ RSpec.describe QuizzesController, type: :controller do
       post :create, params: pa, as: :json
       expect(assigns(:quiz)).to be_a(Quiz)
       expect(assigns(:quiz).title).to eq("My quiz")
-      expect(assigns(:quiz).questions.size).to eq(4)
+      expect(assigns(:quiz).questions.size).to eq(5)
       expect(assigns(:quiz).questions.first.answers.size).to eq(2)
       expect(assigns(:quiz).questions.first.question).to eq("Question 1")
       expect(assigns(:quiz).questions.first.answers.first.answer).to eq("Answer 1")
@@ -139,6 +158,10 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "id": quiz.questions[3].id,
             "answer": "main sentence is here"
+          },
+          {
+            "id": quiz.questions[4].id,
+            "answer": "text 1,text 2,text 3"
           }
         ]
       }
@@ -183,6 +206,15 @@ RSpec.describe QuizzesController, type: :controller do
               "main sentence is here",
               "sentence main here is",
               "main sentence here is"
+            ]
+          },
+          {
+            "id" => quiz.questions[4].id,
+            "correct" => true,
+            "correct_gaps" => [
+              "text 1",
+              "text 2",
+              "text 3"
             ]
           }
         ]
