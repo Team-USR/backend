@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_secure_password
   has_and_belongs_to_many :roles
+  has_and_belongs_to_many :groups
 
   validates_presence_of :name, :email
   validates :email, uniqueness: true

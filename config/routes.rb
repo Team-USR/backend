@@ -7,6 +7,12 @@ Rails.application.routes.draw do
     end
   end
   resources :users, only: [:create]
+  resources :groups, only: [:show, :index, :create] do
+    member do
+      post 'add', to: :add
+      post 'delete', to: :delete
+    end
+  end
 
   namespace :v2 do
     resources :quizzes, only: [:show, :index, :create, :new] do
