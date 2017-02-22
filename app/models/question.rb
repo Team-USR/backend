@@ -1,6 +1,6 @@
 class Question < ApplicationRecord
-  belongs_to :quiz
-  validates_presence_of :question
+  belongs_to :quiz, inverse_of: :questions
+  validates_presence_of :question, :type
 
   def self.type_from_api(type_from_api)
     {
