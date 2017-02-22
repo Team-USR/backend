@@ -3,6 +3,6 @@ class Questions::MixSerializer < ActiveModel::Serializer
   has_many :words
 
   def type
-    "multiple_choice"
+    "mix"
   end
 end
