@@ -1,7 +1,8 @@
 class Questions::Cloze < Question
   belongs_to :quiz
   has_many :gaps, inverse_of: :question, as: :question
-  accepts_nested_attributes_for :gaps
+  has_one :cloze_sentence
+  accepts_nested_attributes_for :gaps, :cloze_sentence
 
   def gap_order
     gaps.map(&:gap_text).join(",")
