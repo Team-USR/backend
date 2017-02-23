@@ -10,7 +10,7 @@ class Questions::Cloze < Question
 
   def check(question_params)
     {
-     correct: question_params[:answer] == gap_order,
+     correct: question_params[:answer_gaps].join(",") == gap_order,
      correct_gaps: gaps.map(&:gap_text)
    }
   end
