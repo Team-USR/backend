@@ -1,3 +1,3 @@
 class ClozeSentence < ApplicationRecord
-  belongs_to :cloze
+  belongs_to :question, inverse_of: :cloze_sentence, polymorphic: true
 end
