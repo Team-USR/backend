@@ -10,7 +10,7 @@ Rails.application.routes.draw do
   resources :groups, only: [:show, :index, :create] do
     member do
       post 'add', to: :add
-      post 'delete', to: :delete
+      delete 'delete', to: :delete
     end
   end
 

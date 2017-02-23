@@ -23,26 +23,38 @@ class GroupsController < ApplicationController
     @user = User.find_by(id: params[:user_id])
 
     if @group && @user
-      @group.users << @user
-      render json: { success: GroupsUser.count }
+      @group_user = GroupsUser.new(group_id: @group.id, user_id: @user.id)
+      if @group_user.save
+        render json: @group_user, status: :created
+      else
+        render_activemodel_validations(@group_user.errors)
+      end
     elsif @group.nil?
       render_error(
-        :not_found,
-        "not_found",
-        "Couldn't find group with id #{params[:id]}"
+        status: :not_found,
+        code: "not_found",
+        detail: "Couldn't find group with id #{params[:id]}"
       )
     elsif @user.nil?
       render_error(
-        :not_found,
-        "not_found",
-        "Couldn't find user with id #{params[:user_id]}"
+        status: :not_found,
+        code: "not_found",
+        detail: "Couldn't find user with id #{params[:user_id]}"
       )
     end
   end
 
   def delete
-    UserGroup.find_by(group_id: params[:group_id], user_id: params[:user_id]).destroy
-    render json: UserGroup.count
+    @user_group = GroupsUser.find_by(group_id: params[:id], user_id: params[:user_id])
+    if @user_group.nil?
+      render_error(
+        status: :not_found,
+        code: "not_found",
+        detail: "Couldn't find user and group association with user_id #{params[:user_id]} group_id #{params[:id]}"
+      )
+    else
+      @user_group.group.users.delete(@user_group.user)
+      render json: { "success": true }
+    end
   end
-
 end
