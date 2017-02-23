@@ -3,6 +3,7 @@ class User < ApplicationRecord
   has_and_belongs_to_many :roles
 
   validates_presence_of :name, :email
+  validates :email, uniqueness: true
 
   def student?
     has_role?(:student)
