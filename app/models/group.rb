@@ -1,5 +1,6 @@
 class Group < ApplicationRecord
-  has_and_belongs_to_many :users
+  has_many :groups_users
+  has_many :users, -> { distinct }, through: :groups_users
 
   validates_presence_of :name
 end
