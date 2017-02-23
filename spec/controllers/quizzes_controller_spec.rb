@@ -81,6 +81,9 @@ RSpec.describe QuizzesController, type: :controller do
           {
             question: "Question 5",
             type: "cloze",
+            cloze_sentence_attributes: {
+              "text": "test {1} before {2} after {3}"
+            },
             gaps_attributes: [
               {
                 "gap_text": "text 1",
@@ -161,7 +164,11 @@ RSpec.describe QuizzesController, type: :controller do
           },
           {
             "id": quiz.questions[4].id,
-            "answer": "text 1,text 2,text 3"
+            "answer_gaps": [
+              "text 1",
+              "text 2",
+              "text 3"
+            ]
           }
         ]
       }

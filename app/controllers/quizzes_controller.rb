@@ -68,6 +68,15 @@ class QuizzesController < ApplicationController
         sentences_attributes: [
           :text,
           :is_main
+        ],
+        cloze_sentence_attributes: [
+          :text
+        ],
+        gaps_attributes: [
+          :gap_text,
+          hint_attributes: [
+            :hint_text
+          ]
         ]
       ]
     )

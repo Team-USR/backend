@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170220195444) do
+ActiveRecord::Schema.define(version: 20170223160747) do
 
   create_table "answers", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -20,6 +20,13 @@ ActiveRecord::Schema.define(version: 20170220195444) do
     t.integer  "question_id",   null: false
     t.boolean  "is_correct",    null: false
     t.index ["question_type", "question_id"], name: "index_answers_on_question_type_and_question_id"
+  end
+
+  create_table "cloze_sentences", force: :cascade do |t|
+    t.string  "text",          null: false
+    t.string  "question_type"
+    t.integer "question_id"
+    t.index ["question_type", "question_id"], name: "index_cloze_sentences_on_question_type_and_question_id"
   end
 
   create_table "gaps", force: :cascade do |t|
