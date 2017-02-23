@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170223170442) do
+ActiveRecord::Schema.define(version: 20170223174548) do
 
   create_table "answers", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -42,6 +42,11 @@ ActiveRecord::Schema.define(version: 20170223170442) do
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "groups_users", id: false, force: :cascade do |t|
+    t.integer "user_id",  null: false
+    t.integer "group_id", null: false
   end
 
   create_table "hints", force: :cascade do |t|
@@ -97,11 +102,6 @@ ActiveRecord::Schema.define(version: 20170223170442) do
     t.integer  "question_id",   null: false
     t.boolean  "is_main"
     t.index ["question_type", "question_id"], name: "index_sentences_on_question_type_and_question_id"
-  end
-
-  create_table "user_groups", id: false, force: :cascade do |t|
-    t.integer "user_id",  null: false
-    t.integer "group_id", null: false
   end
 
   create_table "users", force: :cascade do |t|

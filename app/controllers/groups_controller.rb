@@ -12,7 +12,7 @@ class GroupsController < ApplicationController
     @group = Group.new(params[:group])
 
     if @group.save
-      render json: @group, status: :created_at
+      render json: @group, status: :created
     else
       render_activemodel_validations(@group.errors)
     end
@@ -24,7 +24,7 @@ class GroupsController < ApplicationController
 
     if @group && @user
       @group.users << @user
-      render json: { success: "true" }
+      render json: { success: GroupsUser.count }
     elsif @group.nil?
       render_error(
         :not_found,
