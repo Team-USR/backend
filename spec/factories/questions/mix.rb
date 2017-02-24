@@ -31,7 +31,7 @@ FactoryGirl.define do
   end
 
   factory :sentence do
-    association :question, factory: :match_question
+    association :question, factory: :mix_question
     text Faker::Lorem.sentence
     is_main Faker::Boolean.boolean
   end

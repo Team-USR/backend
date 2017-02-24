@@ -4,23 +4,21 @@ RSpec.describe Questions::Mix, type: :model do
   subject { FactoryGirl.create(:mix_question, sentence_count: 6) }
 
   describe '#check' do
-    # let(:correct_answers) { subject.answers.where(is_correct: true).map(&:id) }
-    #
-    # it 'returns false if the id of the answer is not the correct one' do
-    #   expect(subject.check({
-    #     answer_ids: correct_answers
-    #   })).to eq({
-    #     correct: true,
-    #     correct_answers: correct_answers
-    #   })
-    # end
-
-    it 'returns true if the id of the answer is the correct one' do
+    it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
-        answer: subject.sentences.join(" ")
+        answer: "RANDOM sentence"
       })).to eq({
         correct: false,
-        correct_answers: correct_answers
+        correct_sentences: subject.sentences.map(&:text)
+      })
+    end
+
+    it 'returns true if the answer sent is the correct one' do
+      expect(subject.check({
+        answer: subject.sentences.first.text
+      })).to eq({
+        correct: true,
+        correct_sentences: subject.sentences.map(&:text)
       })
     end
   end
