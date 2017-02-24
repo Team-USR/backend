@@ -43,11 +43,11 @@ FactoryGirl.define do
     factory :match_question, class: Questions::Match do
       transient do
         pairs_count 0
+      end
 
-        after(:create) do |question, evaluator|
-          (0..evaluator.pairs_count).each do
-            create(:pair, question: question)
-          end
+      after(:create) do |question, evaluator|
+        (0..evaluator.pairs_count).each do
+          create(:pair, question: question)
         end
       end
     end
@@ -55,7 +55,7 @@ FactoryGirl.define do
 
   factory :answer do
     sequence(:answer) { |n| "answer#{n}" }
-    is_correct false
+    is_correct Faker::Boolean.boolean
     association :question, factory: :single_choice_question
   end
 
