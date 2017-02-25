@@ -33,6 +33,6 @@ FactoryGirl.define do
   factory :sentence do
     association :question, factory: :mix_question
     text Faker::Lorem.sentence
-    is_main Faker::Boolean.boolean
+    is_main false
   end
 end
