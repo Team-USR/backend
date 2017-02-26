@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170225115348) do
+ActiveRecord::Schema.define(version: 20170226192648) do
 
   create_table "answers", force: :cascade do |t|
     t.datetime "created_at",    null: false
@@ -82,6 +82,8 @@ ActiveRecord::Schema.define(version: 20170225115348) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string   "title",      null: false
+    t.integer  "user_id"
+    t.index ["user_id"], name: "index_quizzes_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|

@@ -1,4 +1,6 @@
 class QuizzesController < ApplicationController
+  before_action :authenticate_user, only: :create
+
   def index
     render json: Quiz.all
   end
@@ -9,7 +11,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_create_params)
+    @quiz = Quiz.new(quiz_create_params.merge(user_id: current_user.id))
 
     if @quiz.save
       render json: @quiz
