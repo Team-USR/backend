@@ -7,7 +7,7 @@ FactoryGirl.define do
 
   factory :user do
     name Faker::Name.name
-    email Faker::Internet.unique.email
+    sequence(:email){ |n| "user#{n}@factory.com" }
     password Faker::Lorem.word
     trait :student do
       after(:create) do |user|
