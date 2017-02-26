@@ -18,7 +18,7 @@ class Questions::Mix < Question
       }
     else
       {
-        correct: sentences.find_by(text: question_params[:answer].join(" ")) != nil,
+        correct: !sentences.find_by(text: question_params[:answer].join(" ")).nil?,
         correct_sentences: sentences.map(&:text)
       }
     end
