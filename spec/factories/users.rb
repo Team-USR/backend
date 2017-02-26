@@ -15,8 +15,4 @@ FactoryGirl.define do
       end
     end
   end
-
-  factory :group do
-    name Faker::Name.name
-  end
 end
