@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   def index
-    render json:Group.all
+    render json: Group.all
   end
 
   def show
