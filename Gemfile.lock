@@ -53,7 +53,7 @@ GEM
       autoprefixer-rails (>= 6.0.3)
       sass (>= 3.4.19)
     builder (3.2.3)
-    cancan (1.6.10)
+    cancancan (1.16.0)
     case_transform (0.2)
       activesupport
     cocoon (1.2.9)
@@ -226,7 +226,7 @@ DEPENDENCIES
   active_model_serializers
   bcrypt (~> 3.1.7)
   bootstrap (~> 4.0.0.alpha6)
-  cancan
+  cancancan
   cocoon
   factory_girl_rails
   faker
@@ -253,4 +253,4 @@ RUBY VERSION
    ruby 2.3.3p222
 
 BUNDLED WITH
-   1.14.3
+   1.14.5
