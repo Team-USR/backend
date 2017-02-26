@@ -2,6 +2,9 @@ require 'rails_helper'
 
 RSpec.describe QuizzesController, type: :controller do
   describe "POST #create" do
+    let(:user) { create(:user) }
+    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
+
     let(:single_choice_params) do
       {
         question: "Single Choice Question",
@@ -118,11 +121,16 @@ RSpec.describe QuizzesController, type: :controller do
       }
     end
 
-    it "assigns @quiz" do
+    before do
+      request.headers["Authorization"] = "Bearer #{token}"
+    end
+
+    it "creates a quiz with the correct title and user" do
       post :create, params: params, as: :json
 
       expect(assigns(:quiz)).to be_a(Quiz)
       expect(assigns(:quiz).title).to eq("My quiz")
+      expect(assigns(:quiz).user).to eq(user)
     end
 
     context "when creating a single_choice question and a multiple_choice" do
