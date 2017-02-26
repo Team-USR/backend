@@ -6,7 +6,7 @@ RSpec.describe Questions::Mix, type: :model do
   describe '#check' do
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
-        answer: "RANDOM sentence"
+        answer: ["RANDOM sentence"]
       })).to eq({
         correct: false,
         correct_sentences: subject.sentences.map(&:text)
@@ -15,7 +15,7 @@ RSpec.describe Questions::Mix, type: :model do
 
     it 'returns true if the answer sent is the correct one' do
       expect(subject.check({
-        answer: subject.sentences.first.text
+        answer: subject.sentences.first.text.split(" ")
       })).to eq({
         correct: true,
         correct_sentences: subject.sentences.map(&:text)
