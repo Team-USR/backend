@@ -11,10 +11,17 @@ class Questions::Mix < Question
   end
 
   def check(question_params)
-    {
-      correct: words.sort == question_params[:answer].split(" ").sort,
-      correct_sentences: sentences.map(&:text)
-    }
+    if words.sort != question_params[:answer].sort
+      {
+        correct: false,
+        correct_sentences: sentences.map(&:text)
+      }
+    else
+      {
+        correct: sentences.find_by(text: question_params[:answer].join(" ")) != nil,
+        correct_sentences: sentences.map(&:text)
+      }
+    end
   end
 
   private
