@@ -13,6 +13,7 @@ class Questions::Match < Question
       )
       result = false if pair.nil?
     end
+    result = false if question_params[:pairs].count != pairs.count
     {
       correct: result,
       correct_pairs: ActiveModel::Serializer::CollectionSerializer.new(pairs, each_serializer: PairSerializer)
