@@ -6,6 +6,14 @@ Rails.application.routes.draw do
       post 'check', to: :check
     end
   end
+
+  resources :users, only: [:create]
+  resources :groups, only: [:show, :index, :create] do
+    member do
+      post 'add', to: :add
+      delete 'delete', to: :delete
+    end
+  end
   resources :users, only: [:create, :update]
 
   namespace :v2 do

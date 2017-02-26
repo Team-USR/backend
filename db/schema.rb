@@ -38,6 +38,17 @@ ActiveRecord::Schema.define(version: 20170225115348) do
     t.index ["question_type", "question_id"], name: "index_gaps_on_question_type_and_question_id"
   end
 
+  create_table "groups", force: :cascade do |t|
+    t.string   "name",       null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "groups_users", id: false, force: :cascade do |t|
+    t.integer "user_id",  null: false
+    t.integer "group_id", null: false
+  end
+
   create_table "hints", force: :cascade do |t|
     t.string   "hint_text"
     t.datetime "created_at", null: false
