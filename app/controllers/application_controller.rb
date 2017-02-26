@@ -66,4 +66,12 @@ class ApplicationController < ActionController::API
       status: :unprocessable_entity
     )
   end
+
+  def unauthorized_entity(_)
+    render_error(
+      status: :unauthorized,
+      code: "unable_to_authenticate",
+      detail: "Unable to authenticate user with provided JWT token"
+    )
+  end
 end
