@@ -15,6 +15,11 @@ class ApplicationController < ActionController::API
     with: :rescue_from_invalid_parameter,
   )
 
+  rescue_from(
+    CanCan::AccessDenied,
+    with: :rescue_from_unauthorised_cancan_access
+  )
+
   def rescue_from_param_missing(error)
     render_error(
       status: :bad_request,
@@ -27,6 +32,14 @@ class ApplicationController < ActionController::API
     render_error(
       status: :bad_request,
       code: "invalid_parameter",
+      detail: error.message
+    )
+  end
+
+  def rescue_from_unauthorised_cancan_access(error)
+    render_error(
+      status: :unauthorized,
+      code: "access_denied",
       detail: error.message
     )
   end
