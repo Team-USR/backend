@@ -2,6 +2,7 @@ class ApplicationController < ActionController::API
   class InvalidParameter < StandardError; end
   include ActionController::Serialization
   include Knock::Authenticable
+  include CanCan::ControllerAdditions
   ActionController::Parameters.permit_all_parameters = true
 
   rescue_from(
