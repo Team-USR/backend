@@ -1,8 +1,9 @@
 class QuizSerializer < ActiveModel::Serializer
-  attributes :id, :title, :creator
+  attributes :id, :title
+  # :creator
   has_many :questions
 
-  def creator
-    object.user.email
-  end
+  # def creator
+  #   object.user.email
+  # end
 end
