@@ -1,9 +1,12 @@
 class QuizzesController < ApplicationController
-  # before_action :authenticate_user, only: :create
+  # before_action :authenticate_user, only: [:create, :show, :check]
 
   def index
     render json: Quiz.all
   end
+
+  # TODO: Create new quiz session if there isnt one
+  # Send already answered data from the quiz session
 
   def show
     render json: Quiz.find(params.require(:id))
@@ -19,6 +22,9 @@ class QuizzesController < ApplicationController
       render_activemodel_validations(@quiz.errors)
     end
   end
+
+  # TODO: To rename method and route to submit
+  # TODO: Save last quiz session and update state
 
   def check
     @quiz = Quiz.find(params[:id])
@@ -48,6 +54,7 @@ class QuizzesController < ApplicationController
     end
     params[:questions].each do |question_param|
       # TODO: REMOVE ID FROM SAVED HASH
+      # TODO: Check sent data (if params are appropiate for the question type; check in model; sent error; check if question belongs to quiz)
       @quiz_session.metadata[question_param[:id]] = question_param
     end
     @quiz_session.save
