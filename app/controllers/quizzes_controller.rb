@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: :create
+  # before_action :authenticate_user, only: :create
 
   def index
     render json: Quiz.all
@@ -11,7 +11,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_create_params.merge(user_id: current_user.id))
+    @quiz = Quiz.new(quiz_create_params.merge(user_id: 1))
 
     if @quiz.save
       render json: @quiz
@@ -37,6 +37,21 @@ class QuizzesController < ApplicationController
       end
     end
     render json: result
+  end
+
+  def save
+    @quiz = Quiz.find(params[:id])
+    @user = User.first
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.metadata.nil?
+      @quiz_session.metadata = {}
+    end
+    params[:questions].each do |question_param|
+      # TODO: REMOVE ID FROM SAVED HASH
+      @quiz_session.metadata[question_param[:id]] = question_param
+    end
+    @quiz_session.save
+    render json: @quiz_session
   end
 
   private
