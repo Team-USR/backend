@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  # before_action :authenticate_user, only: [:create, :show, :check]
+  #before_action :authenticate_user, only: [:create, :show, :check]
 
   def index
     render json: Quiz.all
@@ -53,9 +53,8 @@ class QuizzesController < ApplicationController
       @quiz_session.metadata = {}
     end
     params[:questions].each do |question_param|
-      # TODO: REMOVE ID FROM SAVED HASH
       # TODO: Check sent data (if params are appropiate for the question type; check in model; sent error; check if question belongs to quiz)
-      @quiz_session.metadata[question_param[:id]] = question_param
+      @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
     end
     @quiz_session.save
     render json: @quiz_session
