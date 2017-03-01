@@ -14,7 +14,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_create_params.merge(user_id: 1))
+    @quiz = Quiz.new(quiz_create_params.merge(user_id: current_user.id))
 
     if @quiz.save
       render json: @quiz
