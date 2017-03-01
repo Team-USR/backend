@@ -2,6 +2,8 @@ language: ruby
 rvm:
 - 2.3.3
 cache: bundler
+services:
+  - postgresql
 addons:
   - postgresql: "9.6"
 install:
