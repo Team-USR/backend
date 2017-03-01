@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: [:create, :mine, :update, :edit]
+  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :check]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
