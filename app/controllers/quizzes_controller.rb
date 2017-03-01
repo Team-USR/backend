@@ -57,21 +57,26 @@ class QuizzesController < ApplicationController
       # TODO: Check sent data (if params are appropiate for the question type; check in model; sent error; check if question belongs to quiz)
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
       if question.nil?
+        status.clear
         status << {
           id: question_param[:id],
           error: "Error; Question not found"
         }
+        break
       else
         if question_param.key?(question.answer_params)
+          status.clear
           @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
-          status = @quiz_session
+          status << @quiz_session
         else
+          status.clear
           status << {
             error: "Error; Wrong params format, check wiki"
           }
+          break
         end
       end
-      #@quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+
     end
     @quiz_session.save
     render json: status
