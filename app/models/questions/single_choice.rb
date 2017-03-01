@@ -12,6 +12,10 @@ class Questions::SingleChoice < Question
     }
   end
 
+  def answer_params
+    "answer_id"
+  end
+
   private
 
   def correct_answer

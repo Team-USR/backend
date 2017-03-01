@@ -48,16 +48,33 @@ class QuizzesController < ApplicationController
   def save
     @quiz = Quiz.find(params[:id])
     @user = User.first
+    status = []
     @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
     if @quiz_session.metadata.nil?
       @quiz_session.metadata = {}
     end
     params[:questions].each do |question_param|
       # TODO: Check sent data (if params are appropiate for the question type; check in model; sent error; check if question belongs to quiz)
-      @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+      question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
+      if question.nil?
+        status << {
+          id: question_param[:id],
+          error: "Error; Question not found"
+        }
+      else
+        if question_param.key?(question.answer_params)
+          @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+          status = @quiz_session
+        else
+          status << {
+            error: "Error; Wrong params format, check wiki"
+          }
+        end
+      end
+      #@quiz_session.metadata[question_param[:id]] = question_param.except(:id)
     end
     @quiz_session.save
-    render json: @quiz_session
+    render json: status
   end
 
   private

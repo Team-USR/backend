@@ -19,4 +19,8 @@ class Questions::Match < Question
       correct_pairs: ActiveModel::Serializer::CollectionSerializer.new(pairs, each_serializer: PairSerializer)
     }
   end
+
+  def answer_params
+    "pairs"
+  end
 end

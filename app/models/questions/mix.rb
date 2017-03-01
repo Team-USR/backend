@@ -24,6 +24,10 @@ class Questions::Mix < Question
     end
   end
 
+  def answer_params
+    "answer"
+  end
+
   private
 
   def sentences_have_same_words
