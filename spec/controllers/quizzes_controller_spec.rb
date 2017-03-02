@@ -362,7 +362,7 @@ RSpec.describe QuizzesController, type: :controller do
           expect(JSON.parse(response.body)).to eq(
             [
               {
-                "id" => 123456789,
+                "id" => 123_456_789,
                 "error" => "Error; Question not found"
               }
             ]

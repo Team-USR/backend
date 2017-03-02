@@ -74,7 +74,6 @@ class QuizzesController < ApplicationController
         }
         break
       end
-
     end
     @quiz_session.save
     render json: status
