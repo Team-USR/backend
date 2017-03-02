@@ -5,6 +5,7 @@ Rails.application.routes.draw do
     member do
       post 'check', to: :check
       post 'save', to: :save
+      post 'for_groups', to: :for_groups
     end
   end
 
@@ -13,6 +14,7 @@ Rails.application.routes.draw do
     member do
       post 'add', to: :add
       delete 'delete', to: :delete
+      get 'quizzes', to: :quizzes
     end
   end
   resources :users, only: [:create, :update]

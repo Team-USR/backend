@@ -47,6 +47,11 @@ ActiveRecord::Schema.define(version: 20170228215317) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "groups_quizzes", id: false, force: :cascade do |t|
+    t.integer "quiz_id",  null: false
+    t.integer "group_id", null: false
+  end
+
   create_table "groups_users", id: false, force: :cascade do |t|
     t.integer "user_id",  null: false
     t.integer "group_id", null: false

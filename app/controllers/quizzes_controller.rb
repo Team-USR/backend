@@ -14,7 +14,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_create_params.merge(user_id: current_user.id))
+    @quiz = Quiz.new(quiz_create_params.merge(user_id: 1))
 
     if @quiz.save
       render json: @quiz
@@ -54,7 +54,6 @@ class QuizzesController < ApplicationController
       @quiz_session.metadata = {}
     end
     params[:questions].each do |question_param|
-      # TODO: Check sent data (if params are appropiate for the question type; check in model; sent error; check if question belongs to quiz)
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
       if question.nil?
         status.clear
@@ -77,6 +76,32 @@ class QuizzesController < ApplicationController
     end
     @quiz_session.save
     render json: status
+  end
+
+  def for_groups
+    result = []
+    params[:groups].each do |group_param|
+        @group = Group.find_by(name: group_param[:group_name])
+        if @group.nil?
+          render_error(
+            status: :not_found,
+            code: "not_found",
+            detail: "Couldn't find group #{group_param[:group_name]}"
+          )
+          break
+        else
+          @groups_quiz = GroupsQuiz.new(group_id: @group.id, quiz_id: params[:id])
+          if @groups_quiz.save
+            result << @groups_quiz
+          else
+            render_activemodel_validations(@groups_quiz.errors)
+            break
+          end
+        end
+    end
+    if result.count != 0
+      render json: result
+    end
   end
 
   private
