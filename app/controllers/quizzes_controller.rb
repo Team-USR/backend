@@ -60,6 +60,65 @@ class QuizzesController < ApplicationController
     render json: result
   end
 
+  def save
+    @quiz = Quiz.find(params[:id])
+    @user = User.first
+    status = []
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.metadata.nil?
+      @quiz_session.metadata = {}
+    end
+    params[:questions].each do |question_param|
+      question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
+      if question.nil?
+        status.clear
+        status << {
+          id: question_param[:id],
+          error: "Error; Question not found"
+        }
+        break
+      elsif question_param.key?(question.answer_params)
+          status.clear
+          @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+          status << @quiz_session
+      else
+        status.clear
+        status << {
+          error: "Error; Wrong params format, check wiki"
+        }
+        break
+      end
+    end
+    @quiz_session.save
+    render json: status
+  end
+
+  def for_groups
+    result = []
+    params[:groups].each do |group_param|
+        @group = Group.find_by(name: group_param[:group_name])
+        if @group.nil?
+          render_error(
+            status: :not_found,
+            code: "not_found",
+            detail: "Couldn't find group #{group_param[:group_name]}"
+          )
+          break
+        else
+          @groups_quiz = GroupsQuiz.new(group_id: @group.id, quiz_id: params[:id])
+          if @groups_quiz.save
+            result << @groups_quiz
+          else
+            render_activemodel_validations(@groups_quiz.errors)
+            break
+          end
+        end
+    end
+    if result.count != 0
+      render json: result
+    end
+  end
+
   private
 
   def transform_question_type
