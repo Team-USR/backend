@@ -1,11 +1,16 @@
 language: ruby
+dist: trusty
 rvm:
 - 2.3.3
 cache: bundler
+services:
+  - postgresql
+addons:
+  postgresql: "9.6"
 install:
   - gem update --system
   - bundle install --jobs=3 --retry=3
 script:
-  - bundle exec rake db:migrate
+  - bundle exec rake db:setup
   - bundle exec rake spec
 cache: bundler

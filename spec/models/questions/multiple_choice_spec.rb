@@ -4,7 +4,7 @@ RSpec.describe Questions::MultipleChoice, type: :model do
   subject { FactoryGirl.create(:multiple_choice_question, answers_count: 5) }
 
   describe '#check' do
-    let(:correct_answers) { subject.answers.where(is_correct: true).map(&:id) }
+    let(:correct_answers) { subject.answers.where(is_correct: true).map(&:id).sort }
 
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
