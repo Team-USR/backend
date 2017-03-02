@@ -304,4 +304,90 @@ RSpec.describe QuizzesController, type: :controller do
       end
     end
   end
+
+  describe "POST #save" do
+      let(:quiz) { create(:quiz) }
+      let(:params) do
+        {
+          "id": quiz.id,
+          "questions": questions_params
+        }
+      end
+
+      context "saving a response with a single choice question" do
+        let(:single_choice_question) do
+          create(:single_choice_question, answers_count: 4, quiz: quiz)
+        end
+        let(:incorrect_answer) { single_choice_question.answers.find_by(is_correct: false) }
+        let(:correct_answer) { single_choice_question.answers.find_by(is_correct: true) }
+        context "with existing question id and good json format" do
+          let(:questions_params) do
+            [{
+              id: single_choice_question.id,
+              answer_id: answer_id
+            }]
+          end
+          context "with good params" do
+            let(:answer_id) { incorrect_answer.id }
+            it "returns the correct response" do
+              post :save, params: params, as: :json
+              expect(JSON.parse(response.body)).to eq(
+                [
+                  {
+                    "quiz_id" => quiz.id,
+                    "user_id" => quiz.user_id,
+                    "state" => "in_progress",
+                    "metadata" =>
+                      {
+                      single_choice_question.id.to_s => {
+                        "answer_id" => answer_id
+                      }
+                    }
+                  }
+                ]
+              )
+            end
+          end
+        end
+      context "with non existing question id and good json format" do
+        let(:questions_params) do
+          [{
+            id: 123456789,
+            answer_id: answer_id
+          }]
+        end
+        let(:answer_id) { incorrect_answer.id }
+        it "returns an error" do
+          post :save, params: params, as: :json
+          expect(JSON.parse(response.body)).to eq(
+            [
+              {
+                "id" => 123456789,
+                "error" => "Error; Question not found"
+              }
+            ]
+          )
+        end
+      end
+      context "with existing question id and bad json format" do
+        let(:questions_params) do
+          [{
+            id: single_choice_question.id,
+            answr_id: answer_id
+          }]
+        end
+        let(:answer_id) { incorrect_answer.id }
+        it "returns an error" do
+          post :save, params: params, as: :json
+          expect(JSON.parse(response.body)).to eq(
+            [
+              {
+                "error" => "Error; Wrong params format, check wiki"
+              }
+            ]
+          )
+        end
+      end
+      end
+  end
 end
