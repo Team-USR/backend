@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  #before_action :authenticate_user, only: [:create, :show, :check]
+  # before_action :authenticate_user, only: [:create, :show, :check]
 
   def index
     render json: Quiz.all
@@ -63,18 +63,16 @@ class QuizzesController < ApplicationController
           error: "Error; Question not found"
         }
         break
-      else
-        if question_param.key?(question.answer_params)
+      elsif question_param.key?(question.answer_params)
           status.clear
           @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
           status << @quiz_session
-        else
-          status.clear
-          status << {
-            error: "Error; Wrong params format, check wiki"
-          }
-          break
-        end
+      else
+        status.clear
+        status << {
+          error: "Error; Wrong params format, check wiki"
+        }
+        break
       end
 
     end

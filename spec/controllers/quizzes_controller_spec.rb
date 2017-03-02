@@ -348,7 +348,7 @@ RSpec.describe QuizzesController, type: :controller do
               )
             end
           end
-        end
+      end
       context "with non existing question id and good json format" do
         let(:questions_params) do
           [{
