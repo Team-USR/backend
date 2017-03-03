@@ -40,7 +40,7 @@ group :test do
 end
 
 group :development, :test do
-  gem 'pg'
+  gem 'sqlite3'
   gem 'pry'
   gem 'rspec-rails'
   gem 'factory_girl_rails', require: false

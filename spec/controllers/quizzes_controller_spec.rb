@@ -180,11 +180,11 @@ RSpec.describe QuizzesController, type: :controller do
         match_question = assigns(:quiz).questions[0]
         expect(match_question).to be_a(Questions::Match)
 
-        expect(match_question.pairs.sort[0].left_choice).to eq("left 1")
-        expect(match_question.pairs.sort[1].left_choice).to eq("left 2")
+        expect(match_question.pairs[0].left_choice).to eq("left 1")
+        expect(match_question.pairs[1].left_choice).to eq("left 2")
 
-        expect(match_question.pairs.sort[0].right_choice).to eq("right 1")
-        expect(match_question.pairs.sort[1].right_choice).to eq("right 2")
+        expect(match_question.pairs[0].right_choice).to eq("right 1")
+        expect(match_question.pairs[1].right_choice).to eq("right 2")
       end
     end
 
@@ -226,13 +226,13 @@ RSpec.describe QuizzesController, type: :controller do
 
         expect(cloze_question.gaps.count).to eq(3)
 
-        expect(cloze_question.gaps.sort[0].gap_text).to eq("text 1")
-        expect(cloze_question.gaps.sort[1].gap_text).to eq("text 2")
-        expect(cloze_question.gaps.sort[2].gap_text).to eq("text 3")
+        expect(cloze_question.gaps[0].gap_text).to eq("text 1")
+        expect(cloze_question.gaps[1].gap_text).to eq("text 2")
+        expect(cloze_question.gaps[2].gap_text).to eq("text 3")
 
-        expect(cloze_question.gaps.sort[0].hint.hint_text).to eq("hint 1")
-        expect(cloze_question.gaps.sort[1].hint).to be_nil
-        expect(cloze_question.gaps.sort[2].hint).to be_nil
+        expect(cloze_question.gaps[0].hint.hint_text).to eq("hint 1")
+        expect(cloze_question.gaps[1].hint).to be_nil
+        expect(cloze_question.gaps[2].hint).to be_nil
       end
     end
   end
@@ -303,91 +303,5 @@ RSpec.describe QuizzesController, type: :controller do
         )
       end
     end
-  end
-
-  describe "POST #save" do
-      let(:quiz) { create(:quiz) }
-      let(:params) do
-        {
-          "id": quiz.id,
-          "questions": questions_params
-        }
-      end
-
-      context "saving a response with a single choice question" do
-        let(:single_choice_question) do
-          create(:single_choice_question, answers_count: 4, quiz: quiz)
-        end
-        let(:incorrect_answer) { single_choice_question.answers.find_by(is_correct: false) }
-        let(:correct_answer) { single_choice_question.answers.find_by(is_correct: true) }
-        context "with existing question id and good json format" do
-          let(:questions_params) do
-            [{
-              id: single_choice_question.id,
-              answer_id: answer_id
-            }]
-          end
-          context "with good params" do
-            let(:answer_id) { incorrect_answer.id }
-            it "returns the correct response" do
-              post :save, params: params, as: :json
-              expect(JSON.parse(response.body)).to eq(
-                [
-                  {
-                    "quiz_id" => quiz.id,
-                    "user_id" => quiz.user_id,
-                    "state" => "in_progress",
-                    "metadata" =>
-                      {
-                      single_choice_question.id.to_s => {
-                        "answer_id" => answer_id
-                      }
-                    }
-                  }
-                ]
-              )
-            end
-          end
-      end
-      context "with non existing question id and good json format" do
-        let(:questions_params) do
-          [{
-            id: 123456789,
-            answer_id: answer_id
-          }]
-        end
-        let(:answer_id) { incorrect_answer.id }
-        it "returns an error" do
-          post :save, params: params, as: :json
-          expect(JSON.parse(response.body)).to eq(
-            [
-              {
-                "id" => 123_456_789,
-                "error" => "Error; Question not found"
-              }
-            ]
-          )
-        end
-      end
-      context "with existing question id and bad json format" do
-        let(:questions_params) do
-          [{
-            id: single_choice_question.id,
-            answr_id: answer_id
-          }]
-        end
-        let(:answer_id) { incorrect_answer.id }
-        it "returns an error" do
-          post :save, params: params, as: :json
-          expect(JSON.parse(response.body)).to eq(
-            [
-              {
-                "error" => "Error; Wrong params format, check wiki"
-              }
-            ]
-          )
-        end
-      end
-      end
   end
 end

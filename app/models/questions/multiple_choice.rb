@@ -20,10 +20,6 @@ class Questions::MultipleChoice < Question
     }
   end
 
-  def answer_params
-    "answer_ids"
-  end
-
   def has_at_least_one_correct_answer
     if answers.any? && answers.select { |a| a.is_correct }.empty?
       errors.add(:answers, "doesn't have any correct answers")

@@ -14,8 +14,4 @@ class Questions::Cloze < Question
      correct_gaps: gaps.map(&:gap_text)
    }
   end
-
-  def answer_params
-    "answer_gaps"
-  end
 end
