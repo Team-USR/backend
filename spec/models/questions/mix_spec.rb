@@ -3,6 +3,22 @@ require 'rails_helper'
 RSpec.describe Questions::Mix, type: :model do
   subject { FactoryGirl.create(:mix_question, sentence_count: 6) }
 
+  describe "factory" do
+    context "with sentence_count = 4" do
+      it "creates 4 sentences" do
+        expect(create(:mix_question, sentence_count: 4).sentences.count)
+          .to eq(4)
+      end
+    end
+
+    context "with sentence_count = 0" do
+      it "creates 0 sentences" do
+        expect(create(:mix_question, sentence_count: 0).sentences.count)
+          .to eq(0)
+      end
+    end
+  end
+
   describe '#check' do
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({

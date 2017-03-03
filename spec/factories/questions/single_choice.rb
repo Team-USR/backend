@@ -9,7 +9,7 @@ FactoryGirl.define do
     after(:create) do |question, evaluator|
       if evaluator.answers_count.positive?
         question.answers << create(:answer, is_correct: true)
-        (1..evaluator.answers_count).each do
+        (2..evaluator.answers_count).each do
           question.answers << create(:answer, is_correct: false)
         end
       end

@@ -3,6 +3,22 @@ require 'rails_helper'
 RSpec.describe Questions::MultipleChoice, type: :model do
   subject { FactoryGirl.create(:multiple_choice_question, answers_count: 5) }
 
+  describe "factory" do
+    context "with answers_count = 4" do
+      it "creates 4 answers" do
+        expect(create(:multiple_choice_question, answers_count: 4).answers.count)
+          .to eq(4)
+      end
+    end
+
+    context "with answers_count = 0" do
+      it "creates 0 answers" do
+        expect(create(:multiple_choice_question, answers_count: 0).answers.count)
+          .to eq(0)
+      end
+    end
+  end
+
   describe '#check' do
     let(:correct_answers) { subject.answers.where(is_correct: true).map(&:id).sort }
 
