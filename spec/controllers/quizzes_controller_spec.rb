@@ -180,11 +180,11 @@ RSpec.describe QuizzesController, type: :controller do
         match_question = assigns(:quiz).questions[0]
         expect(match_question).to be_a(Questions::Match)
 
-        expect(match_question.pairs[0].left_choice).to eq("left 1")
-        expect(match_question.pairs[1].left_choice).to eq("left 2")
+        expect(match_question.pairs.sort[0].left_choice).to eq("left 1")
+        expect(match_question.pairs.sort[1].left_choice).to eq("left 2")
 
-        expect(match_question.pairs[0].right_choice).to eq("right 1")
-        expect(match_question.pairs[1].right_choice).to eq("right 2")
+        expect(match_question.pairs.sort[0].right_choice).to eq("right 1")
+        expect(match_question.pairs.sort[1].right_choice).to eq("right 2")
       end
     end
 
@@ -226,13 +226,13 @@ RSpec.describe QuizzesController, type: :controller do
 
         expect(cloze_question.gaps.count).to eq(3)
 
-        expect(cloze_question.gaps[0].gap_text).to eq("text 1")
-        expect(cloze_question.gaps[1].gap_text).to eq("text 2")
-        expect(cloze_question.gaps[2].gap_text).to eq("text 3")
+        expect(cloze_question.gaps.sort[0].gap_text).to eq("text 1")
+        expect(cloze_question.gaps.sort[1].gap_text).to eq("text 2")
+        expect(cloze_question.gaps.sort[2].gap_text).to eq("text 3")
 
-        expect(cloze_question.gaps[0].hint.hint_text).to eq("hint 1")
-        expect(cloze_question.gaps[1].hint).to be_nil
-        expect(cloze_question.gaps[2].hint).to be_nil
+        expect(cloze_question.gaps.sort[0].hint.hint_text).to eq("hint 1")
+        expect(cloze_question.gaps.sort[1].hint).to be_nil
+        expect(cloze_question.gaps.sort[2].hint).to be_nil
       end
     end
   end
