@@ -10,6 +10,8 @@ Rails.application.routes.draw do
     end
     collection do
       get 'mine'
+      post 'submit', to: :submit
+      post 'save', to: :save
     end
   end
 

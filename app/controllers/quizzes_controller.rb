@@ -1,5 +1,9 @@
 class QuizzesController < ApplicationController
+<<<<<<< HEAD
   before_action :authenticate_user!, only: [:create, :mine, :update, :edit, :check]
+=======
+  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :submit]
+>>>>>>> Changed route for check; creating session in show
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
@@ -16,11 +20,19 @@ class QuizzesController < ApplicationController
   def edit
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
+<<<<<<< HEAD
     if @quiz.published == true
       head :method_not_allowed
     else
       render json: @quiz, serializer: QuizEditSerializer
     end
+=======
+    render json: @quiz, serializer: QuizEditSerializer
+    @quiz = Quiz.find(params.require(:id))
+    @user = User.first
+    @quiz_session.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    render json: @quiz
+>>>>>>> Changed route for check; creating session in show
   end
 
   def create
@@ -46,9 +58,15 @@ class QuizzesController < ApplicationController
       render json: @quiz.errors, status: :unprocessable_entity
     end
   end
+  # TODO: Save last quiz session and update state
 
-  def check
+  def submit
     @quiz = Quiz.find(params[:id])
+    @user = User.first
+    @quiz_session = QuizSession.find_by(user: @user, quiz: @quiz)
+    @quiz_session.state = "submitted"
+    @quiz_session.metadata = params[:questions]
+    @quiz_session.save
     result = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
@@ -66,7 +84,6 @@ class QuizzesController < ApplicationController
     render json: result
   end
 
-<<<<<<< HEAD
   def for_groups
     @groups = params[:groups].map { |id| Group.find(id) }.uniq
     @quiz = Quiz.find(params[:id])
