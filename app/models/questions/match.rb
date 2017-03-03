@@ -19,4 +19,15 @@ class Questions::Match < Question
       correct_pairs: ActiveModel::Serializer::CollectionSerializer.new(pairs, each_serializer: PairSerializer)
     }
   end
+
+  def save_format_correct?(save_params)
+    save_params[:pairs].is_a?(Array) &&
+      save_params[:pairs].all? do |pair_parameter|
+        Pair.find_by(
+          left_choice_uuid: pair_parameter[:left_choice_id],
+          right_choice_uuid: pair_parameter[:right_choice_id],
+          question_id: id
+        ).present?
+      end
+  end
 end

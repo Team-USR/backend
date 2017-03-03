@@ -51,4 +51,34 @@ RSpec.describe Questions::MultipleChoice, type: :model do
       expect(subject.reload.valid?).to eq(false)
     end
   end
+
+  describe "#save_format_correct?" do
+    subject { create(:multiple_choice_question, answers_count: 4) }
+
+    it "returns true if the hash sent has correct key answer_ids" do
+      hash = {
+        answer_ids: [subject.answers.first.id, subject.answers.last.id]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(true)
+    end
+
+    it "returns false if the hash sent has incorrect key answer_id" do
+      hash = {
+        answer_ids: [subject.answers.first.id, subject.answers.last.id, -1]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "returns false if the hash sent doesn't have key answer_ids" do
+      expect(subject.save_format_correct?({}))
+        .to eq(false)
+    end
+
+    it "returns false if the hash sent doesn't have key answer_ids as an array" do
+      expect(subject.save_format_correct?({ answer_ids: "test" }))
+        .to eq(false)
+    end
+  end
 end

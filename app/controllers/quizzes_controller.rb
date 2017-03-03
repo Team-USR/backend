@@ -60,6 +60,30 @@ class QuizzesController < ApplicationController
     render json: result
   end
 
+  def save
+    @quiz = Quiz.find(params[:id])
+    @user = User.first
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.metadata.nil?
+      @quiz_session.metadata = {}
+    end
+    params[:questions].each do |question_param|
+      question = @quiz.questions.find(question_param[:id])
+
+      if question.nil?
+        raise InvalidParameter.new("No question with #{question_param[:id]} for quiz with id #{@quiz.id}")
+      end
+
+      if !question.save_format_crorrect?(question_param)
+        raise InvalidParameter.new("Wrong parameters sent for question with id #{question_param[:id]}")
+      end
+
+      @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+    end
+    @quiz_session.save
+    render json: @quiz_session
+  end
+
   private
 
   def transform_question_type
