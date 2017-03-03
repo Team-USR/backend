@@ -12,6 +12,10 @@ class Questions::SingleChoice < Question
     }
   end
 
+  def save_format_correct?(save_params)
+    Answer.find_by(id: save_params[:answer_id], question_id: id).present?
+  end
+
   private
 
   def correct_answer
