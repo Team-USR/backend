@@ -12,16 +12,14 @@ FactoryGirl.define do
         words = Faker::Lorem.words(evaluator.words_count)
 
         sentences = words.permutation(words.count).take(evaluator.sentence_count)
-        create(
+        question.sentences << create(
           :sentence,
-          question: question,
           text: sentences.first.join(" "),
           is_main: true
         )
         sentences.drop(1).each do |sentence|
-          create(
+          question.sentences << create(
             :sentence,
-            question: question,
             text: sentence.join(" "),
             is_main: false
           )
