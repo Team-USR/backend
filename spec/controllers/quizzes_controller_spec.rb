@@ -1,3 +1,4 @@
+
 require 'rails_helper'
 
 RSpec.describe QuizzesController, type: :controller do
@@ -301,6 +302,38 @@ RSpec.describe QuizzesController, type: :controller do
             }
           ]
         )
+      end
+    end
+  end
+
+  describe "#mine" do
+    let!(:user1) { create(:user) }
+    let!(:quiz1) { create(:quiz, user: user1) }
+    let!(:quiz2) { create(:quiz, user: user1) }
+    let!(:user2) { create(:user) }
+    let!(:quiz3) { create(:quiz, user: user2) }
+
+    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
+
+    before do
+      request.headers["Authorization"] = "Bearer #{token}"
+    end
+
+    context "authenticated as user 1" do
+      let(:token) { Knock::AuthToken.new(payload: { sub: user1.id }).token }
+
+      it "returns the correct quizzes" do
+        get :mine
+        expect(JSON.parse(response.body).map { |quiz| quiz["id"] }.sort).to eq([quiz1.id, quiz2.id].sort)
+      end
+    end
+
+    context "authenticated as user 2" do
+      let(:token) { Knock::AuthToken.new(payload: { sub: user2.id }).token }
+
+      it "returns the correct quizzes" do
+        get :mine
+        expect(JSON.parse(response.body).map { |quiz| quiz["id"] }.sort).to eq([quiz3.id])
       end
     end
   end

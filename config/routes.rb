@@ -5,6 +5,9 @@ Rails.application.routes.draw do
     member do
       post 'check', to: :check
     end
+    collection do
+      get 'mine'
+    end
   end
 
   resources :users, only: [:create]
