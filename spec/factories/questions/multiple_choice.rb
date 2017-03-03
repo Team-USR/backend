@@ -10,7 +10,7 @@ FactoryGirl.define do
       if evaluator.answers_count.positive?
         question.answers << create(:answer, is_correct: true)
         question.answers << create(:answer, is_correct: false) if evaluator.answers_count > 1
-        (2..evaluator.answers_count).each do
+        (3..evaluator.answers_count).each do
           question.answers << create(:answer, is_correct: [true, false].sample)
         end
       end

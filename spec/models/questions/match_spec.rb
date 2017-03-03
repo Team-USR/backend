@@ -1,7 +1,23 @@
 require 'rails_helper'
 
 RSpec.describe Questions::Match, type: :model do
-  subject { FactoryGirl.create(:match_question, pairs_count: 2) }
+  subject { create(:match_question, pairs_count: 2) }
+
+  describe "factory" do
+    context "with pairs_count = 4" do
+      it "creates 4 pairs" do
+        expect(create(:match_question, pairs_count: 4).pairs.count)
+          .to eq(4)
+      end
+    end
+
+    context "with pairs_count = 0" do
+      it "creates 0 pairs" do
+        expect(create(:match_question, pairs_count: 0).pairs.count)
+          .to eq(0)
+      end
+    end
+  end
 
   describe "#check" do
     let(:pairs_param) do

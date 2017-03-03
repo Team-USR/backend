@@ -3,6 +3,22 @@ require 'rails_helper'
 RSpec.describe Questions::SingleChoice, type: :model do
   subject { create(:single_choice_question, answers_count: 4) }
 
+  describe "factory" do
+    context "with answers_count = 4" do
+      it "creates 4 answers" do
+        expect(create(:single_choice_question, answers_count: 4).answers.count)
+          .to eq(4)
+      end
+    end
+
+    context "with answers_count = 0" do
+      it "creates 0 answers" do
+        expect(create(:single_choice_question, answers_count: 0).answers.count)
+          .to eq(0)
+      end
+    end
+  end
+
   describe '#check' do
     let(:correct_answer) { subject.answers.find_by(is_correct: true) }
     let(:incorrect_answer) { subject.answers.find_by(is_correct: false) }
