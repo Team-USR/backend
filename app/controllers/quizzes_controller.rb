@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: :create
+  before_action :authenticate_user, only: [:create, :mine]
 
   def index
     render json: Quiz.all
@@ -7,6 +7,10 @@ class QuizzesController < ApplicationController
 
   def show
     render json: Quiz.find(params.require(:id))
+  end
+
+  def mine
+    render json: Quiz.where(user: current_user)
   end
 
   def create

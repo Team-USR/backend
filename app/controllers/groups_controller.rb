@@ -8,7 +8,6 @@ class GroupsController < ApplicationController
   end
 
   def create
-    puts params
     @group = Group.new(params[:group])
 
     if @group.save
