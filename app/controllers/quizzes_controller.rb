@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :check]
+  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :submit]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
@@ -17,6 +17,10 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
     render json: @quiz, serializer: QuizEditSerializer
+    @quiz = Quiz.find(params.require(:id))
+    @user = User.first
+    @quiz_session.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    render json: @quiz
   end
 
   def create
@@ -40,9 +44,15 @@ class QuizzesController < ApplicationController
       render json: @quiz.errors, status: :unprocessable_entity
     end
   end
+  # TODO: Save last quiz session and update state
 
-  def check
+  def submit
     @quiz = Quiz.find(params[:id])
+    @user = User.first
+    @quiz_session = QuizSession.find_by(user: @user, quiz: @quiz)
+    @quiz_session.state = "submitted"
+    @quiz_session.metadata = params[:questions]
+    @quiz_session.save
     result = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
