@@ -4,7 +4,6 @@ Rails.application.routes.draw do
   resources :quizzes, only: [:show, :index, :create] do
     member do
       post 'check', to: :check
-      post 'save', to: :save
     end
   end
 
