@@ -11,9 +11,9 @@ FactoryGirl.define do
         words = Faker::Lorem.words(evaluator.gap_count)
         gaps = (1..evaluator.gap_count).map { |i| "$(#{i})" }
         sentence = words.zip(gaps).flatten.join(" ")
-        create(:cloze_sentence, question: question, text: sentence)
+        question.cloze_sentence = create(:cloze_sentence, text: sentence)
         (1..evaluator.gap_count).each do
-          create(:gap, question: question)
+          question.gaps << create(:gap)
         end
       end
     end
