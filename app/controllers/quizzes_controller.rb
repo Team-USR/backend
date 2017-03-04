@@ -2,15 +2,15 @@ class QuizzesController < ApplicationController
   before_action :authenticate_user, only: [:create, :mine, :update]
 
   def index
-    render json: Quiz.all
+    render json: Quiz.all, each_serializer: QuizSerializer
   end
 
   def show
-    render json: Quiz.find(params.require(:id))
+    render json: Quiz.find(params.require(:id)), serializer: QuizSerializer
   end
 
   def mine
-    render json: Quiz.where(user: current_user)
+    render json: Quiz.where(user: current_user), each_serializer: QuizSerializer
   end
 
   def edit
