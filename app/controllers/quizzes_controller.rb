@@ -13,6 +13,12 @@ class QuizzesController < ApplicationController
     render json: Quiz.where(user: current_user)
   end
 
+  def edit
+    @quiz = Quiz.find(params.require(:id))
+    authorize! :manage, @quiz
+    render json: @quiz, serializer: QuizEditSerializer
+  end
+
   def create
     transform_question_type
     @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
