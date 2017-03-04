@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
-          :recoverable, :validatable, :confirmable
+          :recoverable, :validatable
+          # , :confirmable TODO: Add when ready with a URL on frontend
   include DeviseTokenAuth::Concerns::User
   has_and_belongs_to_many :roles
   has_many :quizzes
