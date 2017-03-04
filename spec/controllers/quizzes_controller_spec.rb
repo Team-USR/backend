@@ -108,7 +108,6 @@ RSpec.describe QuizzesController, type: :controller do
 
   describe "POST #create" do
     let(:user) { create(:user) }
-    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
 
     let(:questions_params) { [] }
 
@@ -122,7 +121,7 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     before do
-      request.headers["Authorization"] = "Bearer #{token}"
+      authenticate_user user
     end
 
     it "creates a quiz with the correct title and user" do
@@ -312,14 +311,10 @@ RSpec.describe QuizzesController, type: :controller do
     let!(:user2) { create(:user) }
     let!(:quiz3) { create(:quiz, user: user2) }
 
-    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
-
-    before do
-      request.headers["Authorization"] = "Bearer #{token}"
-    end
-
     context "authenticated as user 1" do
-      let(:token) { Knock::AuthToken.new(payload: { sub: user1.id }).token }
+      before do
+        authenticate_user user1
+      end
 
       it "returns the correct quizzes" do
         get :mine
@@ -328,7 +323,9 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     context "authenticated as user 2" do
-      let(:token) { Knock::AuthToken.new(payload: { sub: user2.id }).token }
+      before do
+        authenticate_user user2
+      end
 
       it "returns the correct quizzes" do
         get :mine
@@ -339,7 +336,6 @@ RSpec.describe QuizzesController, type: :controller do
 
   describe "#update" do
     let(:user) { create(:user) }
-    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
 
     let(:quiz) { create(:quiz, title: "123", user: user) }
 
@@ -348,7 +344,7 @@ RSpec.describe QuizzesController, type: :controller do
       quiz.questions << create(:single_choice_question, answers_count: 0)
       quiz.questions << create(:multiple_choice_question, answers_count: 5)
       quiz.questions << create(:mix_question, quiz: quiz)
-      request.headers["Authorization"] = "Bearer #{token}"
+      authenticate_user user
     end
 
     it "updates the quiz" do
@@ -362,7 +358,7 @@ RSpec.describe QuizzesController, type: :controller do
           ]
         }
       }
-      # binding.pry
+
       expect { post :update, params: params, as: :json }
         .to change { quiz.reload.title }.from("123").to("231")
         .and change { quiz.questions.count }.from(4).to(2)
