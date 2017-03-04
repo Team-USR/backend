@@ -14,9 +14,6 @@ class DeviseTokenAuthCreateUsers < ActiveRecord::Migration[5.0]
       t.string   :reset_password_token
       t.datetime :reset_password_sent_at
 
-      ## Rememberable
-      t.datetime :remember_created_at
-
       ## Confirmable
       t.string   :confirmation_token
       t.datetime :confirmed_at
