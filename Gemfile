@@ -25,6 +25,7 @@ gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 gem 'rack-cors'
 
 gem 'cancancan'
+gem 'devise_token_auth'
 
 group :test do
   gem 'shoulda'
