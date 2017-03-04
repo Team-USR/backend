@@ -1,7 +1,6 @@
 class ApplicationController < ActionController::API
   class InvalidParameter < StandardError; end
   include ActionController::Serialization
-  include Knock::Authenticable
   include CanCan::ControllerAdditions
   ActionController::Parameters.permit_all_parameters = true
 
@@ -64,14 +63,6 @@ class ApplicationController < ActionController::API
     render(
       json: { errors: errors },
       status: :unprocessable_entity
-    )
-  end
-
-  def unauthorized_entity(_)
-    render_error(
-      status: :unauthorized,
-      code: "unable_to_authenticate",
-      detail: "Unable to authenticate user with provided JWT token"
     )
   end
 end
