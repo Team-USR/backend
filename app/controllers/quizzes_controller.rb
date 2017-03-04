@@ -52,7 +52,7 @@ class QuizzesController < ApplicationController
   def submit
     @quiz = Quiz.find(params[:id])
     @user = User.first
-    @quiz_session = QuizSession.find_by(user: @user, quiz: @quiz)
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz)
     @quiz_session.state = "submitted"
     @quiz_session.metadata = params[:questions]
     @quiz_session.save

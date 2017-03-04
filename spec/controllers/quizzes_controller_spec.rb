@@ -267,7 +267,7 @@ RSpec.describe QuizzesController, type: :controller do
         let(:answer_id) { incorrect_answer.id }
 
         it "returns the correct response" do
-          post :check, params: params, as: :json
+          post :submit, params: params, as: :json
 
           expect(JSON.parse(response.body)).to eq(
             [
@@ -291,7 +291,7 @@ RSpec.describe QuizzesController, type: :controller do
       end
 
       it "returns the correct response" do
-        post :check, params: params, as: :json
+        post :submit, params: params, as: :json
 
         expect(JSON.parse(response.body)).to eq(
           [
