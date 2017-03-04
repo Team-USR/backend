@@ -4,4 +4,8 @@ class Questions::ClozeSerializer < ActiveModel::Serializer
   def sentence
     object.cloze_sentence.text
   end
+
+  def type
+    "cloze"
+  end
 end
