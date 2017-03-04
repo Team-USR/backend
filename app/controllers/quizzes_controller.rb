@@ -1,26 +1,43 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: [:create, :mine]
+  before_action :authenticate_user, only: [:create, :mine, :update]
 
   def index
-    render json: Quiz.all
+    render json: Quiz.all, each_serializer: QuizSerializer
   end
 
   def show
-    render json: Quiz.find(params.require(:id))
+    render json: Quiz.find(params.require(:id)), serializer: QuizSerializer
   end
 
   def mine
-    render json: Quiz.where(user: current_user)
+    render json: Quiz.where(user: current_user), each_serializer: QuizSerializer
+  end
+
+  def edit
+    @quiz = Quiz.find(params.require(:id))
+    authorize! :manage, @quiz
+    render json: @quiz, serializer: QuizEditSerializer
   end
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_create_params.merge(user_id: current_user.id))
+    @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
 
     if @quiz.save
       render json: @quiz
     else
       render_activemodel_validations(@quiz.errors)
+    end
+  end
+
+  def update
+    @quiz = Quiz.find(params[:id])
+    authorize! :manage, @quiz
+    transform_question_type
+    if @quiz.update_attributes(quiz_params)
+      render json: @quiz
+    else
+      render json: @quiz.errors, status: :unprocessable_entity
     end
   end
 
@@ -47,6 +64,7 @@ class QuizzesController < ApplicationController
 
   def transform_question_type
     params[:quiz][:questions_attributes].try(:each) do |question_params|
+      next if question_params[:type].nil? && question_params[:id].present?
       type = Question.type_from_api(question_params[:type])
 
       if type.nil?
@@ -57,31 +75,41 @@ class QuizzesController < ApplicationController
     end
   end
 
-  def quiz_create_params
+  def quiz_params
     params.require(:quiz).permit(
       :title,
       questions_attributes: [
         :question,
         :type,
+        :id,
         answers_attributes: [
+          :id,
           :answer,
-          :is_correct
+          :is_correct,
+
         ],
         pairs_attributes: [
+          :id,
           :left_choice,
-          :right_choice
+          :right_choice,
+
         ],
         sentences_attributes: [
+          :id,
           :text,
-          :is_main
+          :is_main,
+
         ],
         cloze_sentence_attributes: [
-          :text
+          :text,
         ],
         gaps_attributes: [
+          :id,
           :gap_text,
+
           hint_attributes: [
-            :hint_text
+            :hint_text,
+
           ]
         ]
       ]

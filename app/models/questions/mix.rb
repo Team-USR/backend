@@ -1,8 +1,8 @@
 class Questions::Mix < Question
   belongs_to :quiz
 
-  has_many :sentences, inverse_of: :question, as: :question
-  accepts_nested_attributes_for :sentences
+  has_many :sentences, inverse_of: :question, as: :question, dependent: :destroy
+  accepts_nested_attributes_for :sentences, allow_destroy: true
   validate :sentences_have_same_words, if: :has_sentences?
   validate :has_one_main_sentence, if: :has_sentences?
 

@@ -1,8 +1,8 @@
 class Questions::MultipleChoice < Question
   belongs_to :quiz
 
-  has_many :answers, inverse_of: :question, as: :question
-  accepts_nested_attributes_for :answers
+  has_many :answers, inverse_of: :question, as: :question, dependent: :destroy
+  accepts_nested_attributes_for :answers, allow_destroy: true
 
   validate :has_at_least_one_correct_answer
 

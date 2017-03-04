@@ -1,115 +1,114 @@
-
 require 'rails_helper'
 
 RSpec.describe QuizzesController, type: :controller do
+  let(:single_choice_params) do
+    {
+      question: "Single Choice Question",
+      type: "single_choice",
+      answers_attributes: [
+        {
+          answer: "Answer 1",
+          is_correct: false
+        },
+        {
+          answer: "Answer 2",
+          is_correct: true
+        }
+      ]
+    }
+  end
+
+  let(:multiple_choice_params) do
+    {
+      question: "Multiple Choice Question",
+      type: "multiple_choice",
+      answers_attributes: [
+        {
+          answer: "Answer 1",
+          is_correct: false
+        },
+        {
+          answer: "Answer 2",
+          is_correct: true
+        },
+        {
+          answer: "Answer 3",
+          is_correct: true
+        },
+        {
+          answer: "Answer 4",
+          is_correct: false
+        }
+      ]
+    }
+  end
+
+  let(:match_params) do
+    {
+      question: "Match Question",
+      type: "match",
+      pairs_attributes: [
+        {
+          left_choice: "left 1",
+          right_choice: "right 1"
+        },
+        {
+          left_choice: "left 2",
+          right_choice: "right 2"
+        }
+      ]
+    }
+  end
+
+  let(:mix_params) do
+    {
+      question: "Question 4",
+      type: "mix",
+      sentences_attributes: [
+        {
+          "text": "main sentence is here",
+          "is_main": true
+        },
+        {
+          "text": "sentence main here is",
+          "is_main": false
+        },
+        {
+          "text": "main sentence here is",
+          "is_main": false
+        }
+      ]
+    }
+  end
+
+  let(:cloze_params) do
+    {
+      question: "Question 5",
+      type: "cloze",
+      cloze_sentence_attributes: {
+        "text": "test {1} before {2} after {3}"
+      },
+      gaps_attributes: [
+        {
+          "gap_text": "text 1",
+          hint_attributes:
+            {
+              "hint_text": "hint 1"
+            }
+        },
+        {
+          "gap_text": "text 2"
+        },
+        {
+          "gap_text": "text 3"
+        }
+      ]
+    }
+  end
+
   describe "POST #create" do
     let(:user) { create(:user) }
     let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
-
-    let(:single_choice_params) do
-      {
-        question: "Single Choice Question",
-        type: "single_choice",
-        answers_attributes: [
-          {
-            answer: "Answer 1",
-            is_correct: false
-          },
-          {
-            answer: "Answer 2",
-            is_correct: true
-          }
-        ]
-      }
-    end
-
-    let(:multiple_choice_params) do
-      {
-        question: "Multiple Choice Question",
-        type: "multiple_choice",
-        answers_attributes: [
-          {
-            answer: "Answer 1",
-            is_correct: false
-          },
-          {
-            answer: "Answer 2",
-            is_correct: true
-          },
-          {
-            answer: "Answer 3",
-            is_correct: true
-          },
-          {
-            answer: "Answer 4",
-            is_correct: false
-          }
-        ]
-      }
-    end
-
-    let(:match_params) do
-      {
-        question: "Match Question",
-        type: "match",
-        pairs_attributes: [
-          {
-            left_choice: "left 1",
-            right_choice: "right 1"
-          },
-          {
-            left_choice: "left 2",
-            right_choice: "right 2"
-          }
-        ]
-      }
-    end
-
-    let(:mix_params) do
-      {
-        question: "Question 4",
-        type: "mix",
-        sentences_attributes: [
-          {
-            "text": "main sentence is here",
-            "is_main": true
-          },
-          {
-            "text": "sentence main here is",
-            "is_main": false
-          },
-          {
-            "text": "main sentence here is",
-            "is_main": false
-          }
-        ]
-      }
-    end
-
-    let(:cloze_params) do
-      {
-        question: "Question 5",
-        type: "cloze",
-        cloze_sentence_attributes: {
-          "text": "test {1} before {2} after {3}"
-        },
-        gaps_attributes: [
-          {
-            "gap_text": "text 1",
-            hint_attributes:
-              {
-                "hint_text": "hint 1"
-              }
-          },
-          {
-            "gap_text": "text 2"
-          },
-          {
-            "gap_text": "text 3"
-          }
-        ]
-      }
-    end
 
     let(:questions_params) { [] }
 
@@ -335,6 +334,43 @@ RSpec.describe QuizzesController, type: :controller do
         get :mine
         expect(JSON.parse(response.body).map { |quiz| quiz["id"] }.sort).to eq([quiz3.id])
       end
+    end
+  end
+
+  describe "#update" do
+    let(:user) { create(:user) }
+    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
+
+    let(:quiz) { create(:quiz, title: "123", user: user) }
+
+    before do
+      quiz.questions << create(:single_choice_question, answers_count: 4)
+      quiz.questions << create(:single_choice_question, answers_count: 0)
+      quiz.questions << create(:multiple_choice_question, answers_count: 5)
+      quiz.questions << create(:mix_question, quiz: quiz)
+      request.headers["Authorization"] = "Bearer #{token}"
+    end
+
+    it "updates the quiz" do
+      params = {
+        id: quiz.id,
+        quiz: {
+          title: "231",
+          questions_attributes: [
+            single_choice_params,
+            match_params
+          ]
+        }
+      }
+      # binding.pry
+      expect { post :update, params: params, as: :json }
+        .to change { quiz.reload.title }.from("123").to("231")
+        .and change { quiz.questions.count }.from(4).to(2)
+        .and change { Questions::Match.count }.by(1)
+        .and change { Questions::SingleChoice.count }.by(-1)
+        .and change { Questions::MultipleChoice.count }.from(1).to(0)
+        .and change { Answer.count }.by(- 5 - 4 + 2)
+        .and change { Questions::Mix.count }.by(-1)
     end
   end
 end
