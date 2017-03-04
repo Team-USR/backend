@@ -86,26 +86,31 @@ class QuizzesController < ApplicationController
         answers_attributes: [
           :id,
           :answer,
-          :is_correct
+          :is_correct,
+          :_destroy,
         ],
         pairs_attributes: [
           :id,
           :left_choice,
-          :right_choice
+          :right_choice,
+          :_destroy,
         ],
         sentences_attributes: [
           :id,
           :text,
-          :is_main
+          :is_main,
+          :_destroy,
         ],
         cloze_sentence_attributes: [
-          :text
+          :text,
         ],
         gaps_attributes: [
           :id,
           :gap_text,
+          :_destroy,
           hint_attributes: [
-            :hint_text
+            :hint_text,
+            :_destroy,
           ]
         ]
       ]
