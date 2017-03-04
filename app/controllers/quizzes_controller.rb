@@ -1,16 +1,17 @@
 class QuizzesController < ApplicationController
-<<<<<<< HEAD
-  before_action :authenticate_user!, only: [:create, :mine, :update, :edit, :check]
-=======
-  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :submit]
->>>>>>> Changed route for check; creating session in show
+  before_action :authenticate_user!, only: [:create, :mine, :update, :edit, :submit]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
   end
 
   def show
-    render json: Quiz.find(params.require(:id)), serializer: QuizSerializer
+    @quiz = Quiz.find(params.require(:id))
+    @quiz_session.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    render json: {
+      quiz: QuizSerializer.new(@quiz),
+      quiz_session: @quiz_session
+    }
   end
 
   def mine
@@ -20,19 +21,11 @@ class QuizzesController < ApplicationController
   def edit
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
-<<<<<<< HEAD
     if @quiz.published == true
       head :method_not_allowed
     else
       render json: @quiz, serializer: QuizEditSerializer
     end
-=======
-    render json: @quiz, serializer: QuizEditSerializer
-    @quiz = Quiz.find(params.require(:id))
-    @user = User.first
-    @quiz_session.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
-    render json: @quiz
->>>>>>> Changed route for check; creating session in show
   end
 
   def create
