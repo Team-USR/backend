@@ -47,7 +47,6 @@ class QuizzesController < ApplicationController
       render json: @quiz.errors, status: :unprocessable_entity
     end
   end
-  # TODO: Save last quiz session and update state
 
   def submit
     @quiz = Quiz.find(params[:id])

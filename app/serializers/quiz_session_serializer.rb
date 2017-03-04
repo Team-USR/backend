@@ -1,3 +1,3 @@
 class QuizSessionSerializer < ActiveModel::Serializer
-  attributes :user_id, :quiz_id, :state, :metadata
+  attributes :state, :metadata
 end
