@@ -45,6 +45,10 @@ class QuizEditSerializer < ActiveModel::Serializer
     attributes :id, :question, :type
     has_many :pairs
 
+    def type
+      "match"
+    end
+
     class PairSerializer < ActiveModel::Serializer
       attributes :left_choice, :right_choice, :id
     end
@@ -54,6 +58,10 @@ class QuizEditSerializer < ActiveModel::Serializer
     attributes :id, :question, :type
     has_one :cloze_sentence
     has_many :gaps
+
+    def type
+      "cloze"
+    end
 
     class ClozeSentenceSerializer < ActiveModel::Serializer
       attributes :text, :id
