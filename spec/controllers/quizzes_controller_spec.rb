@@ -343,17 +343,11 @@ RSpec.describe QuizzesController, type: :controller do
 
     let(:quiz) { create(:quiz, title: "123", user: user) }
 
-    let(:single_choice_question) do
-      create(:single_choice_question, answers_count: 4, quiz: quiz)
-    end
-
-    let(:multiple_choice_question) do
-      create(:multiple_choice_question, answers_count: 5, quiz: quiz)
-    end
-
-    let(:mix_question) { create(:mix_question, quiz: quiz) }
-
     before do
+      quiz.questions << create(:single_choice_question, answers_count: 4)
+      quiz.questions << create(:single_choice_question, answers_count: 0)
+      quiz.questions << create(:multiple_choice_question, answers_count: 5)
+      quiz.questions << create(:mix_question, quiz: quiz)
       request.headers["Authorization"] = "Bearer #{token}"
     end
 
@@ -363,33 +357,20 @@ RSpec.describe QuizzesController, type: :controller do
         quiz: {
           title: "231",
           questions_attributes: [
-            {
-              id: single_choice_question.id,
-              question: "new question",
-              answers_attributes: [
-                {
-                  id: single_choice_question.answers.first.id,
-                  answer: "answer test",
-                }
-              ]
-            }, {
-              id: multiple_choice_question.id,
-              _destroy: "1",
-            },
+            single_choice_params,
             match_params
           ]
         }
       }
-
+      # binding.pry
       expect { post :update, params: params, as: :json }
         .to change { quiz.reload.title }.from("123").to("231")
+        .and change { quiz.questions.count }.from(4).to(2)
         .and change { Questions::Match.count }.by(1)
-        .and change { Questions::SingleChoice.count }.by(0)
-        .and change { single_choice_question.answers.first.reload.answer }
-          .to("answer test")
+        .and change { Questions::SingleChoice.count }.by(-1)
         .and change { Questions::MultipleChoice.count }.from(1).to(0)
-        .and change { Answer.count }.by(-5)
-        .and change { Questions::Mix.count }.by(0)
+        .and change { Answer.count }.by(- 5 - 4 + 2)
+        .and change { Questions::Mix.count }.by(-1)
     end
   end
 end

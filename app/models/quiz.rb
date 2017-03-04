@@ -5,4 +5,9 @@ class Quiz < ApplicationRecord
   belongs_to :user
 
   validates_presence_of :title, :user
+
+  def questions_attributes=(attr)
+    self.questions = []
+    super
+  end
 end
