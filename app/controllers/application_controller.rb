@@ -1,4 +1,5 @@
 class ApplicationController < ActionController::API
+  include DeviseTokenAuth::Concerns::SetUserByToken
   class InvalidParameter < StandardError; end
   include ActionController::Serialization
   include CanCan::ControllerAdditions
