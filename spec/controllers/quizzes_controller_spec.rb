@@ -373,4 +373,93 @@ RSpec.describe QuizzesController, type: :controller do
         .and change { Questions::Mix.count }.by(-1)
     end
   end
+
+  describe "#for_groups" do
+    let(:quiz) { create(:quiz) }
+    let(:params) do {
+      "id": quiz.id,
+      "groups": groups_params
+    }
+    end
+    context "assigning a quiz to two different groups" do
+      let(:group_1) { create(:group)}
+      let(:group_2) { create(:group)}
+
+      let(:groups_params) do [
+          {
+            group_name: group_1.name
+          },
+          {
+            group_name: group_2.name
+          }
+        ]
+      end
+    it "returns the correct result" do
+        post :for_groups, params: params, as: :json
+
+        expect(JSON.parse(response.body)).to eq(
+        [
+          {
+            "quiz_id"=> quiz.id,
+            "group_id"=> group_1.id
+          },
+          {
+            "quiz_id"=> quiz.id,
+            "group_id"=> group_2.id
+          }
+        ]
+        )
+      end
+    end
+
+    context "assigns a quiz to the same group" do
+      let(:group_1) { create(:group)}
+      let(:groups_params) do [
+          {
+            group_name: group_1.name
+          },
+          {
+            group_name: group_1.name
+          }
+        ]
+      end
+      it "prints the correct error" do
+        post :for_groups, params: params, as: :json
+
+        expect(JSON.parse(response.body)).to eq(
+        {
+          "errors"=> [
+            {
+              "code"=> "validation_error",
+              "detail"=> "Quiz has already been taken"
+            }
+          ]
+        }
+        )
+      end
+    end
+
+    context "assigns a quiz to a non-existing group" do
+      let(:groups_params) do [
+          {
+            group_name: "non-existing group"
+          }
+        ]
+      end
+      it "prints the correct error" do
+        post :for_groups, params: params, as: :json
+
+        expect(JSON.parse(response.body)).to eq(
+        {
+          "errors"=> [
+            {
+              "code"=> "not_found",
+              "detail"=> "Couldn't find group non-existing group"
+            }
+          ]
+        }
+        )
+      end
+    end
+  end
 end
