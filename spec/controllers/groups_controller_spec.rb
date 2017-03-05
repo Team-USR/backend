@@ -56,7 +56,7 @@ RSpec.describe GroupsController, type: :controller do
   describe "QUIZZES #quizzes" do
     let(:group) { create(:group) }
     let(:quiz) { create(:quiz) }
-    let(:groups_quiz) { create(:groups_quiz)}
+    let(:groups_quiz) { create(:groups_quiz) }
 
     before do
       group.quizzes << quiz
