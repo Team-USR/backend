@@ -400,16 +400,16 @@ RSpec.describe QuizzesController, type: :controller do
           post :for_groups, params: params, as: :json
 
           expect(JSON.parse(response.body)).to eq(
-          [
-            {
-              "quiz_id" => quiz.id,
-              "group_id" => group_1.id
-            },
-            {
-              "quiz_id" => quiz.id,
-              "group_id" => group_2.id
-            }
-          ]
+            [
+              {
+                "quiz_id" => quiz.id,
+                "group_id" => group_1.id
+              },
+              {
+                "quiz_id" => quiz.id,
+                "group_id" => group_2.id
+              }
+            ]
           )
       end
     end
