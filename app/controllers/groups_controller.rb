@@ -60,7 +60,7 @@ class GroupsController < ApplicationController
   def quizzes
     elements = []
     @group_quiz = GroupsQuiz.where(group_id: params[:id])
-    if @group_quiz.count == 0
+    if @group_quiz.count.zero?
       elements << {
         quizz: "No quizzes available for this group"
       }
@@ -70,7 +70,7 @@ class GroupsController < ApplicationController
           quiz_id: group_quiz_entry.quiz_id,
           quiz_title: Quiz.find_by(id: group_quiz_entry.quiz_id).title
         }
-    end
+      end
     render json: elements
     end
   end
