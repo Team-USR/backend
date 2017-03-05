@@ -375,15 +375,21 @@ RSpec.describe QuizzesController, type: :controller do
   end
 
   describe "#for_groups" do
-    let(:quiz) { create(:quiz) }
+    let(:quiz) {
+      create(:quiz)
+    }
     let(:params) do {
       "id": quiz.id,
       "groups": groups_params
     }
     end
     context "assigning a quiz to two different groups" do
-      let(:group_1) { create(:group) }
-      let(:group_2) { create(:group) }
+      let(:group_1) {
+        create(:group)
+      }
+      let(:group_2) {
+         create(:group)
+       }
 
       let(:groups_params) do [
           {
@@ -398,22 +404,24 @@ RSpec.describe QuizzesController, type: :controller do
           post :for_groups, params: params, as: :json
 
           expect(JSON.parse(response.body)).to eq(
-            [
-              {
-                "quiz_id" => quiz.id,
-                "group_id" => group_1.id
-              },
-              {
-                "quiz_id" => quiz.id,
-                "group_id" => group_2.id
-              }
-            ]
+          [
+            {
+              "quiz_id" => quiz.id,
+              "group_id" => group_1.id
+            },
+            {
+              "quiz_id" => quiz.id,
+              "group_id" => group_2.id
+            }
+          ]
           )
       end
     end
 
     context "assigns a quiz to the same group" do
-      let(:group_1) { create(:group) }
+      let(:group_1) {
+        create(:group)
+      }
       let(:groups_params) do [
           {
             group_name: group_1.name
