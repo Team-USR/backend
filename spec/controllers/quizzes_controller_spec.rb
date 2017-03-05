@@ -397,7 +397,11 @@ RSpec.describe QuizzesController, type: :controller do
         ]
       end
       it "returns the correct result" do
-          post :for_groups, params: params, as: :json
+          expect do
+            post :for_groups, params: params, as: :json
+          end.to change { GroupsQuiz.count }.by(2)
+          expect(group_1.quizzes.count).to eq(1)
+          expect(group_2.quizzes.count).to eq(1)
 
           expect(JSON.parse(response.body)).to eq(
             [

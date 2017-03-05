@@ -71,7 +71,7 @@ class GroupsController < ApplicationController
           quiz_title: Quiz.find_by(id: group_quiz_entry.quiz_id).title
         }
       end
-    render json: elements
     end
+    render json: elements
   end
 end
