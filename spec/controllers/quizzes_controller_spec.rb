@@ -375,23 +375,19 @@ RSpec.describe QuizzesController, type: :controller do
   end
 
   describe "#for_groups" do
-    let(:quiz) {
-      create(:quiz)
-    }
-    let(:params) do {
+    let(:quiz) { create(:quiz) }
+    let(:params) do
+      {
       "id": quiz.id,
       "groups": groups_params
-    }
+      }
     end
     context "assigning a quiz to two different groups" do
-      let(:group_1) {
-        create(:group)
-      }
-      let(:group_2) {
-         create(:group)
-       }
+      let(:group_1) { create(:group) }
+      let(:group_2) { create(:group) }
 
-      let(:groups_params) do [
+      let(:groups_params) do
+        [
           {
             group_name: group_1.name
           },
@@ -419,10 +415,9 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     context "assigns a quiz to the same group" do
-      let(:group_1) {
-        create(:group)
-      }
-      let(:groups_params) do [
+      let(:group_1) { create(:group) }
+      let(:groups_params) do
+        [
           {
             group_name: group_1.name
           },
@@ -448,7 +443,8 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     context "assigns a quiz to a non-existing group" do
-      let(:groups_params) do [
+      let(:groups_params) do
+        [
           {
             group_name: "non-existing group"
           }
