@@ -24,9 +24,8 @@ gem 'bcrypt', '~> 3.1.7', platforms: :ruby
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 gem 'rack-cors'
 
-gem 'knock'
-
 gem 'cancancan'
+gem 'devise_token_auth'
 
 group :test do
   gem 'shoulda'

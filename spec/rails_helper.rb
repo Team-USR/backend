@@ -8,6 +8,7 @@ end
 require 'spec_helper'
 require 'rspec/rails'
 require 'factory_girl_rails'
+Dir[Rails.root.join("spec/support/**/*.rb")].sort.each { |f| require f }
 
 ActiveRecord::Migration.maintain_test_schema!
 
@@ -19,4 +20,6 @@ RSpec.configure do |config|
   # Filter lines from Rails gems in backtraces.
   config.filter_rails_from_backtrace!
   config.include FactoryGirl::Syntax::Methods
+  config.include Devise::Test::ControllerHelpers, type: :controller
+  config.include AuthenticationHelper, type: :controller
 end
