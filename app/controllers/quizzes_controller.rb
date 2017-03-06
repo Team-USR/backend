@@ -7,7 +7,8 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    @quiz_session.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    @user = User.first
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
     render json: {
       quiz: QuizSerializer.new(@quiz),
       quiz_session: @quiz_session
