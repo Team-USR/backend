@@ -239,6 +239,11 @@ RSpec.describe QuizzesController, type: :controller do
   # We are not testing that #submit works on the model as we have unit tests
   # for that. We are only testing if the correct response is outputted
   describe "POST #submit" do
+    let(:user) { create(:user) }
+    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
+    before do
+      request.headers["Authorization"] = "Bearer #{token}"
+    end
     let(:quiz) { create(:quiz) }
     let(:params) do
       {
