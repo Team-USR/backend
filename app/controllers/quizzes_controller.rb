@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user, only: [:create, :mine, :update, :edit, :submit]
+  # before_action :authenticate_user, only: [:create, :mine, :update, :edit, :submit]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
@@ -27,7 +27,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
+    @quiz = Quiz.new(quiz_params.merge(user_id: 1))
 
     if @quiz.save
       render json: @quiz
@@ -85,7 +85,7 @@ class QuizzesController < ApplicationController
         raise InvalidParameter.new("No question with #{question_param[:id]} for quiz with id #{@quiz.id}")
       end
 
-      if !question.save_format_crorrect?(question_param)
+      if !question.save_format_correct?(question_param)
         raise InvalidParameter.new("Wrong parameters sent for question with id #{question_param[:id]}")
       end
 
