@@ -28,13 +28,14 @@ gem 'knock'
 
 gem 'cancancan'
 
+gem 'pg'
+
 group :test do
   gem 'shoulda'
   gem 'rails-controller-testing'
 end
 
 group :development, :test do
-  gem 'pg'
   gem 'pry'
   gem 'rspec-rails'
   gem 'factory_girl_rails', require: false
@@ -50,7 +51,6 @@ group :development do
 end
 
 group :production do
-  gem 'pg'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
