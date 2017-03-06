@@ -252,12 +252,6 @@ RSpec.describe QuizzesController, type: :controller do
       }
     end
 
-    context "checking session" do
-      it "creates a new in progress session" do
-
-      end
-    end
-
     context "checking a single question" do
       let(:single_choice_question) do
         create(:single_choice_question, answers_count: 4, quiz: quiz)
