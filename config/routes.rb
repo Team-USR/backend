@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  post 'user_token' => 'user_token#create'
+  mount_devise_token_auth_for 'User', at: 'users'
   get 'test' => 'test_secured#test'
   resources :quizzes, only: [:show, :index, :create, :update, :edit] do
     member do
@@ -10,7 +10,6 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users, only: [:create]
   resources :groups, only: [:show, :index, :create] do
     member do
       post 'add', to: :add

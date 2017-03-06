@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::API
+  include DeviseTokenAuth::Concerns::SetUserByToken
   class InvalidParameter < StandardError; end
   include ActionController::Serialization
-  include Knock::Authenticable
   include CanCan::ControllerAdditions
   ActionController::Parameters.permit_all_parameters = true
 
@@ -67,11 +67,11 @@ class ApplicationController < ActionController::API
     )
   end
 
-  def unauthorized_entity(_)
-    render_error(
-      status: :unauthorized,
-      code: "unable_to_authenticate",
-      detail: "Unable to authenticate user with provided JWT token"
-    )
+  private
+
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:sign_up, keys: [:name])
   end
 end
