@@ -72,6 +72,7 @@ class QuizzesController < ApplicationController
       end
     end
     @quiz_session.metadata = params[:questions]
+    @quiz_session.session = "submitted"
     @quiz_session.save
     render json: result
   end
