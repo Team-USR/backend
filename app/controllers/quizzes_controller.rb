@@ -6,7 +6,13 @@ class QuizzesController < ApplicationController
   end
 
   def show
-    render json: Quiz.find(params.require(:id)), serializer: QuizSerializer
+    @quiz = Quiz.find(params.require(:id))
+    @user = User.first
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    render json: {
+      quiz: QuizSerializer.new(@quiz),
+      quiz_session: @quiz_session
+    }
   end
 
   def mine
@@ -17,13 +23,6 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
     render json: @quiz, serializer: QuizEditSerializer
-    @quiz = Quiz.find(params.require(:id))
-    @user = User.first
-    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
-    render json: {
-      quiz: QuizSerializer.new(@quiz),
-      quiz_session: @quiz_session
-    }
   end
 
   def create
