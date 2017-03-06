@@ -237,9 +237,9 @@ RSpec.describe QuizzesController, type: :controller do
     end
   end
 
-  # We are not testing that #check works on the model as we have unit tests
+  # We are not testing that #submit works on the model as we have unit tests
   # for that. We are only testing if the correct response is outputted
-  describe "GET #check" do
+  describe "POST #submit" do
     let(:quiz) { create(:quiz) }
     let(:params) do
       {
