@@ -50,7 +50,7 @@ class QuizzesController < ApplicationController
   def submit
     @quiz = Quiz.find(params[:id])
     @user = User.first
-    @quiz_session = QuizSession.find(user: @user, quiz: @quiz, session: "in_progress")
+    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
     result = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
@@ -66,7 +66,7 @@ class QuizzesController < ApplicationController
       end
     end
     @quiz_session.metadata = params[:questions]
-    @quiz_session.session = "submitted"
+    @quiz_session.state = "submitted"
     @quiz_session.save
     render json: result
   end
