@@ -5,10 +5,11 @@ Rails.application.routes.draw do
     member do
       post 'check', to: :check
       post 'save', to: :save
+      post 'submit', to: :submit
     end
     collection do
       get 'mine'
-      post 'submit', to: :submit
+      # post 'submit', to: :submit
       # post 'save', to: :save
     end
   end
