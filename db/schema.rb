@@ -86,17 +86,6 @@ ActiveRecord::Schema.define(version: 20170302184718) do
     t.index ["quiz_id"], name: "index_questions_on_quiz_id", using: :btree
   end
 
-  create_table "quiz_sessions", force: :cascade do |t|
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "user_id"
-    t.integer  "quiz_id"
-    t.string   "state",      default: "in_progress", null: false
-    t.jsonb    "metadata"
-    t.index ["quiz_id"], name: "index_quiz_sessions_on_quiz_id", using: :btree
-    t.index ["user_id"], name: "index_quiz_sessions_on_user_id", using: :btree
-  end
-
   create_table "quizzes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
