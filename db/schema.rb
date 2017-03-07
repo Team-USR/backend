@@ -47,6 +47,11 @@ ActiveRecord::Schema.define(version: 20170304184406) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "groups_quizzes", id: false, force: :cascade do |t|
+    t.integer "quiz_id",  null: false
+    t.integer "group_id", null: false
+  end
+
   create_table "groups_users", id: false, force: :cascade do |t|
     t.integer "user_id",  null: false
     t.integer "group_id", null: false
@@ -57,7 +62,6 @@ ActiveRecord::Schema.define(version: 20170304184406) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "gap_id"
-    t.index ["gap_id"], name: "index_hints_on_gap_type_and_gap_id", using: :btree
   end
 
   create_table "pairs", force: :cascade do |t|
@@ -79,12 +83,6 @@ ActiveRecord::Schema.define(version: 20170304184406) do
     t.integer  "quiz_id"
     t.string   "type"
     t.index ["quiz_id"], name: "index_questions_on_quiz_id", using: :btree
-  end
-
-  create_table "quiz_sessions", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.jsonb    "session"
   end
 
   create_table "quizzes", force: :cascade do |t|

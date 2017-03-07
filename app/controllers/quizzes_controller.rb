@@ -60,6 +60,14 @@ class QuizzesController < ApplicationController
     render json: result
   end
 
+  def for_groups
+    @groups = params[:groups].map { |id| Group.find(id) }.uniq
+    @quiz = Quiz.find(params[:id])
+    @quiz.groups = @groups
+    @quiz.save!
+    head :created
+  end
+
   private
 
   def transform_question_type

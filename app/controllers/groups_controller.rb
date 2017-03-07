@@ -56,4 +56,9 @@ class GroupsController < ApplicationController
       render json: { "success": true }
     end
   end
+
+  def quizzes
+    @group_quiz = Group.find(params[:id])
+    render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
+  end
 end

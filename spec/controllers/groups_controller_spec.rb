@@ -52,4 +52,48 @@ RSpec.describe GroupsController, type: :controller do
       expect(user.groups.count).to eq(0)
     end
   end
+
+  describe "QUIZZES #quizzes" do
+    let(:group) { create(:group) }
+    let(:quiz) { create(:quiz) }
+    let(:groups_quiz) { create(:groups_quiz) }
+
+    before do
+      group.quizzes << quiz
+    end
+
+    let(:params) do
+      {
+        id: group.id
+      }
+    end
+
+    context "shows the quizzes of the group" do
+      it "as expected" do
+        get :quizzes, params: params, as: :json
+
+        expect(JSON.parse(response.body)).to eq(
+          [
+            {
+              "id" => quiz.id,
+              "title" => quiz.title
+            }
+          ]
+        )
+      end
+    end
+
+    context "return an empty array if group" do
+      it "has no quizzes" do
+        group.quizzes.delete(group.quizzes.last)
+        get :quizzes, params: params, as: :json
+
+        expect(JSON.parse(response.body)).to eq(
+          [
+
+          ]
+        )
+      end
+    end
+  end
 end
