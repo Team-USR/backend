@@ -395,7 +395,7 @@ RSpec.describe QuizzesController, type: :controller do
           expect(group_1.quizzes.count).to eq(1)
           expect(group_2.quizzes.count).to eq(1)
 
-          expect(response.status).to eq(200)
+          expect(response.status).to eq(201)
       end
     end
 
@@ -411,7 +411,7 @@ RSpec.describe QuizzesController, type: :controller do
         expect do
           post :for_groups, params: params, as: :json
         end.to change { GroupsQuiz.count }.by(1)
-        expect(response.status).to eq(200)
+        expect(response.status).to eq(201)
       end
     end
 

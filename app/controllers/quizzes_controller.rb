@@ -61,10 +61,11 @@ class QuizzesController < ApplicationController
   end
 
   def for_groups
-    @groups = params[:groups].map { |id| Group.find(id: id) }.uniq
-    @guiz = Quiz.find(params[:id])
+    @groups = params[:groups].map { |id| Group.find(id) }.uniq
+    @quiz = Quiz.find(params[:id])
     @quiz.groups = @groups
     @quiz.save!
+    head :created
   end
 
   private
