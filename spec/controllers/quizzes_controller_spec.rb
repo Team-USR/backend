@@ -384,12 +384,8 @@ RSpec.describe QuizzesController, type: :controller do
 
       let(:groups_params) do
         [
-          {
-            group_name: group_1.name
-          },
-          {
-            group_name: group_2.name
-          }
+          group_1.id,
+          group_2.id
         ]
       end
       it "returns the correct result" do
@@ -399,18 +395,7 @@ RSpec.describe QuizzesController, type: :controller do
           expect(group_1.quizzes.count).to eq(1)
           expect(group_2.quizzes.count).to eq(1)
 
-          expect(JSON.parse(response.body)).to eq(
-            [
-              {
-                "quiz_id" => quiz.id,
-                "group_id" => group_1.id
-              },
-              {
-                "quiz_id" => quiz.id,
-                "group_id" => group_2.id
-              }
-            ]
-          )
+          expect(response.status).to eq(200)
       end
     end
 
@@ -418,51 +403,28 @@ RSpec.describe QuizzesController, type: :controller do
       let(:group_1) { create(:group) }
       let(:groups_params) do
         [
-          {
-            group_name: group_1.name
-          },
-          {
-            group_name: group_1.name
-          }
+          group_1.id,
+          group_1.id
         ]
       end
       it "prints the correct error" do
-        post :for_groups, params: params, as: :json
-
-        expect(JSON.parse(response.body)).to eq(
-          {
-            "errors" => [
-              {
-                "code" => "validation_error",
-                "detail" => "Quiz has already been taken"
-              }
-            ]
-          }
-        )
+        expect do
+          post :for_groups, params: params, as: :json
+        end.to change { GroupsQuiz.count }.by(1)
+        expect(response.status).to eq(200)
       end
     end
 
     context "assigns a quiz to a non-existing group" do
       let(:groups_params) do
         [
-          {
-            group_name: "non-existing group"
-          }
+          -1
         ]
       end
       it "prints the correct error" do
         post :for_groups, params: params, as: :json
 
-        expect(JSON.parse(response.body)).to eq(
-          {
-              "errors" => [
-              {
-                "code" => "not_found",
-                "detail" => "Couldn't find group non-existing group"
-              }
-            ]
-          }
-        )
+        expect(response.status).to eq(404)
       end
     end
   end

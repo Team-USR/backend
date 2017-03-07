@@ -61,32 +61,10 @@ class QuizzesController < ApplicationController
   end
 
   def for_groups
-    result = []
-    rendered = false
-    params[:groups].each do |group_param|
-        @group = Group.find_by(name: group_param[:group_name])
-        if @group.nil?
-          render_error(
-            status: :not_found,
-            code: "not_found",
-            detail: "Couldn't find group #{group_param[:group_name]}"
-          )
-          rendered = true
-          break
-        else
-          @groups_quiz = GroupsQuiz.new(group_id: @group.id, quiz_id: params[:id])
-          if @groups_quiz.save
-            result << @groups_quiz
-          else
-            render_activemodel_validations(@groups_quiz.errors)
-            rendered = true
-            break
-          end
-        end
-    end
-    if rendered == false
-      render json: result
-    end
+    @groups = params[:groups].map { |id| Group.find(id: id) }.uniq
+    @guiz = Quiz.find(params[:id])
+    @quiz.groups = @groups
+    @quiz.save!
   end
 
   private
