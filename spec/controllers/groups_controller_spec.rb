@@ -75,24 +75,22 @@ RSpec.describe GroupsController, type: :controller do
         expect(JSON.parse(response.body)).to eq(
           [
             {
-              "quiz_id" => quiz.id,
-              "quiz_title" => quiz.title
+              "id" => quiz.id,
+              "title" => quiz.title
             }
           ]
         )
       end
     end
 
-    context "prints a message if group" do
+    context "return an empty array if group" do
       it "has no quizzes" do
         group.quizzes.delete(group.quizzes.last)
         get :quizzes, params: params, as: :json
 
         expect(JSON.parse(response.body)).to eq(
           [
-            {
-              "quizz" => "No quizzes available for this group"
-            }
+
           ]
         )
       end

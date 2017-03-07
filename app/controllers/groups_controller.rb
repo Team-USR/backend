@@ -58,20 +58,12 @@ class GroupsController < ApplicationController
   end
 
   def quizzes
-    elements = []
-    @group_quiz = GroupsQuiz.where(group_id: params[:id])
-    if @group_quiz.count.zero?
-      elements << {
-        quizz: "No quizzes available for this group"
-      }
+    @group_quiz = Group.find_by_id(params[:id])
+    if @group_quiz.nil?
+      render json: []
     else
-      @group_quiz.each do |group_quiz_entry|
-        elements << {
-          quiz_id: group_quiz_entry.quiz_id,
-          quiz_title: Quiz.find_by(id: group_quiz_entry.quiz_id).title
-        }
-      end
+      render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
     end
-    render json: elements
+
   end
 end

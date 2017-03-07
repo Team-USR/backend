@@ -6,10 +6,4 @@ class QuizSerializer < ActiveModel::Serializer
     object.user.email
   end
 
-  # def groups
-  #   result = []
-  #   @options[:groups_attributes].each do |group_param|
-  #     result << Group.find_by(id: group_param[:id])
-  #   end
-  # end
 end
