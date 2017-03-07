@@ -64,6 +64,5 @@ class GroupsController < ApplicationController
     else
       render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
     end
-
   end
 end

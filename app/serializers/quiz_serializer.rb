@@ -5,5 +5,4 @@ class QuizSerializer < ActiveModel::Serializer
   def creator
     object.user.email
   end
-
 end
