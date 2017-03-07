@@ -8,7 +8,7 @@ FactoryGirl.define do
   factory :user do
     name Faker::Name.name
     sequence(:email){ |n| "user#{n}@factory.com" }
-    password Faker::Lorem.word
+    password "verysecure"
     trait :student do
       after(:create) do |user|
         user.roles << create(:role, name: "Student")
