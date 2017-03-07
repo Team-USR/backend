@@ -58,11 +58,7 @@ class GroupsController < ApplicationController
   end
 
   def quizzes
-    @group_quiz = Group.find_by_id(params[:id])
-    if @group_quiz.nil?
-      render json: []
-    else
-      render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
-    end
+    @group_quiz = Group.find(params[:id])
+    render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
   end
 end

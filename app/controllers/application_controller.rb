@@ -20,6 +20,11 @@ class ApplicationController < ActionController::API
     with: :rescue_from_unauthorised_cancan_access
   )
 
+  rescue_from(
+    ActiveRecord::RecordNotFound,
+    with: :rescue_from_record_not_found
+  )
+
   def rescue_from_param_missing(error)
     render_error(
       status: :bad_request,
@@ -40,6 +45,14 @@ class ApplicationController < ActionController::API
     render_error(
       status: :unauthorized,
       code: "access_denied",
+      detail: error.message
+    )
+  end
+
+  def rescue_from_record_not_found(error)
+    render_error(
+      status: :not_found,
+      code: "not_found",
       detail: error.message
     )
   end
