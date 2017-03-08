@@ -19,5 +19,14 @@ Rails.application.routes.draw do
       get 'quizzes', to: :quizzes
     end
   end
+
   resources :users, only: [:create, :update]
+
+  namespace :users do
+   resources :mine, only: [:none], controller: "mine" do
+     collection do
+       get 'groups', to: 'groups'
+     end
+   end
+ end
 end
