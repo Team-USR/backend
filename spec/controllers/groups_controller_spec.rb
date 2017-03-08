@@ -97,4 +97,24 @@ RSpec.describe GroupsController, type: :controller do
       end
     end
   end
+
+  describe "#quizzes_update" do
+    let(:group) { create(:group) }
+    let(:quiz1) { create(:quiz) }
+    let(:quiz2) { create(:quiz) }
+    let(:quiz3) { create(:quiz) }
+
+    before do
+      group.quizzes << quiz3
+    end
+
+    it "overrides and updates the quizzes for the group" do
+      post :quizzes_update, params: {
+        id: group.id,
+        quizzes: [quiz1.id, quiz2.id]
+      }
+
+      expect(group.reload.quizzes).to eq([quiz1, quiz2])
+    end
+  end
 end
