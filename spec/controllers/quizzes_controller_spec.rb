@@ -240,10 +240,10 @@ RSpec.describe QuizzesController, type: :controller do
   # for that. We are only testing if the correct response is outputted
   describe "POST #submit" do
     let(:user) { create(:user) }
-    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
     let!(:session) { create(:quiz_session, quiz: quiz, user: user) }
+
     before do
-      request.headers["Authorization"] = "Bearer #{token}"
+      authenticate_user user
     end
     let(:quiz) { create(:quiz) }
     let(:params) do
@@ -506,15 +506,6 @@ RSpec.describe QuizzesController, type: :controller do
 
         expect(response.status).to eq(404)
       end
-
-      expect { post :update, params: params, as: :json }
-        .to change { quiz.reload.title }.from("123").to("231")
-        .and change { quiz.questions.count }.from(4).to(2)
-        .and change { Questions::Match.count }.by(1)
-        .and change { Questions::SingleChoice.count }.by(-1)
-        .and change { Questions::MultipleChoice.count }.from(1).to(0)
-        .and change { Answer.count }.by(- 5 - 4 + 2)
-        .and change { Questions::Mix.count }.by(-1)
     end
   end
 
@@ -522,10 +513,9 @@ RSpec.describe QuizzesController, type: :controller do
     let(:user) { create(:user) }
     let(:quiz) { create(:quiz, user: user) }
     let(:params) { { id: quiz.id } }
-    let(:token) { Knock::AuthToken.new(payload: { sub: user.id }).token }
 
     before do
-      request.headers["Authorization"] = "Bearer #{token}"
+      authenticate_user user
     end
 
     context "without an existing session" do
