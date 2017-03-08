@@ -88,9 +88,9 @@ ActiveRecord::Schema.define(version: 20170308195426) do
   end
 
   create_table "quizzes", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "title",                      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "title",      null: false
     t.integer  "user_id"
     t.boolean  "published",  default: false, null: false
     t.index ["user_id"], name: "index_quizzes_on_user_id", using: :btree
