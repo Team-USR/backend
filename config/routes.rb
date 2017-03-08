@@ -28,5 +28,5 @@ Rails.application.routes.draw do
        get 'groups', to: 'groups'
      end
    end
- end
+  end
 end
