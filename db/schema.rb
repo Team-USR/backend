@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308190829) do
+ActiveRecord::Schema.define(version: 20170304184406) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,8 +45,6 @@ ActiveRecord::Schema.define(version: 20170308190829) do
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "user_id"
-    t.index ["user_id"], name: "index_groups_on_user_id", using: :btree
   end
 
   create_table "groups_quizzes", id: false, force: :cascade do |t|
@@ -88,11 +86,10 @@ ActiveRecord::Schema.define(version: 20170308190829) do
   end
 
   create_table "quizzes", force: :cascade do |t|
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
-    t.string   "title",                      null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "title",      null: false
     t.integer  "user_id"
-    t.boolean  "published",  default: false
     t.index ["user_id"], name: "index_quizzes_on_user_id", using: :btree
   end
 
@@ -136,5 +133,4 @@ ActiveRecord::Schema.define(version: 20170308190829) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
-  add_foreign_key "groups", "users"
 end
