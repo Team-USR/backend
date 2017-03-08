@@ -17,11 +17,7 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
     if @quiz.published == true
-      render_error(
-        status: :forbidden,
-        code: 403,
-        detail: "Quiz is already published so it cannot be edited/updated"
-      )
+      head :method_not_allowed
     else
       render json: @quiz, serializer: QuizEditSerializer
     end
@@ -43,7 +39,9 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params[:id])
     authorize! :manage, @quiz
     transform_question_type
-    if @quiz.update_attributes(quiz_params)
+    if @quiz.published == true
+      head :method_not_allowed
+    elsif @quiz.update_attributes(quiz_params)
       render json: @quiz
     else
       render json: @quiz.errors, status: :unprocessable_entity
@@ -81,7 +79,7 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params[:id])
     @quiz.published = true
     @quiz.save!
-    head :created
+    head :ok
   end
 
   private
