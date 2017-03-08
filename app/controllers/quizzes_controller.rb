@@ -16,7 +16,11 @@ class QuizzesController < ApplicationController
   def edit
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
-    render json: @quiz, serializer: QuizEditSerializer
+    if @quiz.published == true
+      head :method_not_allowed
+    else
+      render json: @quiz, serializer: QuizEditSerializer
+    end
   end
 
   def create
@@ -34,7 +38,9 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params[:id])
     authorize! :manage, @quiz
     transform_question_type
-    if @quiz.update_attributes(quiz_params)
+    if @quiz.published == true
+      head :method_not_allowed
+    elsif @quiz.update_attributes(quiz_params)
       render json: @quiz
     else
       render json: @quiz.errors, status: :unprocessable_entity
@@ -66,6 +72,13 @@ class QuizzesController < ApplicationController
     @quiz.groups = @groups
     @quiz.save!
     head :created
+  end
+
+  def publish
+    @quiz = Quiz.find(params[:id])
+    @quiz.published = true
+    @quiz.save!
+    head :ok
   end
 
   private

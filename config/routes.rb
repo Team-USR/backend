@@ -6,6 +6,7 @@ Rails.application.routes.draw do
       post 'check', to: :check
       post 'save', to: :save
       post 'for_groups', to: :for_groups
+      post 'publish', to: :publish
     end
     collection do
       get 'mine'

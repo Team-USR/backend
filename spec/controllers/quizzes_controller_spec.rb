@@ -304,6 +304,48 @@ RSpec.describe QuizzesController, type: :controller do
     end
   end
 
+  describe "#edit" do
+   let(:user) { create(:user) }
+
+   before do
+     authenticate_user user
+   end
+
+   context "with a published quiz" do
+     let(:quiz) { create(:quiz, user: user, published: true) }
+
+     it "returns status 405" do
+       get :edit, params: { id: quiz.id }
+       expect(response.status).to eq(405)
+     end
+   end
+
+   context "with a unpublished quiz" do
+     let(:quiz) { create(:quiz, user: user, published: false) }
+
+     it "returns status 200" do
+       get :edit, params: { id: quiz.id }
+       expect(response.status).to eq(200)
+     end
+   end
+  end
+
+  describe "#publish" do
+    let(:user) { create(:user) }
+    let(:quiz) { create(:quiz, user: user) }
+
+    before do
+      authenticate_user user
+    end
+
+    it "publishes the quiz" do
+      expect { post :publish, params: { id: quiz.id } }
+        .to change { quiz.reload.published }.to(true)
+
+      expect(response.status).to eq(200)
+    end
+  end
+
   describe "#mine" do
     let!(:user1) { create(:user) }
     let!(:quiz1) { create(:quiz, user: user1) }
@@ -347,26 +389,45 @@ RSpec.describe QuizzesController, type: :controller do
       authenticate_user user
     end
 
-    it "updates the quiz" do
-      params = {
-        id: quiz.id,
-        quiz: {
-          title: "231",
-          questions_attributes: [
-            single_choice_params,
-            match_params
-          ]
+    context "quiz not published yet" do
+      it "updates the quiz" do
+        params = {
+          id: quiz.id,
+          quiz: {
+            title: "231",
+            questions_attributes: [
+              single_choice_params,
+              match_params
+            ]
+          }
         }
-      }
 
-      expect { post :update, params: params, as: :json }
-        .to change { quiz.reload.title }.from("123").to("231")
-        .and change { quiz.questions.count }.from(4).to(2)
-        .and change { Questions::Match.count }.by(1)
-        .and change { Questions::SingleChoice.count }.by(-1)
-        .and change { Questions::MultipleChoice.count }.from(1).to(0)
-        .and change { Answer.count }.by(- 5 - 4 + 2)
-        .and change { Questions::Mix.count }.by(-1)
+        expect { patch :update, params: params, as: :json }
+          .to change { quiz.reload.title }.from("123").to("231")
+          .and change { quiz.questions.count }.from(4).to(2)
+          .and change { Questions::Match.count }.by(1)
+          .and change { Questions::SingleChoice.count }.by(-1)
+          .and change { Questions::MultipleChoice.count }.from(1).to(0)
+          .and change { Answer.count }.by(- 5 - 4 + 2)
+          .and change { Questions::Mix.count }.by(-1)
+      end
+    end
+
+    context "quiz published" do
+      let(:quiz1) { create(:quiz, title: "123", user: user, published: true) }
+      it "return 405" do
+        params = {
+          id: quiz1.id,
+          quiz: {
+            title: "231",
+            questions_attributes: [
+            ]
+          }
+        }
+
+        patch :update, params: params, as: :json
+        expect(response.status).to eq(405)
+      end
     end
   end
 
