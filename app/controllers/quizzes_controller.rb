@@ -92,8 +92,7 @@ class QuizzesController < ApplicationController
 
   def save
     @quiz = Quiz.find(params[:id])
-    @user = User.first
-    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
     if @quiz_session.metadata.nil?
       @quiz_session.metadata = {}
     end
