@@ -7,8 +7,7 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    @user = User.first
-    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
     render json: {
       quiz: QuizSerializer.new(@quiz),
       quiz_session: @quiz_session
@@ -27,7 +26,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
-    @quiz = Quiz.new(quiz_params.merge(user_id: 1))
+    @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
 
     if @quiz.save
       render json: @quiz
