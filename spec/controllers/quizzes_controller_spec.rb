@@ -304,6 +304,51 @@ RSpec.describe QuizzesController, type: :controller do
     end
   end
 
+  describe "#edit" do
+    let(:user) { create(:user) }
+
+    let(:quiz) { create(:quiz, title: "123", user: user) }
+
+    let(:params) do
+      {
+      "id": quiz.id
+      }
+    end
+
+    before do
+      quiz.questions << create(:single_choice_question, answers_count: 4)
+      quiz.questions << create(:single_choice_question, answers_count: 3)
+      quiz.questions << create(:multiple_choice_question, answers_count: 5)
+      authenticate_user user
+    end
+
+    context "quiz hasn't been published yet so" do
+      it "returns the quiz" do
+        get :edit, params: params, as: :json
+        expect(response.status).to eq(200)
+      end
+    end
+
+    context "quiz has been published so" do
+      it "returns an error" do
+        quiz.published = true
+        get :edit, params: params, as: :json
+        expect(JSON.parse(response.body)).to eq(
+          [
+            {
+              "errors" => [
+                {
+                  "code" => 403,
+                  "detail" => "Quiz is already published so it cannot be edited/updated"
+                }
+              ]
+            }
+          ]
+        )
+      end
+    end
+  end
+
   describe "#mine" do
     let!(:user1) { create(:user) }
     let!(:quiz1) { create(:quiz, user: user1) }
@@ -359,7 +404,7 @@ RSpec.describe QuizzesController, type: :controller do
         }
       }
 
-      expect { post :update, params: params, as: :json }
+      expect { patch :update, params: params, as: :json }
         .to change { quiz.reload.title }.from("123").to("231")
         .and change { quiz.questions.count }.from(4).to(2)
         .and change { Questions::Match.count }.by(1)

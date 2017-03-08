@@ -16,11 +16,20 @@ class QuizzesController < ApplicationController
   def edit
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
-    render json: @quiz, serializer: QuizEditSerializer
+    if @quiz.published == true
+      render_error(
+        status: :forbidden,
+        code: 403,
+        detail: "Quiz is already published so it cannot be edited/updated"
+      )
+    else
+      render json: @quiz, serializer: QuizEditSerializer
+    end
   end
 
   def create
     transform_question_type
+    #@quiz = Quiz.new(quiz_params.merge(user_id: 1))
     @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
 
     if @quiz.save
@@ -64,6 +73,13 @@ class QuizzesController < ApplicationController
     @groups = params[:groups].map { |id| Group.find(id) }.uniq
     @quiz = Quiz.find(params[:id])
     @quiz.groups = @groups
+    @quiz.save!
+    head :created
+  end
+
+  def publish
+    @quiz = Quiz.find(params[:id])
+    @quiz.published = true
     @quiz.save!
     head :created
   end
