@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :mine, :update, :edit, :submit]
+  before_action :authenticate_user!, only: [:show, :create, :mine, :update, :edit, :submit]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
@@ -10,7 +10,7 @@ class QuizzesController < ApplicationController
     @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
     render json: {
       quiz: QuizSerializer.new(@quiz),
-      quiz_session: @quiz_session
+      quiz_session: QuizSessionSerializer.new(@quiz_session)
     }
   end
 
@@ -54,8 +54,7 @@ class QuizzesController < ApplicationController
 
   def submit
     @quiz = Quiz.find(params[:id])
-    @user = User.first
-    @quiz_session = QuizSession.find_or_create_by(user: @user, quiz: @quiz, state: "in_progress")
+    @quiz_session = QuizSession.find_by!(user: current_user, quiz: @quiz, state: "in_progress")
     result = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
