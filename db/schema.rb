@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20170308205219) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "gap_id"
+    t.index ["gap_id"], name: "index_hints_on_gap_type_and_gap_id", using: :btree
   end
 
   create_table "pairs", force: :cascade do |t|
