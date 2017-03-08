@@ -3,6 +3,5 @@ class Users::MineController < ApplicationController
 
   def groups
     render json: Group.where(user_id: current_user.id)
-    #render json: Group.where(user_id: 1)
   end
 end

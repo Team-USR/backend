@@ -22,7 +22,7 @@ RSpec.describe Users::MineController, type: :controller do
           {
             "id" => group2.id,
             "name" => group2.name,
-            "creator" =>user.email
+            "creator" => user.email
           }
         ]
       )
