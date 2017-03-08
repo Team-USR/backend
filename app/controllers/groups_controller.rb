@@ -1,5 +1,5 @@
 class GroupsController < ApplicationController
-  #before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, only: [:create]
   def index
     render json: Group.all
   end
@@ -9,8 +9,7 @@ class GroupsController < ApplicationController
   end
 
   def create
-    #@group = Group.new(params[:group].merge(user_id: current_user.id))
-    @group = Group.new(params[:group].merge(user_id: 1))
+    @group = Group.new(params[:group].merge(user_id: current_user.id))
     if @group.save
       render json: @group, status: :created
     else
