@@ -328,7 +328,7 @@ RSpec.describe QuizzesController, type: :controller do
        expect(response.status).to eq(200)
      end
    end
- end
+  end
 
   describe "#publish" do
     let(:user) { create(:user) }
