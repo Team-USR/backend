@@ -61,4 +61,11 @@ class GroupsController < ApplicationController
     @group_quiz = Group.find(params[:id])
     render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
   end
+
+  def quizzes_update
+    @group = Group.find(params[:id])
+    @quizzes = params[:quizzes].map { |id| Quiz.find(id) }.uniq
+    @group.update!(quizzes: @quizzes)
+    head :ok
+  end
 end

@@ -18,6 +18,7 @@ Rails.application.routes.draw do
       post 'add', to: :add
       delete 'delete', to: :delete
       get 'quizzes', to: :quizzes
+      post 'quizzes_update'
     end
   end
   resources :users, only: [:create, :update]
