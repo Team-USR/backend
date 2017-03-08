@@ -1,5 +1,5 @@
 class QuizEditSerializer < ActiveModel::Serializer
-  attributes :id, :title
+  attributes :id, :title, :published
   has_many :questions
 
   class Questions::SingleChoiceSerializer < ActiveModel::Serializer

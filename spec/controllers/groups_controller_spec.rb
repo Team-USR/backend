@@ -76,7 +76,8 @@ RSpec.describe GroupsController, type: :controller do
           [
             {
               "id" => quiz.id,
-              "title" => quiz.title
+              "title" => quiz.title,
+              "published" => false
             }
           ]
         )
