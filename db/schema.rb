@@ -45,6 +45,8 @@ ActiveRecord::Schema.define(version: 20170308195426) do
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer  "user_id"
+    t.index ["user_id"], name: "index_groups_on_user_id", using: :btree
   end
 
   create_table "groups_quizzes", id: false, force: :cascade do |t|
@@ -134,4 +136,5 @@ ActiveRecord::Schema.define(version: 20170308195426) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
+  add_foreign_key "groups", "users"
 end
