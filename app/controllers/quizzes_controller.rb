@@ -1,12 +1,17 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user!, only: [:create, :mine, :update, :edit]
+  before_action :authenticate_user!, only: [:show, :create, :mine, :update, :edit, :submit]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
   end
 
   def show
-    render json: Quiz.find(params.require(:id)), serializer: QuizSerializer
+    @quiz = Quiz.find(params.require(:id))
+    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
+    render json: {
+      quiz: QuizSerializer.new(@quiz),
+      quiz_session: QuizSessionSerializer.new(@quiz_session)
+    }
   end
 
   def mine
@@ -47,8 +52,9 @@ class QuizzesController < ApplicationController
     end
   end
 
-  def check
+  def submit
     @quiz = Quiz.find(params[:id])
+    @quiz_session = QuizSession.find_by!(user: current_user, quiz: @quiz, state: "in_progress")
     result = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
@@ -63,6 +69,9 @@ class QuizzesController < ApplicationController
         }.merge(question.check(question_param))
       end
     end
+    @quiz_session.metadata = params[:questions]
+    @quiz_session.state = "submitted"
+    @quiz_session.save
     render json: result
   end
 
@@ -79,6 +88,29 @@ class QuizzesController < ApplicationController
     @quiz.published = true
     @quiz.save!
     head :ok
+  end
+
+  def save
+    @quiz = Quiz.find(params[:id])
+    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.metadata.nil?
+      @quiz_session.metadata = {}
+    end
+    params[:questions].each do |question_param|
+      question = @quiz.questions.find(question_param[:id])
+
+      if question.nil?
+        raise InvalidParameter.new("No question with #{question_param[:id]} for quiz with id #{@quiz.id}")
+      end
+
+      if !question.save_format_correct?(question_param)
+        raise InvalidParameter.new("Wrong parameters sent for question with id #{question_param[:id]}")
+      end
+
+      @quiz_session.metadata[question_param[:id]] = question_param.except(:id)
+    end
+    @quiz_session.save
+    render json: @quiz_session
   end
 
   private

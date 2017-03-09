@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308195426) do
+ActiveRecord::Schema.define(version: 20170308205219) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 20170308195426) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "gap_id"
+    t.index ["gap_id"], name: "index_hints_on_gap_type_and_gap_id", using: :btree
   end
 
   create_table "pairs", force: :cascade do |t|
@@ -83,6 +84,17 @@ ActiveRecord::Schema.define(version: 20170308195426) do
     t.integer  "quiz_id"
     t.string   "type"
     t.index ["quiz_id"], name: "index_questions_on_quiz_id", using: :btree
+  end
+
+  create_table "quiz_sessions", force: :cascade do |t|
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.integer  "user_id"
+    t.integer  "quiz_id"
+    t.string   "state",      default: "in_progress", null: false
+    t.jsonb    "metadata"
+    t.index ["quiz_id"], name: "index_quiz_sessions_on_quiz_id", using: :btree
+    t.index ["user_id"], name: "index_quiz_sessions_on_user_id", using: :btree
   end
 
   create_table "quizzes", force: :cascade do |t|

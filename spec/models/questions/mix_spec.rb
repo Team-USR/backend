@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Questions::Mix, type: :model do
-  subject { FactoryGirl.create(:mix_question, sentence_count: 6) }
+  subject { create(:mix_question, sentence_count: 6) }
 
   describe "factory" do
     context "with sentence_count = 4" do
@@ -62,6 +62,38 @@ RSpec.describe Questions::Mix, type: :model do
       create(:sentence, text: "hello false", is_main: true, question: subject)
 
       expect(subject.reload.valid?).to eq(false)
+    end
+  end
+
+  describe "#save_format_correct?" do
+    subject { create(:mix_question, sentence_count: 6) }
+
+    it "returns true if the hash sent has correct key answer" do
+      hash = {
+        answer: [subject.words.first, subject.words.last]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(true)
+    end
+
+    it "return false if the hash sent has words that do not belong to the sentence" do
+      hash = {
+        answer: [subject.words.first, subject.words.last, "ponta"]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "return false if the hash sent doesn't have key answer" do
+      hash = {}
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "return false if the hash sent doesn't have key answer as an array" do
+      hash = { answer: "hello" }
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
     end
   end
 end

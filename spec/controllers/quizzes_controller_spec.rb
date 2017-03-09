@@ -236,9 +236,15 @@ RSpec.describe QuizzesController, type: :controller do
     end
   end
 
-  # We are not testing that #check works on the model as we have unit tests
+  # We are not testing that #submit works on the model as we have unit tests
   # for that. We are only testing if the correct response is outputted
-  describe "GET #check" do
+  describe "POST #submit" do
+    let(:user) { create(:user) }
+    let!(:session) { create(:quiz_session, quiz: quiz, user: user) }
+
+    before do
+      authenticate_user user
+    end
     let(:quiz) { create(:quiz) }
     let(:params) do
       {
@@ -265,8 +271,21 @@ RSpec.describe QuizzesController, type: :controller do
       context "with a wrong answer id" do
         let(:answer_id) { incorrect_answer.id }
 
+        it "updates the quiz session state" do
+          expect { post :submit, params: params, as: :json }
+            .to change { session.reload.state }.to("submitted")
+        end
+
+        it "updates the quiz session metadata" do
+          post :submit, params: params, as: :json
+          expect(session.reload.metadata).to eq([{
+            "id" => single_choice_question.id,
+            "answer_id" => answer_id
+          }])
+        end
+
         it "returns the correct response" do
-          post :check, params: params, as: :json
+          post :submit, params: params, as: :json
 
           expect(JSON.parse(response.body)).to eq(
             [
@@ -290,7 +309,7 @@ RSpec.describe QuizzesController, type: :controller do
       end
 
       it "returns the correct response" do
-        post :check, params: params, as: :json
+        post :submit, params: params, as: :json
 
         expect(JSON.parse(response.body)).to eq(
           [
@@ -486,6 +505,69 @@ RSpec.describe QuizzesController, type: :controller do
         post :for_groups, params: params, as: :json
 
         expect(response.status).to eq(404)
+      end
+    end
+  end
+
+  describe "GET #show" do
+    let(:user) { create(:user) }
+    let(:quiz) { create(:quiz, user: user) }
+    let(:params) { { id: quiz.id } }
+
+    before do
+      authenticate_user user
+    end
+
+    context "without an existing session" do
+      it "creates a new session" do
+        expect { get :show, params: params, as: :json }
+          .to change { QuizSession.count }.by(1)
+      end
+
+      it "returns an empty session" do
+        get :show, params: params, as: :json
+        expect(JSON.parse(response.body)["quiz_session"]).to eq(
+          {
+            "state" => "in_progress",
+            "metadata" => nil
+          }
+        )
+      end
+    end
+
+    context "with an existing session" do
+      let!(:session) { create(:quiz_session, quiz: quiz, user: user, metadata: { "id": 1, "answer_id": 1 }) }
+
+      it "doesn't create a session" do
+        expect { get :show, params: params, as: :json }
+          .to change { QuizSession.count }.by(0)
+      end
+
+      it "returns the session" do
+        get :show, params: params, as: :json
+        expect(JSON.parse(response.body)["quiz_session"]["metadata"]).to eq(
+          {
+            "id" => 1,
+            "answer_id" => 1
+          }
+        )
+      end
+    end
+
+    context "with an existing session submitted" do
+      it "creates a new session" do
+        expect { get :show, params: params, as: :json }
+          .to change { QuizSession.count }.by(1)
+      end
+
+      it "returns an empty session" do
+        get :show, params: params, as: :json
+        expect(JSON.parse(response.body)["quiz_session"]).to eq(
+          {
+            "state" => "in_progress",
+            "metadata" => nil
+          }
+        )
       end
     end
   end

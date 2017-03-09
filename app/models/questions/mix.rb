@@ -10,6 +10,11 @@ class Questions::Mix < Question
     sentences.first.text.split(" ").shuffle
   end
 
+  def save_format_correct?(save_params)
+    save_params[:answer].is_a?(Array) &&
+      (save_params[:answer] - words).empty?
+  end
+
   def check(question_params)
     if words.sort != question_params[:answer].sort
       {

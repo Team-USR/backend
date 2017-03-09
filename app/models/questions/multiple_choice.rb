@@ -10,6 +10,12 @@ class Questions::MultipleChoice < Question
     answers.where(is_correct: true)
   end
 
+  def save_format_correct?(save_params)
+    return false if !save_params[:answer_ids].is_a?(Array)
+    save_params[:answer_ids]
+      .all? { |answer_id| Answer.find_by(id: answer_id, question_id: id).present? }
+  end
+
   def check(question_params)
     answers_submitted = question_params[:answer_ids]
       .map { |answer_id| Answer.find_by(id: answer_id, question_id: id) }

@@ -60,4 +60,23 @@ RSpec.describe Questions::SingleChoice, type: :model do
       expect(subject.reload.valid?).to eq(false)
     end
   end
+
+  describe "#save_format_correct?" do
+    subject { create(:single_choice_question, answers_count: 4) }
+
+    it "returns true if the hash sent has correct key answer_id" do
+      expect(subject.save_format_correct?({ answer_id: subject.answers.first.id }))
+        .to eq(true)
+    end
+
+    it "returns false if the hash sent has incorrect key answer_id" do
+      expect(subject.save_format_correct?({ answer_id: -1 }))
+        .to eq(false)
+    end
+
+    it "returns false if the hash sent doesn't have key answer_id" do
+      expect(subject.save_format_correct?({}))
+        .to eq(false)
+    end
+  end
 end

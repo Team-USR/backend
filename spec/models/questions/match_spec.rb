@@ -63,4 +63,52 @@ RSpec.describe Questions::Match, type: :model do
       )
     end
   end
+
+  describe "#save_format_correct?" do
+    subject { create(:match_question, pairs_count: 2) }
+
+    it "returns false for a correct format" do
+      hash = {
+        pairs: [
+          {
+            left_choice_id: subject.pairs.first.left_choice_uuid,
+            right_choice_id: subject.pairs.first.right_choice_uuid,
+          }
+        ]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(true)
+    end
+
+    it "returns false if the the pairs array has a pair that doesn't exist" do
+      hash = {
+        pairs: [
+          {
+            left_choice_id: subject.pairs.first.left_choice_uuid,
+            right_choice_id: subject.pairs.first.right_choice_uuid,
+          },
+          {
+            left_choice_id: -1,
+            right_choice_id: -2
+          }
+        ]
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "return false if the the pairs attribute is not an array" do
+      hash = {
+        pairs: "test"
+      }
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "return false if the the pairs attribute is not present" do
+      hash = {}
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+  end
 end
