@@ -8,6 +8,12 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe "POST #create" do
+    let(:user) { create(:user) }
+
+    before do
+      authenticate_user user
+    end
+
     it "assigns @group" do
       post :create, params: pa, as: :json
       expect(assigns(:group)).to be_a(Group)

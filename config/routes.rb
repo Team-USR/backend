@@ -22,5 +22,14 @@ Rails.application.routes.draw do
       post 'quizzes_update'
     end
   end
+
   resources :users, only: [:create, :update]
+
+  namespace :users do
+   resources :mine, only: [:none], controller: "mine" do
+     collection do
+       get 'groups', to: 'groups'
+     end
+   end
+  end
 end
