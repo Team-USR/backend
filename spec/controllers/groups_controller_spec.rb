@@ -50,7 +50,7 @@ RSpec.describe GroupsController, type: :controller do
 
     before do
       authenticate_user user
-      user.groups << group
+      user.groups_in << group
     end
 
     it "assigns the user to the group" do
@@ -62,7 +62,7 @@ RSpec.describe GroupsController, type: :controller do
         as: :json
       end.to change { GroupsUser.count }.by(-1)
       expect(group.users.count).to eq(0)
-      expect(user.groups.count).to eq(0)
+      expect(user.groups_in.count).to eq(0)
     end
   end
 

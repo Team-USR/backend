@@ -34,17 +34,8 @@ class GroupsController < ApplicationController
   def delete
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @user_group = GroupsUser.find_by(group_id: @group.id, user_id: params[:user_id])
-    if @user_group.nil?
-      render_error(
-        status: :not_found,
-        code: "not_found",
-        detail: "Couldn't find user and group association with user_id #{params[:user_id]} group_id #{params[:id]}"
-      )
-    else
-      @user_group.group.users.delete(@user_group.user)
-      render json: { "success": true }
-    end
+    @user_group = GroupsUser.find_by!(group_id: params[:id], user_id: params[:user_id])
+    @group.users.delete(@user_group.user)
   end
 
   def destroy
