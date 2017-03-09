@@ -21,11 +21,7 @@ class QuizzesController < ApplicationController
   def edit
     @quiz = Quiz.find(params.require(:id))
     authorize! :manage, @quiz
-    if @quiz.published == true
-      head :method_not_allowed
-    else
-      render json: @quiz, serializer: QuizEditSerializer
-    end
+    render json: QuizSerializer.new(@quiz, scope: "edit").as_json
   end
 
   def create
