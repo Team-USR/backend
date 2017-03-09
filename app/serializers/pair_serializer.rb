@@ -1,5 +1,9 @@
 class PairSerializer < ActiveModel::Serializer
-  attributes :left_choice_id, :right_choice_id
+  attribute :left_choice_id, if: -> { scope != "edit" }
+  attribute :right_choice_id, if: -> { scope != "edit" }
+  attribute :left_choice, if: -> { scope == "edit" }
+  attribute :right_choice, if: -> { scope == "edit" }
+  attribute :id, if: -> { scope == "edit" }
 
   def left_choice_id
     object.left_choice_uuid

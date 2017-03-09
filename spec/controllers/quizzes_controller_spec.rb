@@ -330,22 +330,17 @@ RSpec.describe QuizzesController, type: :controller do
      authenticate_user user
    end
 
-   context "with a published quiz" do
-     let(:quiz) { create(:quiz, user: user, published: true) }
+   let(:quiz) { create(:quiz, user: user) }
+   let!(:question) { create(:single_choice_question, quiz: quiz, answers_count: 4) }
 
-     it "returns status 405" do
-       get :edit, params: { id: quiz.id }
-       expect(response.status).to eq(405)
-     end
+   it "returns status 200" do
+     get :edit, params: { id: quiz.id }
+     expect(response.status).to eq(200)
    end
 
-   context "with a unpublished quiz" do
-     let(:quiz) { create(:quiz, user: user, published: false) }
-
-     it "returns status 200" do
-       get :edit, params: { id: quiz.id }
-       expect(response.status).to eq(200)
-     end
+   it "returns the correct response format using quiz serializer" do
+     get :edit, params: { id: quiz.id }
+     expect(response.body).to include("is_correct")
    end
   end
 
@@ -568,6 +563,26 @@ RSpec.describe QuizzesController, type: :controller do
             "metadata" => nil
           }
         )
+      end
+    end
+
+    describe "serialized data" do
+      let(:user) { create(:user) }
+      let(:quiz) do
+        quiz = create(:quiz, user: user)
+        quiz.questions << create(:single_choice_question, answers_count: 4)
+        quiz
+      end
+      let(:params) { { id: quiz.id } }
+
+      before do
+        authenticate_user user
+      end
+
+      it "doesn't return sensitive data" do
+        get :show, params: params, as: :json
+        expect(response.body).to_not include("is_correct")
+        expect(response.body).to include("answer")
       end
     end
   end

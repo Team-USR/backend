@@ -1,5 +1,8 @@
 class Questions::ClozeSerializer < ActiveModel::Serializer
-  attributes :id, :question, :type, :sentence
+  attributes :id, :question, :type
+  attribute :sentence, if: -> { scope != "edit" }
+  has_one :cloze_sentence, if: -> { scope == "edit" }
+  has_one :gaps, if: -> { scope == "edit" }
 
   def sentence
     object.cloze_sentence.text
