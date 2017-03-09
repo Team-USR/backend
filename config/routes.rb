@@ -29,6 +29,7 @@ Rails.application.routes.draw do
    resources :mine, only: [:none], controller: "mine" do
      collection do
        get 'groups', to: 'groups'
+       get 'groups_in'
      end
    end
   end
