@@ -1,5 +1,6 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user!, only: [:create]
+  before_action :authenticate_user!, except: [:index, :show]
+
   def index
     render json: Group.all
   end
@@ -18,33 +19,22 @@ class GroupsController < ApplicationController
   end
 
   def add
-    @group = Group.find_by(id: params[:id])
-    @user = User.find_by(id: params[:user_id])
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    @user = User.find(params[:user_id])
+    @group_user = GroupsUser.new(group_id: @group.id, user_id: @user.id)
 
-    if @group && @user
-      @group_user = GroupsUser.new(group_id: @group.id, user_id: @user.id)
-      if @group_user.save
-        render json: @group_user, status: :created
-      else
-        render_activemodel_validations(@group_user.errors)
-      end
-    elsif @group.nil?
-      render_error(
-        status: :not_found,
-        code: "not_found",
-        detail: "Couldn't find group with id #{params[:id]}"
-      )
-    elsif @user.nil?
-      render_error(
-        status: :not_found,
-        code: "not_found",
-        detail: "Couldn't find user with id #{params[:user_id]}"
-      )
+    if @group_user.save
+      render json: @group_user, status: :created
+    else
+      render_activemodel_validations(@group_user.errors)
     end
   end
 
   def delete
-    @user_group = GroupsUser.find_by(group_id: params[:id], user_id: params[:user_id])
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    @user_group = GroupsUser.find_by(group_id: @group.id, user_id: params[:user_id])
     if @user_group.nil?
       render_error(
         status: :not_found,
@@ -57,13 +47,22 @@ class GroupsController < ApplicationController
     end
   end
 
+  def destroy
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    @group.destroy!
+    head :destroyed
+  end
+
   def quizzes
-    @group_quiz = Group.find(params[:id])
-    render json: @group_quiz.quizzes, each_serializer: QuizIndexSerializer
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    render json: @group.quizzes, each_serializer: QuizIndexSerializer
   end
 
   def quizzes_update
     @group = Group.find(params[:id])
+    authorize! :manage, @group
     @quizzes = params[:quizzes].map { |id| Quiz.find(id) }.uniq
     @group.update!(quizzes: @quizzes)
     head :ok

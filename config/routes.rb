@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :groups, only: [:show, :index, :create] do
+  resources :groups, only: [:show, :index, :create, :destroy] do
     member do
       post 'add', to: :add
       delete 'delete', to: :delete

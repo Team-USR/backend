@@ -18,12 +18,17 @@ RSpec.describe GroupsController, type: :controller do
       post :create, params: pa, as: :json
       expect(assigns(:group)).to be_a(Group)
       expect(assigns(:group).name).to eq("SEG Project Run")
+      expect(assigns(:group).user).to eq(user)
     end
   end
 
   describe "POST #add" do
     let(:user) { create(:user) }
-    let(:group) { create(:group) }
+    let(:group) { create(:group, user: user) }
+
+    before do
+      authenticate_user user
+    end
 
     it "assigns the user to the group" do
       expect do
@@ -40,9 +45,11 @@ RSpec.describe GroupsController, type: :controller do
 
   describe "DELETE #delete" do
     let(:user) { create(:user) }
-    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:group) { create(:group, user: user) }
 
     before do
+      authenticate_user user
       user.groups << group
     end
 
@@ -60,11 +67,12 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe "QUIZZES #quizzes" do
-    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:group) { create(:group, user: user) }
     let(:quiz) { create(:quiz) }
-    let(:groups_quiz) { create(:groups_quiz) }
 
     before do
+      authenticate_user user
       group.quizzes << quiz
     end
 
@@ -74,43 +82,37 @@ RSpec.describe GroupsController, type: :controller do
       }
     end
 
-    context "shows the quizzes of the group" do
-      it "as expected" do
-        get :quizzes, params: params, as: :json
+    it "shows the quizzes of the group" do
+      get :quizzes, params: params, as: :json
 
-        expect(JSON.parse(response.body)).to eq(
-          [
-            {
-              "id" => quiz.id,
-              "title" => quiz.title,
-              "published" => false
-            }
-          ]
-        )
-      end
+      expect(JSON.parse(response.body)).to eq(
+        [
+          {
+            "id" => quiz.id,
+            "title" => quiz.title,
+            "published" => false
+          }
+        ]
+      )
     end
 
-    context "return an empty array if group" do
-      it "has no quizzes" do
-        group.quizzes.delete(group.quizzes.last)
-        get :quizzes, params: params, as: :json
+    it "return an empty array if group has no quizzes" do
+      group.quizzes.delete(group.quizzes.last)
+      get :quizzes, params: params, as: :json
 
-        expect(JSON.parse(response.body)).to eq(
-          [
-
-          ]
-        )
-      end
+      expect(JSON.parse(response.body)).to eq([])
     end
   end
 
   describe "#quizzes_update" do
-    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:group) { create(:group, user: user) }
     let(:quiz1) { create(:quiz) }
     let(:quiz2) { create(:quiz) }
     let(:quiz3) { create(:quiz) }
 
     before do
+      authenticate_user user
       group.quizzes << quiz3
     end
 
@@ -121,6 +123,26 @@ RSpec.describe GroupsController, type: :controller do
       }
 
       expect(group.reload.quizzes).to eq([quiz1, quiz2])
+    end
+  end
+
+  describe "#destroy" do
+    let(:user) { create(:user) }
+    let(:group) { create(:group, user: user) }
+
+    before do
+      authenticate_user user
+      group.users << create(:user)
+      group.quizzes << create(:quiz)
+    end
+
+    it "destroys the quiz and all GroupUser" do
+      expect { delete :destroy, params: { id: group.id } }
+        .to change { Group.count }.by(-1)
+        .and change { GroupsUser.count }.by(-1)
+        .and change { GroupsQuiz.count }.by(-1)
+        .and change { User.count }.by(0)
+        .and change { Quiz.count }.by(0)
     end
   end
 end
