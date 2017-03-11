@@ -34,6 +34,7 @@ Rails.application.routes.draw do
    resources :mine, only: [:none], controller: "mine" do
      collection do
        get 'groups'
+       get 'quizzes'
      end
    end
   end
