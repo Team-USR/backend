@@ -39,6 +39,19 @@ class GroupsController < ApplicationController
     @group.users.delete(@user_group.user)
   end
 
+  def users_update
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    @users = params[:users].map { |id| User.find(id) }.uniq
+    if @users.include?(@group.admins.first)
+      @group.update!(users: @users)
+      @group.save!
+      head :ok
+    else
+      head :bad_request
+    end
+  end
+
   def destroy
     @group = Group.find(params[:id])
     authorize! :manage, @group
