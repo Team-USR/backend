@@ -1,7 +1,7 @@
 class Group < ApplicationRecord
   has_many :groups_users, dependent: :delete_all
   has_many :users, through: :groups_users
-  has_many :quizzes,  -> { distinct }, through: :groups_quizzes
+  has_many :quizzes, -> { distinct }, through: :groups_quizzes
   has_many :groups_quizzes, dependent: :delete_all
   belongs_to :user
   validates_presence_of :name
