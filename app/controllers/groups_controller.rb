@@ -59,4 +59,10 @@ class GroupsController < ApplicationController
     @group.update!(quizzes: @quizzes)
     head :ok
   end
+
+  def students
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    render json: @group.students, each_serializer: UserStudentSerializer
+  end
 end

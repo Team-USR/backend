@@ -20,6 +20,7 @@ Rails.application.routes.draw do
       delete 'delete', to: :delete
       get 'quizzes', to: :quizzes
       post 'quizzes_update'
+      get 'students', to: :students
     end
   end
 
