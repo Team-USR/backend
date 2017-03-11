@@ -109,6 +109,13 @@ class QuizzesController < ApplicationController
     render json: @quiz_session
   end
 
+  def destroy
+    @quiz = Quiz.find(params[:id])
+    authorize! :manage, @quiz
+    @quiz.destroy!
+    head :destroyed
+  end
+
   private
 
   def transform_question_type

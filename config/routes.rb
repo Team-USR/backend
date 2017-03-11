@@ -1,7 +1,7 @@
 Rails.application.routes.draw do
   mount_devise_token_auth_for 'User', at: 'users'
   get 'test' => 'test_secured#test'
-  resources :quizzes, only: [:show, :index, :create, :update, :edit] do
+  resources :quizzes, only: [:show, :index, :create, :update, :edit, :destroy] do
     member do
       post 'check', to: :check
       post 'save', to: :save
