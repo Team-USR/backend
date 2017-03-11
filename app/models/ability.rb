@@ -16,6 +16,12 @@ class Ability
   end
 
   def groups_permissions(user)
-    can :manage, Group, user_id: user.id
+    can :manage, Group do |group|
+      group.admins.include?(user)
+    end
+
+    can :display, Group do |group|
+      group.users.include?(user)
+    end
   end
 end

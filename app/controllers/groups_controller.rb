@@ -10,7 +10,8 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new(params[:group].merge(user_id: current_user.id))
+    @group = Group.new(params[:group])
+    @group.groups_users.build(user_id: current_user.id, role: "admin")
     if @group.save
       render json: @group, status: :created
     else

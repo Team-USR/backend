@@ -7,8 +7,7 @@ class User < ApplicationRecord
   has_many :quizzes
 
   has_many :groups_users, dependent: :delete_all
-  has_many :groups_in, -> { distinct }, through: :groups_users, source: :group
-  has_many :groups
+  has_many :groups, -> { distinct }, through: :groups_users
 
   validates_presence_of :name, :email
   validates :email, uniqueness: true

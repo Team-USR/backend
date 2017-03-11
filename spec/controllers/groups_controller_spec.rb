@@ -18,13 +18,13 @@ RSpec.describe GroupsController, type: :controller do
       post :create, params: pa, as: :json
       expect(assigns(:group)).to be_a(Group)
       expect(assigns(:group).name).to eq("SEG Project Run")
-      expect(assigns(:group).user).to eq(user)
+      expect(assigns(:group).admins).to eq([user])
     end
   end
 
   describe "POST #add" do
     let(:user) { create(:user) }
-    let(:group) { create(:group, user: user) }
+    let(:group) { create(:group, admin: user) }
 
     before do
       authenticate_user user
@@ -44,16 +44,16 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe "DELETE #delete" do
+    let(:admin) { create(:user) }
     let(:user) { create(:user) }
-    let(:user) { create(:user) }
-    let(:group) { create(:group, user: user) }
+    let(:group) { create(:group, admin: admin) }
 
     before do
-      authenticate_user user
-      user.groups_in << group
+      authenticate_user admin
+      group.users << user
     end
 
-    it "assigns the user to the group" do
+    it "deletes the user from to the group" do
       expect do
         delete :delete, params: {
           id: group.id,
@@ -61,14 +61,14 @@ RSpec.describe GroupsController, type: :controller do
         },
         as: :json
       end.to change { GroupsUser.count }.by(-1)
-      expect(group.users.count).to eq(0)
-      expect(user.groups_in.count).to eq(0)
+        .and change { group.users.count }.from(2).to(1)
+        .and change { user.groups.count }.from(1).to(0)
     end
   end
 
   describe "QUIZZES #quizzes" do
     let(:user) { create(:user) }
-    let(:group) { create(:group, user: user) }
+    let(:group) { create(:group, admin: user) }
     let(:quiz) { create(:quiz) }
 
     before do
@@ -106,7 +106,7 @@ RSpec.describe GroupsController, type: :controller do
 
   describe "#quizzes_update" do
     let(:user) { create(:user) }
-    let(:group) { create(:group, user: user) }
+    let(:group) { create(:group, admin: user) }
     let(:quiz1) { create(:quiz) }
     let(:quiz2) { create(:quiz) }
     let(:quiz3) { create(:quiz) }
@@ -128,7 +128,7 @@ RSpec.describe GroupsController, type: :controller do
 
   describe "#destroy" do
     let(:user) { create(:user) }
-    let(:group) { create(:group, user: user) }
+    let(:group) { create(:group, admin: user) }
 
     before do
       authenticate_user user
@@ -139,7 +139,7 @@ RSpec.describe GroupsController, type: :controller do
     it "destroys the quiz and all GroupUser" do
       expect { delete :destroy, params: { id: group.id } }
         .to change { Group.count }.by(-1)
-        .and change { GroupsUser.count }.by(-1)
+        .and change { GroupsUser.count }.by(-2)
         .and change { GroupsQuiz.count }.by(-1)
         .and change { User.count }.by(0)
         .and change { Quiz.count }.by(0)
