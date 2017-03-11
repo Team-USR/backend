@@ -4,7 +4,7 @@ class MyQuizzesSerializer < ActiveModel::Serializer
   def status
     session = QuizSession.find_by(quiz: Quiz.where(id: object.id), user: current_user)
     if !session.nil?
-      session.status
+      session.state
     else
       "not_started"
     end
