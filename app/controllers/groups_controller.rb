@@ -54,7 +54,7 @@ class GroupsController < ApplicationController
   def quizzes_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @quizzes = params[:quizzes].map { |id| Quiz.find(id) }.uniq
+    @quizzes = params.require(:quizzes).map { |id| Quiz.find(id) }.uniq
     @group.update!(quizzes: @quizzes)
     head :ok
   end
