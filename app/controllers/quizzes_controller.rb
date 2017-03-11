@@ -1,5 +1,5 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user!, only: [:show, :create, :mine, :update, :edit, :submit]
+  before_action :authenticate_user!, except: [:index, :for_groups]
 
   def index
     render json: Quiz.all, each_serializer: QuizSerializer
@@ -113,7 +113,7 @@ class QuizzesController < ApplicationController
     @quiz = Quiz.find(params[:id])
     authorize! :manage, @quiz
     @quiz.destroy!
-    head :destroyed
+    head :ok
   end
 
   private
