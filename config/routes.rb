@@ -24,7 +24,11 @@ Rails.application.routes.draw do
     end
   end
 
-  resources :users, only: [:create, :update]
+  resources :users, only: [:create, :update] do
+    collection do
+      post 'search', to: :search
+    end
+  end
 
   namespace :users do
    resources :mine, only: [:none], controller: "mine" do
@@ -33,4 +37,6 @@ Rails.application.routes.draw do
      end
    end
   end
+
+
 end
