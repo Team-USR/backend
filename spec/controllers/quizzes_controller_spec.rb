@@ -599,7 +599,7 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     it "destroys the quiz and all associated records" do
-      expect { delete :destroy, params }
+      expect { delete :destroy, params: params }
         .to change { Quiz.count }.by(-1)
         .and change { Questions::SingleChoice.count }.by(-2)
     end

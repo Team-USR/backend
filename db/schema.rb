@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170308205219) do
+ActiveRecord::Schema.define(version: 20170311103100) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,8 +45,6 @@ ActiveRecord::Schema.define(version: 20170308205219) do
     t.string   "name",       null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer  "user_id"
-    t.index ["user_id"], name: "index_groups_on_user_id", using: :btree
   end
 
   create_table "groups_quizzes", id: false, force: :cascade do |t|
@@ -55,8 +53,10 @@ ActiveRecord::Schema.define(version: 20170308205219) do
   end
 
   create_table "groups_users", id: false, force: :cascade do |t|
-    t.integer "user_id",  null: false
-    t.integer "group_id", null: false
+    t.integer "user_id",                      null: false
+    t.integer "group_id",                     null: false
+    t.string  "role",     default: "student", null: false
+    t.index ["user_id", "group_id"], name: "index_groups_users_on_user_id_and_group_id", unique: true, using: :btree
   end
 
   create_table "hints", force: :cascade do |t|
@@ -64,7 +64,6 @@ ActiveRecord::Schema.define(version: 20170308205219) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "gap_id"
-    t.index ["gap_id"], name: "index_hints_on_gap_type_and_gap_id", using: :btree
   end
 
   create_table "pairs", force: :cascade do |t|
@@ -148,5 +147,4 @@ ActiveRecord::Schema.define(version: 20170308205219) do
     t.index ["uid", "provider"], name: "index_users_on_uid_and_provider", unique: true, using: :btree
   end
 
-  add_foreign_key "groups", "users"
 end

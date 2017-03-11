@@ -1,7 +1,7 @@
 class GroupSerializer < ActiveModel::Serializer
-  attributes :id, :name, :creator
+  attributes :id, :name, :admins
 
-  def creator
-    object.user.email
+  def admins
+    object.admins.map(&:email)
   end
 end
