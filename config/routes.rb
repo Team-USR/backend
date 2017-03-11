@@ -28,8 +28,7 @@ Rails.application.routes.draw do
   namespace :users do
    resources :mine, only: [:none], controller: "mine" do
      collection do
-       get 'groups', to: 'groups'
-       get 'groups_in'
+       get 'groups'
      end
    end
   end
