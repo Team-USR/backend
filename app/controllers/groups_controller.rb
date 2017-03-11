@@ -42,7 +42,7 @@ class GroupsController < ApplicationController
     @group = Group.find(params[:id])
     authorize! :manage, @group
     @group.destroy!
-    head :destroyed
+    head :ok
   end
 
   def quizzes
