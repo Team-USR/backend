@@ -63,6 +63,6 @@ class GroupsController < ApplicationController
   def students
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    render json: @group.students, each_serializer: UserStudentSerializer
+    render json: @group.students, each_serializer: UserGetSerializer
   end
 end
