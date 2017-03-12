@@ -1,5 +1,5 @@
 class Questions::MatchSerializer < ActiveModel::Serializer
-  attributes :id, :question, :type
+  attributes :id, :question, :type, :points
   attribute :left, if: -> { scope != "edit" }
   attribute :right, if: -> { scope != "edit" }
   has_many :pairs, if: -> { scope == "edit" }
