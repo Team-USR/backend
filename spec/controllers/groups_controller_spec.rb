@@ -171,10 +171,10 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe '#users_update' do
-    let!(:user) { create(:user) }
-    let!(:group) { create(:group, admin: user) }
-    let!(:user1) { create(:user) }
-    let!(:user2) { create(:user) }
+    let(:user) { create(:user) }
+    let(:group) { create(:group, admin: user) }
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
 
     before do
       authenticate_user user
@@ -191,7 +191,7 @@ RSpec.describe GroupsController, type: :controller do
             user2.id
           ]
         }
-      expect(group.users).to eq([user1, user2])
+      expect(group.reload.users).to eq([user,user1, user2])
       expect(response.status).to eq(200)
     end
 
