@@ -194,6 +194,6 @@ RSpec.describe GroupsController, type: :controller do
       expect(group.reload.users).to eq([user,user1, user2])
       expect(response.status).to eq(200)
     end
-    
+  
   end
 end

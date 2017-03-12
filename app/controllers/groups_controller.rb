@@ -42,7 +42,7 @@ class GroupsController < ApplicationController
   def users_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @admin = @group.admins.map { |user| user.id}
+    @admin = @group.admins.map { |user| user.id }
     @users_params = params[:users] + @admin
     @users = @users_params.map { |id| User.find(id) }.uniq
     @group.update!(users: @users)
