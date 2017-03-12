@@ -245,7 +245,7 @@ RSpec.describe QuizzesController, type: :controller do
     before do
       authenticate_user user
     end
-    let(:quiz) { create(:quiz) }
+    let(:quiz) { create(:quiz, attempts: 1) }
     let(:params) do
       {
         "id": quiz.id,
@@ -506,7 +506,7 @@ RSpec.describe QuizzesController, type: :controller do
 
   describe "GET #show" do
     let(:user) { create(:user) }
-    let(:quiz) { create(:quiz, user: user) }
+    let(:quiz) { create(:quiz, user: user, attempts: 1) }
     let(:params) { { id: quiz.id } }
 
     before do
@@ -569,7 +569,7 @@ RSpec.describe QuizzesController, type: :controller do
     describe "serialized data" do
       let(:user) { create(:user) }
       let(:quiz) do
-        quiz = create(:quiz, user: user)
+        quiz = create(:quiz, user: user, attempts: 1)
         quiz.questions << create(:single_choice_question, answers_count: 4)
         quiz
       end
