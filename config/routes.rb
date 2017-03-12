@@ -21,6 +21,7 @@ Rails.application.routes.draw do
       get 'quizzes', to: :quizzes
       post 'quizzes_update'
       get 'students', to: :students
+      post 'users_update', to: :users_update
     end
   end
 

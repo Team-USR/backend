@@ -147,9 +147,9 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe '#students' do
-    let(:user) { create(:user) }
-    let(:group) { create(:group, admin: user) }
-    let(:user1) { create(:user) }
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group, admin: user) }
+    let!(:user1) { create(:user) }
 
     before do
       authenticate_user user
@@ -168,5 +168,32 @@ RSpec.describe GroupsController, type: :controller do
         ]
       )
     end
+  end
+
+  describe '#users_update' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group, admin: user) }
+    let(:user1) { create(:user) }
+    let(:user2) { create(:user) }
+
+    before do
+      authenticate_user user
+      group.users << user1
+    end
+
+    it "updates the users if the admin is still included" do
+      post :users_update, params:
+        {
+          id: group.id,
+          users: [
+            user.id,
+            user1.id,
+            user2.id
+          ]
+        }
+      expect(group.reload.users).to eq([user, user1, user2])
+      expect(response.status).to eq(200)
+    end
+
   end
 end
