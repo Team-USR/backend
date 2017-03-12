@@ -3,11 +3,11 @@ require 'rails_helper'
 RSpec.describe QuizSerializer, type: :Serializer do
   context "with scope edit" do
     let!(:quiz) { create(:quiz) }
-    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
-    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
-    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2) }
-    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2) }
+    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
+    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
+    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1) }
+    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
 
     subject { QuizSerializer.new(quiz, scope: "edit") }
 
@@ -18,6 +18,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: single_choice_question.question,
             id: single_choice_question.id,
             type: "single_choice",
+            points: 1,
             answers: array_including(
               {
                 id: single_choice_question.answers.first.id,
@@ -37,6 +38,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: multiple_choice_question.question,
             id: multiple_choice_question.id,
             type: "multiple_choice",
+            points: 1,
             answers: array_including(
               {
                 id: multiple_choice_question.answers.first.id,
@@ -56,6 +58,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: mix_question.question,
             id: mix_question.id,
             type: "mix",
+            points: 1,
             sentences: array_including(
               {
                 id: mix_question.sentences.first.id,
@@ -75,6 +78,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: match_question.question,
             id: match_question.id,
             type: "match",
+            points: 1,
             pairs: array_including(
               {
                 id: match_question.pairs.first.id,
@@ -94,6 +98,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: cloze_question.question,
             id: cloze_question.id,
             type: "cloze",
+            points: 1,
             cloze_sentence: {
               text: cloze_question.cloze_sentence.text,
               id: cloze_question.cloze_sentence.id
@@ -116,11 +121,11 @@ RSpec.describe QuizSerializer, type: :Serializer do
 
   context "with scope show" do
     let!(:quiz) { create(:quiz) }
-    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
-    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
-    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2) }
-    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2) }
+    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
+    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
+    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1) }
+    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
 
     subject { QuizSerializer.new(quiz, scope: "show") }
 
@@ -131,6 +136,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: single_choice_question.question,
             id: single_choice_question.id,
             type: "single_choice",
+            points: 1,
             answers: array_including(
               {
                 id: single_choice_question.answers.first.id,
@@ -149,6 +155,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: multiple_choice_question.question,
             id: multiple_choice_question.id,
             type: "multiple_choice",
+            points: 1,
             answers: array_including(
               {
                 id: multiple_choice_question.answers.first.id,
@@ -167,6 +174,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: mix_question.question,
             id: mix_question.id,
             type: "mix",
+            points: 1,
             words: array_including(
               mix_question.words.first
             )
@@ -182,6 +190,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: match_question.question,
             id: match_question.id,
             type: "match",
+            points: 1,
             left: array_including(
               {
                 answer: match_question.pairs.first.left_choice,
@@ -206,6 +215,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             question: cloze_question.question,
             id: cloze_question.id,
             type: "cloze",
+            points: 1,
             sentence: cloze_question.cloze_sentence.text,
           }
         )
