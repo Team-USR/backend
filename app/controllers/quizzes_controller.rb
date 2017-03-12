@@ -68,6 +68,8 @@ class QuizzesController < ApplicationController
     @quiz_session.metadata = params[:questions]
     @quiz_session.state = "submitted"
     @quiz_session.save
+    @quiz.attempts -= 1
+    @quiz.save
     render json: result
   end
 
@@ -134,6 +136,7 @@ class QuizzesController < ApplicationController
   def quiz_params
     params.require(:quiz).permit(
       :title,
+      :attempts,
       questions_attributes: [
         :question,
         :type,
