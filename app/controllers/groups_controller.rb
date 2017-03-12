@@ -42,14 +42,12 @@ class GroupsController < ApplicationController
   def users_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @users = params[:users].map { |id| User.find(id) }.uniq
-    if @users.include?(@group.admins.first)
-      @group.update!(users: @users)
-      @group.save!
-      head :ok
-    else
-      head :bad_request
-    end
+    @admin = @group.admins.map { |user| user.id}
+    @users_params = params[:users] + @admin
+    @users = @users_params.map { |id| User.find(id) }.uniq
+    @group.update!(users: @users)
+    @group.save!
+    head :ok
   end
 
   def destroy

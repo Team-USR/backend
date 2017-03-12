@@ -194,17 +194,6 @@ RSpec.describe GroupsController, type: :controller do
       expect(group.reload.users).to eq([user,user1, user2])
       expect(response.status).to eq(200)
     end
-
-    it "returns error code 400" do
-      post :users_update, params:
-        {
-          id: group.id,
-          users: [
-            user1.id,
-            user2.id
-          ]
-        }
-      expect(response.status).to eq(400)
-    end
+    
   end
 end
