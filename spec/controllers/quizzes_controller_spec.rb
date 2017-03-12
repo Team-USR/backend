@@ -253,6 +253,28 @@ RSpec.describe QuizzesController, type: :controller do
       }
     end
 
+    context "checking a quiz with no attempts left" do
+      let(:quiz2) { create(:quiz, attempts: 0) }
+      let(:questions_params) do
+        []
+      end
+      let(:params2) do
+        {
+          "id": quiz2.id,
+          "questions": questions_params
+        }
+      end
+
+      it "should return no attempts left" do
+        post :submit, params: params2, as: :json
+        expect(JSON.parse(response.body)).to eq(
+          {
+            "error" => "No attempts left!"
+          }
+        )
+      end
+    end
+
     context "checking a single question" do
       let(:single_choice_question) do
         create(:single_choice_question, answers_count: 4, quiz: quiz)
@@ -511,6 +533,25 @@ RSpec.describe QuizzesController, type: :controller do
 
     before do
       authenticate_user user
+    end
+
+    context "without any attempts left" do
+      let(:quiz2) { create(:quiz, user: user, attempts: 2) }
+      let!(:session) { create(:quiz_session, quiz: quiz2, user: user, metadata: { "id": 1, "answer_id": 1 }, state: "submitted") }
+      let!(:session2) { create(:quiz_session, quiz: quiz2, user: user, metadata: { "id": 2, "answer_id": 2 }, state: "submitted") }
+      let(:params) { { id: quiz2.id } }
+
+      it "should return the last submitted session" do
+          quiz2.attempts = 0
+          quiz2.save!
+          get :show, params: params, as: :json
+          expect(JSON.parse(response.body)["quiz_session"]).to eq(
+            {
+              "state" => "submitted",
+              "metadata" => { "id" => 2, "answer_id" => 2 }
+            }
+          )
+      end
     end
 
     context "without an existing session" do
