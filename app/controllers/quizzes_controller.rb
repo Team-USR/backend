@@ -73,11 +73,10 @@ class QuizzesController < ApplicationController
     @quiz_session.metadata = params[:questions]
     @quiz_session.state = "submitted"
     @quiz_session.save
-    points = []
-    points << {
-      points: @quiz_session.score
+    render json: {
+      points: @quiz_session.score,
+      feedback: feedback
     }
-    render json: points << feedback
   end
 
   def for_groups
