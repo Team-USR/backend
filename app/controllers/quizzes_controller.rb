@@ -7,7 +7,11 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
+    if @quiz.attempts.zero?
+      @quiz_session = QuizSession.where("user_id = ? AND quiz_id = ? AND state = ?", current_user.id, @quiz.id, "submitted").last
+    else
+      @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
+    end
     render json: {
       quiz: QuizSerializer.new(@quiz),
       quiz_session: QuizSessionSerializer.new(@quiz_session)
@@ -50,27 +54,33 @@ class QuizzesController < ApplicationController
 
   def submit
     @quiz = Quiz.find(params[:id])
-    @quiz_session = QuizSession.find_by!(user: current_user, quiz: @quiz, state: "in_progress")
-    result = []
-    params[:questions].each do |question_param|
-      question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
-      if question.nil?
-        result << {
-          id: question_param[:id],
-          status: "Error; Question not found"
-        }
-      else
-        result << {
-          id: question.id,
-        }.merge(question.check(question_param))
+    @quiz_session = QuizSession.find_by(user: current_user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.nil?
+      render json: {
+        error: "No attempts left!"
+      }
+    else
+      result = []
+      params[:questions].each do |question_param|
+        question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
+        if question.nil?
+          result << {
+            id: question_param[:id],
+            status: "Error; Question not found"
+          }
+        else
+          result << {
+            id: question.id,
+          }.merge(question.check(question_param))
+        end
       end
+      @quiz_session.metadata = params[:questions]
+      @quiz_session.state = "submitted"
+      @quiz_session.save
+      @quiz.attempts -= 1
+      @quiz.save
+      render json: result
     end
-    @quiz_session.metadata = params[:questions]
-    @quiz_session.state = "submitted"
-    @quiz_session.save
-    @quiz.attempts -= 1
-    @quiz.save
-    render json: result
   end
 
   def for_groups
