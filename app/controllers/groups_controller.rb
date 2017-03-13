@@ -48,7 +48,7 @@ class GroupsController < ApplicationController
 
   def quizzes
     @group = Group.find(params[:id])
-    authorize! :manage, @group
+    authorize! :display, @group
     render json: @group.quizzes, each_serializer: QuizIndexSerializer
   end
 
