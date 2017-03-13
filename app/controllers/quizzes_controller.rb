@@ -51,24 +51,32 @@ class QuizzesController < ApplicationController
   def submit
     @quiz = Quiz.find(params[:id])
     @quiz_session = QuizSession.find_by!(user: current_user, quiz: @quiz, state: "in_progress")
-    result = []
+    @quiz_session.score = 0
+    feedback = []
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
       if question.nil?
-        result << {
+        feedback << {
           id: question_param[:id],
           status: "Error; Question not found"
         }
       else
-        result << {
+        checked = question.check(question_param)
+        if checked[:correct]
+          @quiz_session.score += question.points
+        end
+        feedback << {
           id: question.id,
-        }.merge(question.check(question_param))
+        }.merge(checked)
       end
     end
     @quiz_session.metadata = params[:questions]
     @quiz_session.state = "submitted"
     @quiz_session.save
-    render json: result
+    render json: {
+      points: @quiz_session.score,
+      feedback: feedback
+    }
   end
 
   def for_groups
@@ -138,6 +146,7 @@ class QuizzesController < ApplicationController
         :question,
         :type,
         :id,
+        :points,
         answers_attributes: [
           :id,
           :answer,

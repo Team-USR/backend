@@ -5,6 +5,7 @@ RSpec.describe QuizzesController, type: :controller do
     {
       question: "Single Choice Question",
       type: "single_choice",
+      points: 1,
       answers_attributes: [
         {
           answer: "Answer 1",
@@ -22,6 +23,7 @@ RSpec.describe QuizzesController, type: :controller do
     {
       question: "Multiple Choice Question",
       type: "multiple_choice",
+      points: 1,
       answers_attributes: [
         {
           answer: "Answer 1",
@@ -47,6 +49,7 @@ RSpec.describe QuizzesController, type: :controller do
     {
       question: "Match Question",
       type: "match",
+      points: 1,
       pairs_attributes: [
         {
           left_choice: "left 1",
@@ -64,6 +67,7 @@ RSpec.describe QuizzesController, type: :controller do
     {
       question: "Question 4",
       type: "mix",
+      points: 1,
       sentences_attributes: [
         {
           "text": "main sentence is here",
@@ -85,6 +89,7 @@ RSpec.describe QuizzesController, type: :controller do
     {
       question: "Question 5",
       type: "cloze",
+      points: 1,
       cloze_sentence_attributes: {
         "text": "test {1} before {2} after {3}"
       },
@@ -255,7 +260,7 @@ RSpec.describe QuizzesController, type: :controller do
 
     context "checking a single question" do
       let(:single_choice_question) do
-        create(:single_choice_question, answers_count: 4, quiz: quiz)
+        create(:single_choice_question, answers_count: 4, quiz: quiz, points: 1)
       end
 
       let(:incorrect_answer) { single_choice_question.answers.find_by(is_correct: false) }
@@ -288,13 +293,37 @@ RSpec.describe QuizzesController, type: :controller do
           post :submit, params: params, as: :json
 
           expect(JSON.parse(response.body)).to eq(
-            [
-              {
-                "id" => single_choice_question.id,
-                "correct" => false,
-                "correct_answer" => correct_answer.id
-              }
-            ]
+            {
+              "points" => 0.0,
+              "feedback" => [
+                {
+                  "id" => single_choice_question.id,
+                  "correct" => false,
+                  "correct_answer" => correct_answer.id
+                }
+              ]
+            }
+          )
+        end
+      end
+
+      context "with a correct answer_id" do
+        let(:answer_id) { correct_answer.id }
+
+        it "returns the correct response" do
+          post :submit, params: params, as: :json
+
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "points" => 1,
+              "feedback" => [
+                {
+                  "id" => single_choice_question.id,
+                  "correct" => true,
+                  "correct_answer" => correct_answer.id
+                }
+              ]
+            }
           )
         end
       end
@@ -312,12 +341,15 @@ RSpec.describe QuizzesController, type: :controller do
         post :submit, params: params, as: :json
 
         expect(JSON.parse(response.body)).to eq(
-          [
-            {
-              "id" => -3,
-              "status" => "Error; Question not found"
-            }
-          ]
+          {
+            "points" => 0.0,
+            "feedback" => [
+              {
+                "id" => -3,
+                "status" => "Error; Question not found"
+              }
+            ]
+          }
         )
       end
     end
