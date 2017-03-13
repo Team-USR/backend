@@ -14,19 +14,21 @@ RSpec.describe Users::MineController, type: :controller do
       authenticate_user user
     end
 
-    it "return the groups of the user" do
+    it "return the groups of the user where the user was created and where the user was added" do
       get :groups
       expect(JSON.parse(response.body)).to eq(
         [
           {
             "id" => group1.id,
             "name" => group1.name,
-            "admins" => [user.email]
+            "admins" => [user.email],
+            "role" => "admin"
           },
           {
             "id" => group2.id,
             "name" => group2.name,
-            "admins" => []
+            "admins" => [],
+            "role" => "student"
           }
         ]
       )
