@@ -3,12 +3,14 @@ require 'rails_helper'
 RSpec.describe QuizSerializer, type: :Serializer do
   context "with scope edit" do
     let!(:quiz) { create(:quiz) }
-    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
-    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
-    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
+    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
+    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
+    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
     let!(:match_default) { create(:match_default) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1, match_default: match_default) }
-    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, match_default: match_default) }
+    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2) }
+    let!(:cross_question) { create(:cross_question_with_data, quiz: quiz) }
+
     subject { QuizSerializer.new(quiz, scope: "edit") }
 
     it "contains the correct representation for single_choice" do
@@ -118,16 +120,44 @@ RSpec.describe QuizSerializer, type: :Serializer do
         )
       )
     end
+
+    it "contains the correct representation for cross" do
+      expect(subject.as_json[:questions]).to match(
+        array_including(
+          {
+            question: cross_question.question,
+            id: cross_question.id,
+            type: "cross",
+            points: 1,
+            width: 3,
+            height: 3,
+            rows: [
+              "ab*",
+              "c*d",
+              "e*f"
+            ],
+            hints: array_including(
+              hash_including(
+                across: true,
+                row: 0,
+                column: 0
+              )
+            )
+          }
+        )
+      )
+    end
   end
 
   context "with scope show" do
     let!(:quiz) { create(:quiz) }
-    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
-    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
-    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
+    let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
+    let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
+    let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
     let!(:match_default) { create(:match_default) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1, match_default: match_default) }
-    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, match_default: match_default) }
+    let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2) }
+    let!(:cross_question) { create(:cross_question_with_data, quiz: quiz) }
 
     subject { QuizSerializer.new(quiz, scope: "show") }
 
@@ -220,6 +250,33 @@ RSpec.describe QuizSerializer, type: :Serializer do
             type: "cloze",
             points: 1,
             sentence: cloze_question.cloze_sentence.text,
+          }
+        )
+      )
+    end
+
+    it "contains the correct representation for cross" do
+      expect(subject.as_json[:questions]).to match(
+        array_including(
+          {
+            question: cross_question.question,
+            id: cross_question.id,
+            type: "cross",
+            points: 1,
+            width: 3,
+            height: 3,
+            rows: [
+              "__*",
+              "_*_",
+              "_*_"
+            ],
+            hints: array_including(
+              hash_including(
+                across: true,
+                row: 0,
+                column: 0
+              )
+            )
           }
         )
       )

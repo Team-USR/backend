@@ -115,6 +115,58 @@ RSpec.describe QuizzesController, type: :controller do
     }
   end
 
+  let(:cross_params) do
+    {
+      question: "Question 5",
+      type: "cross",
+      metadata_attributes: {
+        width: 4,
+        height: 4
+      },
+      rows_attributes: [
+        {
+          row: "*abc"
+        },
+        {
+          row: "*h*d"
+        },
+        {
+          row: "*e*f"
+        },
+        {
+          row: "***g"
+        }
+      ],
+      hints_attributes: [
+        {
+          hint: "abc",
+          row: 0,
+          column: 1,
+          across: true
+        },
+        {
+          hint: "h",
+          row: 1,
+          column: 1,
+          across: true
+        },
+        {
+          hint: "d",
+          row: 1,
+          column: 3,
+          across: true
+        },
+        {
+          hint: "e",
+          row: 2,
+          column: 1,
+          across: false
+        }
+        # etc...
+      ]
+    }
+  end
+
   describe "POST #create" do
     let(:user) { create(:user) }
 
@@ -241,6 +293,38 @@ RSpec.describe QuizzesController, type: :controller do
         expect(cloze_question.gaps.sort[0].hint.hint_text).to eq("hint 1")
         expect(cloze_question.gaps.sort[1].hint).to be_nil
         expect(cloze_question.gaps.sort[2].hint).to be_nil
+      end
+    end
+
+    context "when creating a cloze question" do
+      let(:questions_params) { [cross_params] }
+
+      it "creates the question" do
+        post :create, params: params, as: :json
+
+        expect(assigns(:quiz).questions.count).to eq(1)
+
+        cross_question = assigns(:quiz).questions[0]
+        expect(cross_question).to be_a(Questions::Cross)
+
+        expect(cross_question.metadata.width).to eq(4)
+        expect(cross_question.metadata.height).to eq(4)
+
+        expect(cross_question.rows.count).to eq(4)
+
+        expect(cross_question.rows[0].row).to eq("*abc")
+        expect(cross_question.rows[1].row).to eq("*h*d")
+        expect(cross_question.rows[2].row).to eq("*e*f")
+        expect(cross_question.rows[3].row).to eq("***g")
+
+        expect(cross_question.hints.count).to eq(4)
+
+        expect(cross_question.hints.sort[0].hint).to eq("abc")
+        expect(cross_question.hints.sort[0].row).to eq(0)
+        expect(cross_question.hints.sort[0].column).to eq(1)
+        expect(cross_question.hints.sort[0].across).to eq(true)
+
+        expect(cross_question.hints.sort.last.across).to eq(false)
       end
     end
   end
