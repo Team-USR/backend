@@ -269,8 +269,14 @@ RSpec.describe QuizzesController, type: :controller do
         post :submit, params: params2, as: :json
         expect(JSON.parse(response.body)).to eq(
           {
-            "error" => "No attempts left!"
-          }
+            "errors" =>
+            [
+              {
+                "code" => "not_found",
+                "detail" => "Couldn't find QuizSession"
+                }
+                ]
+              }
         )
       end
     end
@@ -533,25 +539,6 @@ RSpec.describe QuizzesController, type: :controller do
 
     before do
       authenticate_user user
-    end
-
-    context "without any attempts left" do
-      let(:quiz2) { create(:quiz, user: user, attempts: 2) }
-      let!(:session) { create(:quiz_session, quiz: quiz2, user: user, metadata: { "id": 1, "answer_id": 1 }, state: "submitted") }
-      let!(:session2) { create(:quiz_session, quiz: quiz2, user: user, metadata: { "id": 2, "answer_id": 2 }, state: "submitted") }
-      let(:params) { { id: quiz2.id } }
-
-      it "should return the last submitted session" do
-          quiz2.attempts = 0
-          quiz2.save!
-          get :show, params: params, as: :json
-          expect(JSON.parse(response.body)["quiz_session"]).to eq(
-            {
-              "state" => "submitted",
-              "metadata" => { "id" => 2, "answer_id" => 2 }
-            }
-          )
-      end
     end
 
     context "without an existing session" do
