@@ -39,6 +39,17 @@ class GroupsController < ApplicationController
     @group.users.delete(@user_group.user)
   end
 
+  def users_update
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+    @admin = @group.admins.map { |user| user.id }
+    @users_params = params[:users] + @admin
+    @users = @users_params.map { |id| User.find(id) }.uniq
+    @group.update!(users: @users)
+    @group.save!
+    head :ok
+  end
+
   def destroy
     @group = Group.find(params[:id])
     authorize! :manage, @group
@@ -48,7 +59,7 @@ class GroupsController < ApplicationController
 
   def quizzes
     @group = Group.find(params[:id])
-    authorize! :manage, @group
+    authorize! :display, @group
     render json: @group.quizzes, each_serializer: QuizIndexSerializer
   end
 
