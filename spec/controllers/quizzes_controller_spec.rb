@@ -250,12 +250,40 @@ RSpec.describe QuizzesController, type: :controller do
     before do
       authenticate_user user
     end
-    let(:quiz) { create(:quiz) }
+    let(:quiz) { create(:quiz, attempts: 1) }
     let(:params) do
       {
         "id": quiz.id,
         "questions": questions_params
       }
+    end
+
+    context "checking a quiz with no attempts left" do
+      let(:quiz2) { create(:quiz, attempts: 0) }
+      let(:questions_params) do
+        []
+      end
+      let(:params2) do
+        {
+          "id": quiz2.id,
+          "questions": questions_params
+        }
+      end
+
+      it "should return no attempts left" do
+        post :submit, params: params2, as: :json
+        expect(JSON.parse(response.body)).to eq(
+          {
+            "errors" =>
+            [
+              {
+                "code" => "not_found",
+                "detail" => "Couldn't find QuizSession"
+                }
+                ]
+              }
+        )
+      end
     end
 
     context "checking a single question" do
@@ -538,7 +566,7 @@ RSpec.describe QuizzesController, type: :controller do
 
   describe "GET #show" do
     let(:user) { create(:user) }
-    let(:quiz) { create(:quiz, user: user) }
+    let(:quiz) { create(:quiz, user: user, attempts: 1) }
     let(:params) { { id: quiz.id } }
 
     before do
@@ -601,7 +629,7 @@ RSpec.describe QuizzesController, type: :controller do
     describe "serialized data" do
       let(:user) { create(:user) }
       let(:quiz) do
-        quiz = create(:quiz, user: user)
+        quiz = create(:quiz, user: user, attempts: 1)
         quiz.questions << create(:single_choice_question, answers_count: 4)
         quiz
       end

@@ -39,7 +39,7 @@ RSpec.describe Users::MineController, type: :controller do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let!(:group) { create(:group, admin: user) }
-    let!(:quiz) { create(:quiz, user: user) }
+    let!(:quiz) { create(:quiz, user: user, attempts: 1) }
     let!(:g_u) { create(:groups_user, group: group, user: user2) }
     let!(:g_q) { create(:groups_quiz, group: group, quiz: quiz) }
 

@@ -1,5 +1,5 @@
 class QuizSerializer < ActiveModel::Serializer
-  attributes :id, :title, :creator, :published
+  attributes :id, :title, :creator, :published, :attempts
   has_many :questions
 
   def creator

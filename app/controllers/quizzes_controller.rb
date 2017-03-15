@@ -7,7 +7,18 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    @quiz_session = QuizSession.find_or_create_by(user: current_user, quiz: @quiz, state: "in_progress")
+    @quiz_session = QuizSession.find_by(user: current_user, quiz: @quiz, state: "in_progress")
+    if @quiz_session.nil?
+      if !@quiz.attempts.zero? && QuizSession.where(user_id: current_user.id).where(quiz_id: @quiz).count >= @quiz.attempts
+        return render_error(
+          status: :method_not_allowed,
+          code: "no_attempts_left"
+        )
+      else
+        @quiz_session = QuizSession.create!(user: current_user, quiz: @quiz, state: "in_progress")
+      end
+    end
+
     render json: {
       quiz: QuizSerializer.new(@quiz),
       quiz_session: QuizSessionSerializer.new(@quiz_session)
@@ -142,6 +153,7 @@ class QuizzesController < ApplicationController
   def quiz_params
     params.require(:quiz).permit(
       :title,
+      :attempts,
       questions_attributes: [
         :question,
         :type,
@@ -151,33 +163,29 @@ class QuizzesController < ApplicationController
           :id,
           :answer,
           :is_correct,
-
-        ],
+      ],
         pairs_attributes: [
           :id,
           :left_choice,
           :right_choice,
-
-        ],
+      ],
         sentences_attributes: [
           :id,
           :text,
           :is_main,
-
-        ],
+      ],
         cloze_sentence_attributes: [
           :text,
-        ],
+      ],
         gaps_attributes: [
           :id,
           :gap_text,
 
           hint_attributes: [
             :hint_text,
-
-          ]
         ]
       ]
+    ]
     )
   end
 end

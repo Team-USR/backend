@@ -10,7 +10,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170312201808) do
+
+ActiveRecord::Schema.define(version: 20170312213509) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +108,7 @@ ActiveRecord::Schema.define(version: 20170312201808) do
     t.string   "title",                      null: false
     t.integer  "user_id"
     t.boolean  "published",  default: false, null: false
+    t.integer  "attempts",   default: 0,     null: false
     t.index ["user_id"], name: "index_quizzes_on_user_id", using: :btree
   end
 
