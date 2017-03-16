@@ -6,9 +6,9 @@ RSpec.describe QuizSerializer, type: :Serializer do
     let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
     let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
     let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1) }
+    let!(:match_default) { create(:match_default) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1, match_default: match_default) }
     let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
-
     subject { QuizSerializer.new(quiz, scope: "edit") }
 
     it "contains the correct representation for single_choice" do
@@ -79,6 +79,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             id: match_question.id,
             type: "match",
             points: 1,
+            match_default: match_default.default_text,
             pairs: array_including(
               {
                 id: match_question.pairs.first.id,
@@ -124,7 +125,8 @@ RSpec.describe QuizSerializer, type: :Serializer do
     let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2, points: 1) }
     let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2, points: 1) }
     let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2, points: 1) }
-    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1) }
+    let!(:match_default) { create(:match_default) }
+    let!(:match_question) { create(:match_question, quiz: quiz, pairs_count: 2, points: 1, match_default: match_default) }
     let!(:cloze_question) { create(:cloze_question, quiz: quiz, gap_count: 2, points: 1) }
 
     subject { QuizSerializer.new(quiz, scope: "show") }
@@ -191,6 +193,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             id: match_question.id,
             type: "match",
             points: 1,
+            match_default: match_default.default_text,
             left: array_including(
               {
                 answer: match_question.pairs.first.left_choice,
