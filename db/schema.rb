@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170312213509) do
+ActiveRecord::Schema.define(version: 20170316173322) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -64,6 +64,13 @@ ActiveRecord::Schema.define(version: 20170312213509) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer  "gap_id"
+  end
+
+  create_table "match_defaults", force: :cascade do |t|
+    t.string  "default_text",  null: false
+    t.string  "question_type"
+    t.integer "question_id"
+    t.index ["question_type", "question_id"], name: "index_match_defaults_on_question_type_and_question_id", using: :btree
   end
 
   create_table "pairs", force: :cascade do |t|

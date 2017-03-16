@@ -2,6 +2,8 @@ class Questions::Match < Question
   belongs_to :quiz
   has_many :pairs, inverse_of: :question, as: :question, dependent: :destroy
   accepts_nested_attributes_for :pairs, allow_destroy: true
+  has_one :match_default, inverse_of: :question, as: :question, dependent: :destroy
+  accepts_nested_attributes_for :match_default, allow_destroy: true
 
   def check(question_params)
     result = true

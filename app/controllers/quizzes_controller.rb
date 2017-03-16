@@ -174,6 +174,9 @@ class QuizzesController < ApplicationController
           :answer,
           :is_correct,
       ],
+        match_default_attributes: [
+          :default_text
+      ],
         pairs_attributes: [
           :id,
           :left_choice,
