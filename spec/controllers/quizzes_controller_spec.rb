@@ -690,6 +690,7 @@ RSpec.describe QuizzesController, type: :controller do
       session1_updated_at = session1.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p")
       expect(JSON.parse(response.body)).to eq(
         "quiz" => {
+          "id" => quiz.id,
           "title" => quiz.title,
           "attempts" => quiz.attempts,
           "creator" => quiz.user.email,
