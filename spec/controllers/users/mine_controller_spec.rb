@@ -39,15 +39,17 @@ RSpec.describe Users::MineController, type: :controller do
     let(:user) { create(:user) }
     let(:user2) { create(:user) }
     let!(:group) { create(:group, admin: user) }
-    let!(:quiz) { create(:quiz, user: user, attempts: 1) }
+    let!(:quiz) { create(:quiz, user: user, attempts: 1, published: true) }
+    let!(:quiz1) { create(:quiz, user: user, attempts: 1, published: false) }
     let!(:g_u) { create(:groups_user, group: group, user: user2) }
     let!(:g_q) { create(:groups_quiz, group: group, quiz: quiz) }
+    let!(:g_q1) { create(:groups_quiz, group: group, quiz: quiz1) }
 
     before do
       authenticate_user user2
     end
 
-    it "returns the quizzes with an empty session" do
+    it "returns the published quizzes with an empty session" do
       get :quizzes
       expect(JSON.parse(response.body)).to eq(
         [
@@ -58,6 +60,12 @@ RSpec.describe Users::MineController, type: :controller do
           }
         ]
       )
+    end
+
+    it "doesn't return the quizzes in the group for a group admin" do
+      authenticate_user user
+      get :quizzes
+      expect(JSON.parse(response.body)).to eq([])
     end
 
     it "returns the quizzes with a non empty session" do
