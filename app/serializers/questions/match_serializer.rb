@@ -27,6 +27,6 @@ class Questions::MatchSerializer < ActiveModel::Serializer
   end
 
   def match_default
-    object.match_default.default_text
+    object.match_default.try!(:default_text)
   end
 end
