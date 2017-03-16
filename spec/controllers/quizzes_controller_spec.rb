@@ -52,7 +52,7 @@ RSpec.describe QuizzesController, type: :controller do
       points: 1,
       match_default_attributes:
       	{
-      		"default_text": "default"
+          default_text: "default"
       	},
       pairs_attributes: [
         {
