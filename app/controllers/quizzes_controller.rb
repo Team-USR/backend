@@ -7,7 +7,7 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    if @quiz.release_date > Date.today
+    if @quiz.release_date > Date.today && !@quiz.published
       return render_error(
         status: :method_not_allowed,
         code: "quiz_not_released_yet"
@@ -106,6 +106,9 @@ class QuizzesController < ApplicationController
 
   def publish
     @quiz = Quiz.find(params[:id])
+    if @quiz.release_date > Date.today
+      authorize! :manage, @quiz
+    end
     @quiz.published = true
     @quiz.save!
     head :ok
