@@ -582,16 +582,16 @@ RSpec.describe QuizzesController, type: :controller do
       let(:params_release_date) { { id: quiz_with_release_date.id } }
       it "should return an error" do
         get :show, params: params_release_date, as: :json
-          expect(JSON.parse(response.body)).to eq(
-            {
-              "errors" => [
-                {
-                  "code" => "quiz_not_released_yet",
-                  "detail" => nil
-                }
-              ]
-            }
-          )
+        expect(JSON.parse(response.body)).to eq(
+          {
+            "errors" => [
+              {
+                "code" => "quiz_not_released_yet",
+                "detail" => nil
+              }
+            ]
+          }
+        )
       end
     end
 
