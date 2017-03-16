@@ -7,8 +7,8 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    if @quiz.date > Date.today
-      return render_errpr(
+    if @quiz.release_date > Date.today
+      return render_error(
         status: :method_not_allowed,
         code: "quiz_not_released_yet"
       )
