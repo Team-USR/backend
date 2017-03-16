@@ -577,6 +577,24 @@ RSpec.describe QuizzesController, type: :controller do
       authenticate_user user
     end
 
+    context "with a quiz with a release date later than today" do
+      let(:quiz_with_release_date) { create(:quiz, user: user, release_date: Date.tomorrow) }
+      let(:params_release_date) { { id: quiz_with_release_date.id } }
+      it "should return an error" do
+        get :show, params: params_release_date, as: :json
+          expect(JSON.parse(response.body)).to eq(
+            {
+              "errors" => [
+                {
+                  "code" => "quiz_not_released_yet",
+                  "detail" => nil
+                }
+              ]
+            }
+          )
+      end
+    end
+
     context "without an existing session" do
       it "creates a new session" do
         expect { get :show, params: params, as: :json }
