@@ -51,9 +51,9 @@ RSpec.describe QuizzesController, type: :controller do
       type: "match",
       points: 1,
       match_default_attributes:
-      	{
+        {
           default_text: "default"
-      	},
+        },
       pairs_attributes: [
         {
           left_choice: "left 1",
