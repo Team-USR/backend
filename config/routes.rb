@@ -8,6 +8,7 @@ Rails.application.routes.draw do
       post 'for_groups', to: :for_groups
       post 'publish', to: :publish
       post 'submit', to: :submit
+      get 'start', to: :start
     end
     collection do
       get 'mine'

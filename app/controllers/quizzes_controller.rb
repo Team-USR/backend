@@ -135,6 +135,16 @@ class QuizzesController < ApplicationController
     head :ok
   end
 
+  def start
+    @quiz = Quiz.find(params[:id])
+    @quiz_sessions = QuizSession.where(quiz_id: @quiz.id, user_id: current_user.id)
+
+    render json: {
+      quiz: QuizStartSerializer.new(@quiz),
+      sessions: ActiveModel::Serializer::CollectionSerializer.new(@quiz_sessions, serializer: QuizSessionStartSerializer)
+      }
+  end
+
   private
 
   def transform_question_type
