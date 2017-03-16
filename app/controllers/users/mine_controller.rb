@@ -7,7 +7,7 @@ class Users::MineController < ApplicationController
 
   def quizzes
     render json: current_user.groups
-    .reject{ |group_admined_by| group_admined_by.include? current_user}
+    .reject{ |group_admined_by| group_admined_by.admins.include? current_user}
     .flat_map(&:quizzes), each_serializer: MyQuizzesSerializer
   end
 end
