@@ -9,6 +9,7 @@ class Users::MineController < ApplicationController
     render json: current_user.groups
     .reject{ |group_admined_by| group_admined_by.admins.include? current_user }
     .flat_map(&:quizzes)
-    .reject{ |quiz| quiz.published == false }, each_serializer: MyQuizzesSerializer
+    .reject{ |quiz| quiz.published == false }
+    .reject{ |quiz| quiz.release_date < DateTime.now }, each_serializer: MyQuizzesSerializer
   end
 end
