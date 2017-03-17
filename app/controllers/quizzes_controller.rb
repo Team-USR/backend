@@ -106,9 +106,7 @@ class QuizzesController < ApplicationController
 
   def publish
     @quiz = Quiz.find(params[:id])
-    if @quiz.release_date > Date.today
-      authorize! :manage, @quiz
-    end
+    authorize! :manage, @quiz
     @quiz.published = true
     @quiz.save!
     head :ok
