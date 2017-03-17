@@ -7,22 +7,28 @@ class QuizzesController < ApplicationController
 
   def show
     @quiz = Quiz.find(params.require(:id))
-    @quiz_session = QuizSession.find_by(user: current_user, quiz: @quiz, state: "in_progress")
-    if @quiz_session.nil?
-      if !@quiz.attempts.zero? && QuizSession.where(user_id: current_user.id).where(quiz_id: @quiz).count >= @quiz.attempts
-        return render_error(
-          status: :method_not_allowed,
-          code: "no_attempts_left"
-        )
-      else
-        @quiz_session = QuizSession.create!(user: current_user, quiz: @quiz, state: "in_progress")
+    if @quiz.release_date > Date.today && !@quiz.published
+      return render_error(
+        status: :method_not_allowed,
+        code: "quiz_not_released_yet"
+      )
+    else
+      @quiz_session = QuizSession.find_by(user: current_user, quiz: @quiz, state: "in_progress")
+      if @quiz_session.nil?
+        if !@quiz.attempts.zero? && QuizSession.where(user_id: current_user.id).where(quiz_id: @quiz).count >= @quiz.attempts
+          return render_error(
+            status: :method_not_allowed,
+            code: "no_attempts_left"
+          )
+        else
+          @quiz_session = QuizSession.create!(user: current_user, quiz: @quiz, state: "in_progress")
+        end
       end
+      render json: {
+        quiz: QuizSerializer.new(@quiz),
+        quiz_session: QuizSessionSerializer.new(@quiz_session)
+      }
     end
-
-    render json: {
-      quiz: QuizSerializer.new(@quiz),
-      quiz_session: QuizSessionSerializer.new(@quiz_session)
-    }
   end
 
   def mine
@@ -100,6 +106,7 @@ class QuizzesController < ApplicationController
 
   def publish
     @quiz = Quiz.find(params[:id])
+    authorize! :manage, @quiz
     @quiz.published = true
     @quiz.save!
     head :ok
@@ -164,6 +171,7 @@ class QuizzesController < ApplicationController
     params.require(:quiz).permit(
       :title,
       :attempts,
+      :release_date,
       questions_attributes: [
         :question,
         :type,
