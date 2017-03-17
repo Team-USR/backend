@@ -6,6 +6,9 @@ class Users::MineController < ApplicationController
   end
 
   def quizzes
-    render json: current_user.groups.flat_map(&:quizzes), each_serializer: MyQuizzesSerializer
+    render json: current_user.groups
+    .reject{ |group_admined_by| group_admined_by.admins.include? current_user }
+    .flat_map(&:quizzes)
+    .reject{ |quiz| quiz.published == false }, each_serializer: MyQuizzesSerializer
   end
 end
