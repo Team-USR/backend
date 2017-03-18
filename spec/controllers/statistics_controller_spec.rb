@@ -19,11 +19,13 @@ RSpec.describe StatisticsController, type: :controller do
     it "returns the right average" do
       get :average_marks_groups
       expect(JSON.parse(response.body)).to eq(
-        {
-          "points" => [
-            5.5
-          ]
-        }
+        [
+          {
+            "group_id" => grp.id,
+            "group_name" => grp.name,
+            "average" => (session1.score + session2.score) / 2
+          }
+        ]
       )
     end
   end

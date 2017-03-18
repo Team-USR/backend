@@ -13,4 +13,14 @@ class Group < ApplicationRecord
   def students
     groups_users.includes(:user).where(role: "student").map(&:user)
   end
+
+  def quizzes_average
+    quiz_sessions = quizzes
+      .flat_map { |q| q.quiz_sessions.where(state: "submitted") }
+    if !quiz_sessions.size.zero?
+      quiz_sessions.sum(&:score) / quiz_sessions.size
+    else
+      nil
+    end
+  end
 end
