@@ -23,4 +23,16 @@ class Group < ApplicationRecord
       nil
     end
   end
+
+  def quizzes_marks
+    quiz_sessions = quizzes
+      .flat_map { |q| q.quiz_sessions.where(state: "submitted") }
+      .map { |q| {quiz_id: q.quiz_id, score: q.score } }
+      .group_by { |q| q[:quiz_id]}
+    if quiz_sessions.any?
+      quiz_sessions
+    else
+      nil
+    end
+  end
 end
