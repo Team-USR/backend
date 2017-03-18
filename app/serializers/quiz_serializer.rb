@@ -3,6 +3,6 @@ class QuizSerializer < ActiveModel::Serializer
   has_many :questions
 
   def creator
-    object.user.email
+    object.user.name
   end
 end
