@@ -12,5 +12,4 @@ class Quiz < ApplicationRecord
     self.questions = []
     super
   end
-  
 end
