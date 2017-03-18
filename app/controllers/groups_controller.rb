@@ -42,12 +42,31 @@ class GroupsController < ApplicationController
   def users_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @admin = @group.admins.map { |user| user.id }
-    @users_params = params[:users] + @admin
-    @users = @users_params.map { |id| User.find(id) }.uniq
-    @group.update!(users: @users)
-    @group.save!
-    head :ok
+
+    @users = []
+
+    # We can't remove admins
+    @user_emails = params[:users]
+
+    @users_status = @user_emails.map do |user_email|
+      if user = User.find_by_email(user_email)
+        @users << user
+        {
+          email: user_email,
+          status: "added"
+        }
+      else
+        GroupInviteJob.perform_later(group: @group, email: user_email)
+        {
+          email: user_email,
+          status: "invited_to_join"
+        }
+      end
+    end
+
+    @group.update!(users: (@users + @group.admins))
+
+    render json: @users_status, status: :ok
   end
 
   def destroy
