@@ -229,4 +229,27 @@ RSpec.describe GroupsController, type: :controller do
       )
     end
   end
+
+  describe "#edit" do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group, admin: user) }
+    let!(:user1) { create(:user) }
+
+    before do
+      authenticate_user user
+      group.users << user1
+      create(:group_invite, group: group, email: "test@gmail.com")
+    end
+
+    it "returns the expected format" do
+      get :edit, params: { id: group.id }
+      expect(JSON.parse(response.body)).to eq({
+        "id" => group.id,
+        "name" => group.name,
+        "admins" => [user.email],
+        "students" => [user1.email],
+        "pending_invites" => ["test@gmail.com"]
+      })
+    end
+  end
 end

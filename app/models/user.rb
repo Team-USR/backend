@@ -27,6 +27,7 @@ class User < ApplicationRecord
   def check_invites
     GroupInvite.where(email: email).each do |invite|
       invite.group.users << self
+      invite.destroy
     end
   end
 end

@@ -31,6 +31,11 @@ RSpec.describe User, type: :model do
       it "adds the user to the group" do
         expect(create(:user, email: email).groups).to eq([invite.group])
       end
+
+      it "destroys the invite after creating" do
+        expect { create(:user, email: email).groups }
+          .to change { GroupInvite.count }.by(-1)
+      end
     end
 
     context "when there are not invites pending before the create" do

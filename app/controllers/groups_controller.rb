@@ -1,12 +1,8 @@
 class GroupsController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :show]
+  before_action :authenticate_user!
 
-  def index
-    render json: Group.all
-  end
-
-  def show
-    render json: Group.find(params.require(:id))
+  def edit
+    render json: GroupSerializer.new(Group.find(params[:id]), scope: "edit").as_json
   end
 
   def create
