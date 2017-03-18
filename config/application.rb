@@ -6,6 +6,8 @@ require 'rails/all'
 # you've limited to :test, :development, or :production.
 Bundler.require(*Rails.groups)
 
+Dotenv::Railtie.load
+
 module Backend
   class Application < Rails::Application
     # Settings in config/environments/* take precedence over those specified here.
@@ -18,6 +20,7 @@ module Backend
     # config.middleware.insert_before ActionDispatch::Request
     config.api_only = true
     config.action_mailer.default_url_options = { host: "example.com" }
+    config.active_job.queue_adapter = :async
   end
 end
 
