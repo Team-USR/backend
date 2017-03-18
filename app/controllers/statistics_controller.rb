@@ -8,9 +8,10 @@ class StatisticsController < ApplicationController
       .map { |e| Group.find(e.group_id) }
     points = []
     groups.each do |g|
-      points << g.quizzes
-                .sessions.where(state: "submitted")
-                .average(&:points)
+      quizzes = g.quizzes
+      quizzes.each do |q|
+        points << q.quiz_sessions.where(state: "submitted").map(&:score).sum / q.quiz_sessions.where(state: "submitted").size
+      end
     end
     render json: {
       points: points
