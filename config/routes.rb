@@ -15,6 +15,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :statistics, only: [:average_marks_groups] do
+    collection do
+      get 'average_marks_groups', to: :average_marks_groups
+    end
+  end
+
   resources :groups, only: [:show, :index, :create, :destroy] do
     member do
       post 'add', to: :add
