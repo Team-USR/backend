@@ -606,6 +606,7 @@ RSpec.describe QuizzesController, type: :controller do
         expect(JSON.parse(response.body)["quiz_session"]).to eq(
           {
             "state" => "in_progress",
+            "last_updated" => quiz.quiz_sessions.first.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p"),
             "metadata" => nil
           }
         )
@@ -642,6 +643,7 @@ RSpec.describe QuizzesController, type: :controller do
         expect(JSON.parse(response.body)["quiz_session"]).to eq(
           {
             "state" => "in_progress",
+            "last_updated" => quiz.quiz_sessions.first.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p"),
             "metadata" => nil
           }
         )

@@ -3,7 +3,7 @@ class Quiz < ApplicationRecord
   accepts_nested_attributes_for :questions, allow_destroy: true
   has_many :groups, -> { distinct }, through: :groups_quizzes
   has_many :groups_quizzes
-
+  has_many :quiz_sessions
   belongs_to :user
 
   validates_presence_of :title, :user
