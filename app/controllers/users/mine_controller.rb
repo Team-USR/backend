@@ -10,6 +10,6 @@ class Users::MineController < ApplicationController
     .reject{ |group_admined_by| group_admined_by.admins.include? current_user }
     .flat_map(&:quizzes)
     .reject{ |quiz| quiz.published == false }
-    .reject{ |quiz| quiz.release_date.nil? || quiz.release_date < Date.today }, each_serializer: MyQuizzesSerializer
+    .reject{ |quiz| quiz.release_date.present? && quiz.release_date < Date.today }, each_serializer: MyQuizzesSerializer
   end
 end
