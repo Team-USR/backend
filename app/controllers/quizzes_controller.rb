@@ -43,6 +43,7 @@ class QuizzesController < ApplicationController
 
   def create
     transform_question_type
+
     @quiz = Quiz.new(quiz_params.merge(user_id: current_user.id))
 
     if @quiz.save
@@ -181,32 +182,44 @@ class QuizzesController < ApplicationController
           :id,
           :answer,
           :is_correct,
-      ],
+        ],
         match_default_attributes: [
           :default_text
-      ],
+        ],
         pairs_attributes: [
           :id,
           :left_choice,
           :right_choice,
-      ],
+        ],
         sentences_attributes: [
           :id,
           :text,
           :is_main,
-      ],
+        ],
         cloze_sentence_attributes: [
           :text,
-      ],
+        ],
         gaps_attributes: [
           :id,
           :gap_text,
-
           hint_attributes: [
             :hint_text,
+          ]
+        ],
+        metadata_attributes: [
+          :width,
+          :height
+        ],
+        rows_attributes: [
+          :row
+        ],
+        hints_attributes: [
+          :row,
+          :column,
+          :hint,
+          :across
         ]
       ]
-    ]
     )
   end
 end

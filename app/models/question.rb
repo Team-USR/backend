@@ -8,7 +8,8 @@ class Question < ApplicationRecord
       "single_choice" => "Questions::SingleChoice",
       "multiple_choice" => "Questions::MultipleChoice",
       "mix" => "Questions::Mix",
-      "cloze" => "Questions::Cloze"
+      "cloze" => "Questions::Cloze",
+      "cross" => "Questions::Cross"
     }[type_from_api]
   end
 end

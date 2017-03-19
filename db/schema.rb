@@ -32,6 +32,33 @@ ActiveRecord::Schema.define(version: 20170316192944) do
     t.index ["question_type", "question_id"], name: "index_cloze_sentences_on_question_type_and_question_id", using: :btree
   end
 
+  create_table "cross_hints", force: :cascade do |t|
+    t.string  "hint",          null: false
+    t.integer "row",           null: false
+    t.integer "column",        null: false
+    t.boolean "across",        null: false
+    t.string  "question_type"
+    t.integer "question_id"
+    t.index ["question_type", "question_id"], name: "index_cross_hints_on_question_type_and_question_id", using: :btree
+  end
+
+  create_table "cross_metadata", force: :cascade do |t|
+    t.integer "width",         null: false
+    t.integer "height",        null: false
+    t.string  "question_type"
+    t.integer "question_id"
+    t.index ["question_type", "question_id"], name: "index_cross_metadata_on_question_type_and_question_id", using: :btree
+  end
+
+  create_table "cross_rows", force: :cascade do |t|
+    t.datetime "created_at",    null: false
+    t.datetime "updated_at",    null: false
+    t.string   "row",           null: false
+    t.string   "question_type"
+    t.integer  "question_id"
+    t.index ["question_type", "question_id"], name: "index_cross_rows_on_question_type_and_question_id", using: :btree
+  end
+
   create_table "gaps", force: :cascade do |t|
     t.string   "gap_text"
     t.datetime "created_at",    null: false

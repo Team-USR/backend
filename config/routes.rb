@@ -18,6 +18,7 @@ Rails.application.routes.draw do
   resources :statistics, only: [:average_marks_groups] do
     collection do
       get 'average_marks_groups', to: :average_marks_groups
+      get 'marks_groups_quizzes', to: :marks_groups_quizzes
     end
   end
 
