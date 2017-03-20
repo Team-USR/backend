@@ -11,7 +11,7 @@ class Questions::Cloze < Question
   def check(question_params)
     pts = 0
     answers = question_params[:answer_gaps].zip(gap_order.split(",")).map { |a| a.first == a[1] }
-    if (answers.count(true).zero?)
+    if answers.count(true).zero?
       pts -= points
     else
       pts += points / answers.size * answers.count(true)

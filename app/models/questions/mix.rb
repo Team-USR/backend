@@ -19,7 +19,7 @@ class Questions::Mix < Question
     if words.sort != question_params[:answer].sort
       {
         correct: false,
-        points: -self.points,
+        points: -points,
         correct_sentences: sentences.map(&:text)
       }
     else

@@ -12,5 +12,4 @@ class Question < ApplicationRecord
       "cross" => "Questions::Cross"
     }[type_from_api]
   end
-
 end
