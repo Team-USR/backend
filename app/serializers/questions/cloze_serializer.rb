@@ -3,6 +3,7 @@ class Questions::ClozeSerializer < ActiveModel::Serializer
   attribute :sentence, if: -> { scope != "edit" }
   has_one :cloze_sentence, if: -> { scope == "edit" }
   has_one :gaps, if: -> { scope == "edit" }
+  attribute :hints, if: -> { scope != "edit" }
 
   def sentence
     object.cloze_sentence.text
@@ -10,5 +11,9 @@ class Questions::ClozeSerializer < ActiveModel::Serializer
 
   def type
     "cloze"
+  end
+
+  def hints
+    object.gaps.map { |gap| gap.hint.try(:hint_text) }
   end
 end
