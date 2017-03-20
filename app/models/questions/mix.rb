@@ -19,11 +19,20 @@ class Questions::Mix < Question
     if words.sort != question_params[:answer].sort
       {
         correct: false,
+        points: -self.points,
         correct_sentences: sentences.map(&:text)
       }
     else
+      correct_answer = !sentences.find_by(text: question_params[:answer].join(" ")).nil?
+      pts = 0
+      if correct_answer
+        pts += self.points
+      else
+        pts -= self.points
+      end
       {
-        correct: !sentences.find_by(text: question_params[:answer].join(" ")).nil?,
+        correct: correct_answer == true,
+        points: pts,
         correct_sentences: sentences.map(&:text)
       }
     end

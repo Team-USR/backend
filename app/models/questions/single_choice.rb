@@ -6,8 +6,15 @@ class Questions::SingleChoice < Question
 
   def check(question_params)
     answer = Answer.find_by(id: question_params[:answer_id], question_id: id)
+    pts = 0
+    if answer == correct_answer
+      pts = self.points
+    else
+      pts -= self.points
+    end
     {
       correct: answer == correct_answer,
+      points: pts,
       correct_answer: correct_answer.id
     }
   end

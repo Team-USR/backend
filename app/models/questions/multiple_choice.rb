@@ -20,8 +20,16 @@ class Questions::MultipleChoice < Question
     answers_submitted = question_params[:answer_ids]
       .map { |answer_id| Answer.find_by(id: answer_id, question_id: id) }
       .compact
+    pts = 0
+    nr_of_correct_answers = answers_submitted.reject { |a| !correct_answers.include? a}.size
+    if(nr_of_correct_answers.zero?)
+      pts -= self.points
+    else
+      pts = self.points / correct_answers.size * nr_of_correct_answers
+    end
     {
       correct: answers_submitted.map(&:id).sort == correct_answers.map(&:id).sort,
+      points: pts,
       correct_answers: correct_answers.map(&:id).sort
     }
   end
