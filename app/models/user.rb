@@ -12,6 +12,8 @@ class User < ApplicationRecord
   validates_presence_of :name, :email
   validates :email, uniqueness: true
 
+  after_create :check_invites
+
   def student?
     has_role?(:student)
   end
@@ -20,5 +22,12 @@ class User < ApplicationRecord
 
   def has_role?(role_sym)
     roles.any? { |r| r.name.underscore.to_sym == role_sym }
+  end
+
+  def check_invites
+    GroupInvite.where(email: email).each do |invite|
+      invite.group.users << self
+      invite.destroy
+    end
   end
 end

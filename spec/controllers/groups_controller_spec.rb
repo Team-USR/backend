@@ -171,29 +171,85 @@ RSpec.describe GroupsController, type: :controller do
   end
 
   describe '#users_update' do
-    let(:user) { create(:user) }
-    let(:group) { create(:group, admin: user) }
-    let(:user1) { create(:user) }
-    let(:user2) { create(:user) }
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group, admin: user) }
+    let!(:user1) { create(:user) }
+    let!(:user2) { create(:user) }
 
     before do
       authenticate_user user
       group.users << user1
     end
 
-    it "updates the users if the admin is still included" do
+    it "updates the users and the admin is still included" do
       post :users_update, params:
         {
           id: group.id,
           users: [
-            user.id,
-            user1.id,
-            user2.id
+            user2.email,
           ]
         }
-      expect(group.reload.users).to eq([user, user1, user2])
+      expect(group.reload.users.map(&:email).sort)
+        .to eq([user, user2].map(&:email).sort)
+
+      expect(JSON.parse(response.body)).to eq(
+        [
+          {
+            "email" => user2.email,
+            "status" => "added"
+          }
+        ]
+      )
       expect(response.status).to eq(200)
     end
 
+    it "schedules a job for each user  that doesn't have an email" do
+      expect do
+        post :users_update, params:
+          {
+            id: group.id,
+            users: [
+              "t@t.c",
+              "c@c.c",
+            ]
+          }
+      end.to enqueue_job(GroupInviteJob).twice
+
+      expect(JSON.parse(response.body)).to match(
+        [
+          {
+            "email" => "t@t.c",
+            "status" => "invited_to_join"
+          },
+          {
+            "email" => "c@c.c",
+            "status" => "invited_to_join"
+          }
+        ]
+      )
+    end
+  end
+
+  describe "#edit" do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group, admin: user) }
+    let!(:user1) { create(:user) }
+
+    before do
+      authenticate_user user
+      group.users << user1
+      create(:group_invite, group: group, email: "test@gmail.com")
+    end
+
+    it "returns the expected format" do
+      get :edit, params: { id: group.id }
+      expect(JSON.parse(response.body)).to eq({
+        "id" => group.id,
+        "name" => group.name,
+        "admins" => [user.email],
+        "students" => [user1.email],
+        "pending_invites" => ["test@gmail.com"]
+      })
+    end
   end
 end

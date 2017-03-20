@@ -39,6 +39,7 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails', require: false
   gem 'faker'
+  gem 'dotenv-rails', groups: [:development, :test]
 end
 
 group :development do
@@ -47,6 +48,7 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
   gem 'rubocop', require: false
+  gem "letter_opener"
 end
 
 group :production do
