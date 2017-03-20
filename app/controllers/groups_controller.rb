@@ -91,4 +91,18 @@ class GroupsController < ApplicationController
     authorize! :manage, @group
     render json: @group.students, each_serializer: UserGetSerializer
   end
+
+  def search
+    @best_match_name = Group.where(name: params[:input])
+
+    @alternative_match_name = Group.where('name LIKE ?', "%#{params[:input]}%").all
+      .reject{ |match| @best_match_name.include? match }
+      .first(25)
+
+    result = {
+      best_match_name: ActiveModel::Serializer::CollectionSerializer.new(@best_match_name, serializer: GroupSearchSerializer),
+      alternative_match_name: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_name, serializer: GroupSearchSerializer)
+    }
+    render json: result
+  end
 end
