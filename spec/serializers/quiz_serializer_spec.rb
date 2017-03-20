@@ -250,6 +250,7 @@ RSpec.describe QuizSerializer, type: :Serializer do
             type: "cloze",
             points: 1,
             sentence: cloze_question.cloze_sentence.text,
+            hints: cloze_question.gaps.map { |gap| gap.hint.try(:hint_text) }
           }
         )
       )
