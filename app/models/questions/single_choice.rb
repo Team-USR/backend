@@ -8,9 +8,9 @@ class Questions::SingleChoice < Question
     answer = Answer.find_by(id: question_params[:answer_id], question_id: id)
     pts = 0
     if answer == correct_answer
-      pts = self.points
+      pts = points
     else
-      pts -= self.points
+      pts -= points
     end
     {
       correct: answer == correct_answer,

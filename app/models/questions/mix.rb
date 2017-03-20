@@ -26,9 +26,9 @@ class Questions::Mix < Question
       correct_answer = !sentences.find_by(text: question_params[:answer].join(" ")).nil?
       pts = 0
       if correct_answer
-        pts += self.points
+        pts += points
       else
-        pts -= self.points
+        pts -= points
       end
       {
         correct: correct_answer == true,

@@ -21,11 +21,11 @@ class Questions::MultipleChoice < Question
       .map { |answer_id| Answer.find_by(id: answer_id, question_id: id) }
       .compact
     pts = 0
-    nr_of_correct_answers = answers_submitted.reject { |a| !correct_answers.include? a}.size
+    nr_of_correct_answers = answers_submitted.reject { |a| !correct_answers.include? a }.size
     if(nr_of_correct_answers.zero?)
-      pts -= self.points
+      pts -= points
     else
-      pts = self.points / correct_answers.size * nr_of_correct_answers
+      pts = points / correct_answers.size * nr_of_correct_answers
     end
     {
       correct: answers_submitted.map(&:id).sort == correct_answers.map(&:id).sort,

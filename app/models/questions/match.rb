@@ -21,9 +21,9 @@ class Questions::Match < Question
       end
     end
     if nr_of_correct_answers.zero?
-      pts -= self.points
+      pts -= points
     else
-      pts = self.points/pairs.size*nr_of_correct_answers
+      pts = points / pairs.size * nr_of_correct_answers
     end
     result = false if question_params[:pairs].count != pairs.count
     {

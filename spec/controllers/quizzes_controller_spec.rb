@@ -422,7 +422,6 @@ RSpec.describe QuizzesController, type: :controller do
             }
           )
         end
-
       end
 
       context "with a correct answer_id" do
