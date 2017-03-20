@@ -52,7 +52,7 @@ class GroupsController < ApplicationController
           status: "added"
         }
       else
-        GroupInviteJob.perform_later(group: @group, email: user_email)
+        GroupInviteJob.perform_later(@group, user_email)
         {
           email: user_email,
           status: "invited_to_join"
