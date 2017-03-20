@@ -1,5 +1,5 @@
 class GroupInviteJob < ApplicationJob
-  def perform(group, email)
-    GroupInvite.create!(group: group, email: email)
+  def perform(invite)
+    GroupInvite.create!(group: invite.group, email: invite.email)
   end
 end
