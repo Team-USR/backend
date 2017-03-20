@@ -28,6 +28,7 @@ RSpec.describe Questions::Match, type: :model do
         ]
       })).to eq({
         correct: false,
+        points: -1,
         correct_gaps: subject.gap_order.split(",")
       })
     end
@@ -37,6 +38,7 @@ RSpec.describe Questions::Match, type: :model do
         answer_gaps: subject.gap_order.split(",")
       })).to eq({
         correct: true,
+        points: 1,
         correct_gaps: subject.gap_order.split(",")
       })
     end

@@ -25,6 +25,7 @@ RSpec.describe Questions::Mix, type: :model do
         answer: ["RANDOM sentence"]
       })).to eq({
         correct: false,
+        points: -1,
         correct_sentences: subject.sentences.map(&:text)
       })
     end
@@ -34,6 +35,7 @@ RSpec.describe Questions::Mix, type: :model do
         answer: subject.sentences.first.text.split(" ")
       })).to eq({
         correct: true,
+        points: 1,
         correct_sentences: subject.sentences.map(&:text)
       })
     end

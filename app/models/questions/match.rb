@@ -20,6 +20,7 @@ class Questions::Match < Question
         nr_of_correct_answers += 1
       end
     end
+    pts = 0
     if nr_of_correct_answers.zero?
       pts -= points
     else
