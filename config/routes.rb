@@ -31,6 +31,9 @@ Rails.application.routes.draw do
       get 'students', to: :students
       post 'users_update', to: :users_update
     end
+    collection do
+      post 'search', to: :search
+    end
   end
 
   resources :users, only: [:create, :update] do
