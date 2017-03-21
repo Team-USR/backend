@@ -45,6 +45,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
+    apipie-rails (0.4.0)
+      json
+      rails (>= 4.0)
     arel (7.1.4)
     ast (2.3.0)
     bcrypt (3.1.11)
@@ -100,6 +103,7 @@ GEM
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     hitimes (1.2.4)
+    hitimes (1.2.4-x86-mingw32)
     i18n (0.8.1)
     json (1.8.6)
     jsonapi-renderer (0.1.2)
@@ -248,6 +252,7 @@ PLATFORMS
 
 DEPENDENCIES
   active_model_serializers
+  apipie-rails
   bcrypt
   cancancan
   devise_token_auth
