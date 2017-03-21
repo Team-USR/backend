@@ -119,6 +119,15 @@ class GroupsController < ApplicationController
   api :GET, '/groups/:id/quizzes', "Returns the quizzes from the group"
   param :id, :number, required: true, desc: "ID of group"
   error 404, "Couldn't find group"
+  example <<-EOS
+    [
+      {
+        "id": 1,
+        "title": "Published Quiz",
+        "published": true
+      }
+    ]
+  EOS
   def quizzes
     @group = Group.find(params[:id])
     authorize! :display, @group
@@ -146,6 +155,15 @@ class GroupsController < ApplicationController
   api :GET, '/groups/:id/students', "Returns the students from the group"
   param :id, :number, required: true, desc: "ID of group"
   error 404, "Couldn't find group"
+  example <<-EOS
+    [
+      {
+        "id": 1,
+        "name": "John Smith",
+        "email": "vlad@kcl.ac.uk"
+      }
+    ]
+  EOS
   def students
     @group = Group.find(params[:id])
     authorize! :manage, @group
@@ -162,7 +180,7 @@ class GroupsController < ApplicationController
           "name": "input"
         }
       ],
-      alternative_match_name: [
+      "alternative_match_name": [
         {
           "id": 2,
           "name": "something that contains input somewhere"
