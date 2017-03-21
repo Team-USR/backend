@@ -85,7 +85,7 @@ class GroupsController < ApplicationController
 
     @users = []
 
-    @users_status = @params.require(:users).map do |user_email|
+    @users_status = params.require(:users).map do |user_email|
       if user = User.find_by_email(user_email)
         @users << user
         {
