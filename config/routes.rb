@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
+  apipie
   mount_devise_token_auth_for 'User', at: 'users'
-  get 'test' => 'test_secured#test'
   resources :quizzes, only: [:show, :index, :create, :update, :edit, :destroy] do
     member do
       post 'check', to: :check
