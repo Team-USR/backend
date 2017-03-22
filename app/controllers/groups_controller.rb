@@ -280,7 +280,7 @@ class GroupsController < ApplicationController
     render json: result
   end
 
-  api :GET, '/groups/:id/request_join', "Create a request to join the a group"
+  api :POST, '/groups/:id/request_join', "Create a request to join the a group"
   param :id, :number, required: true, desc: "ID of group"
   error 404, "Couldn't find group"
   def request_join
@@ -289,7 +289,7 @@ class GroupsController < ApplicationController
     head :ok
   end
 
-  api :GET, '/groups/:id/accept_join', "Accept a request"
+  api :POST, '/groups/:id/accept_join', "Accept a request"
   param :id, :number, required: true, desc: "ID of group"
   param :email, String, required: true, desc: "Email of user accepted"
   error 404, "Request not found"
