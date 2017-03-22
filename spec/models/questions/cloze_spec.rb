@@ -45,7 +45,7 @@ RSpec.describe Questions::Match, type: :model do
   describe "#save_format_correct?" do
     subject { create(:cloze_question, gap_count: 4) }
 
-    it "returns false for a correct format" do
+    it "returns true for a correct format" do
       hash = {
         answer_gaps: [
           subject.gaps[0].gap_text,
@@ -56,19 +56,7 @@ RSpec.describe Questions::Match, type: :model do
         .to eq(true)
     end
 
-    it "returns false if the the pairs array has a pair that doesn't exist" do
-      hash = {
-        answer_gaps: [
-          subject.gaps[0].gap_text,
-          subject.gaps[1].gap_text,
-          "dragnea"
-        ]
-      }
-      expect(subject.save_format_correct?(hash))
-        .to eq(false)
-    end
-
-    it "return false if the the pairs attribute is not an array" do
+    it "return false if the the answer_gaps attribute is not an array" do
       hash = {
         answer_gaps: "voiculescu"
       }
@@ -76,8 +64,16 @@ RSpec.describe Questions::Match, type: :model do
         .to eq(false)
     end
 
-    it "return false if the the pairs attribute is not present" do
+    it "return false if the the answer_gaps attribute is not present" do
       hash = {}
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "return false if the the answer_gaps elements are not strings" do
+      hash = {
+        answer_gaps: [{ "hello": 1 }]
+      }
       expect(subject.save_format_correct?(hash))
         .to eq(false)
     end

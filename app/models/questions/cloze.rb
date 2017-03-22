@@ -17,9 +17,6 @@ class Questions::Cloze < Question
 
   def save_format_correct?(save_params)
     return false if !save_params[:answer_gaps].is_a?(Array)
-    gaps_text = gaps.map(&:gap_text)
-
-    save_params[:answer_gaps]
-      .all? { |gap| gaps_text.include?(gap) }
+    save_params[:answer_gaps].all? { |gap| gap.is_a?(String) }
   end
 end
