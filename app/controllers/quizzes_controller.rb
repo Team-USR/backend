@@ -443,16 +443,18 @@ class QuizzesController < ApplicationController
   EOS
   example <<-EOS
   {
-    "points": 4,
+    "points": 3,
     "feeedback": [
       {
         "id": 36,
         "correct": true,
+        "points": 1,
         "correct_answer": 61
       },
       {
         "id": 37,
         "correct": true,
+        "points": 1,
         "correct_pairs": [
           {
             "left_choice_id": "vV90HjE",
@@ -467,6 +469,7 @@ class QuizzesController < ApplicationController
       {
         "id": 38,
         "correct": true,
+        "points": 1,
         "correct_answers": [
           63,
           64
@@ -475,6 +478,7 @@ class QuizzesController < ApplicationController
       {
         "id": 39,
         "correct": true,
+        "points": 1,
         "correct_sentences": [
           "main sentence here is",
           "sentence main here is",
@@ -484,6 +488,7 @@ class QuizzesController < ApplicationController
       {
         "id": 40,
         "correct": false,
+        "points": -1,
         "correct_gaps": [
           "text 3",
           "text 2",
