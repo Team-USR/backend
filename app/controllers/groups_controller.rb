@@ -136,6 +136,54 @@ class GroupsController < ApplicationController
     render json: @users_status, status: :ok
   end
 
+  api :POST, '/groups/:id/add_users', "Updates (overrides) the users of the group"
+  param :id, :number, required: true, desc: "ID of group"
+  param :users, Array, of: String, required: true, desc: "List of emails"
+  error 404, "Couldn't find group"
+  example <<-EOS
+    [
+      {
+        "email": "vlad@kcl.ac.uk",
+        "status": "added"
+      },
+      {
+        "email": "vlad@kcl.ac.uk",
+        "status": "invited_to_join"
+      },
+    ]
+  EOS
+  description <<-EOS
+    Adds a list of users to the group. If some user in the list doesn't have an account, an email
+    will be sent to his email address to invite him to the group.
+  EOS
+  def add_users
+    @group = Group.find(params[:id])
+    authorize! :manage, @group
+
+    @users = []
+
+    @users_status = params.require(:users).map do |user_email|
+      if user = User.find_by_email(user_email)
+        if !@group.users.include? user
+          @group.users << user
+        end
+        {
+          email: user_email,
+          status: "added"
+        }
+      else
+        GroupInviteJob.perform_later(@group, user_email)
+        {
+          email: user_email,
+          status: "invited_to_join"
+        }
+      end
+    end
+
+    @group.save!
+    render json: @users_status, status: :ok
+  end
+
   api :DELETE, '/groups/:id', "Deletes the group"
   param :id, :number, required: true, desc: "ID of group"
   error 404, "Couldn't find group"
