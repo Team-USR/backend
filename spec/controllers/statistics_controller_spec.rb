@@ -74,10 +74,12 @@ RSpec.describe StatisticsController, type: :controller do
               quiz.id.to_s => [
                 {
                   "quiz_id" => quiz.id,
+                  "quiz_title" => quiz.title,
                   "score" => session1.score
                 },
                 {
                   "quiz_id" => quiz.id,
+                  "quiz_title" => quiz.title,
                   "score" => session2.score
                 }
               ]
