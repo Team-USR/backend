@@ -234,11 +234,13 @@ RSpec.describe GroupsController, type: :controller do
     let!(:user) { create(:user) }
     let!(:group) { create(:group, admin: user) }
     let!(:user1) { create(:user) }
+    let!(:user2) { create(:user) }
 
     before do
       authenticate_user user
       group.users << user1
       create(:group_invite, group: group, email: "test@gmail.com")
+      create(:group_join_request, group: group, user: user2)
     end
 
     it "returns the expected format" do
@@ -246,9 +248,22 @@ RSpec.describe GroupsController, type: :controller do
       expect(JSON.parse(response.body)).to eq({
         "id" => group.id,
         "name" => group.name,
-        "admins" => [user.email],
-        "students" => [user1.email],
-        "pending_invites" => ["test@gmail.com"]
+        "admins" => [{
+          "id" => user.id,
+          "name" => user.name,
+          "email" => user.email,
+        }],
+        "students" => [{
+          "id" => user1.id,
+          "name" => user1.name,
+          "email" => user1.email,
+        }],
+        "pending_invite_users" => ["test@gmail.com"],
+        "pending_requests_users" => [{
+          "id" => user2.id,
+          "name" => user2.name,
+          "email" => user2.email,
+        }],
       })
     end
   end
@@ -260,6 +275,7 @@ RSpec.describe GroupsController, type: :controller do
     before do
       authenticate_user user
     end
+
     it "returns the right best_match_name" do
       post :search, params: { input: group.name }, as: :json
       expect(JSON.parse(response.body)).to eq(
@@ -288,6 +304,58 @@ RSpec.describe GroupsController, type: :controller do
           ]
         }
       )
+    end
+  end
+
+  describe "#request_join" do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+
+    before do
+      authenticate_user user
+    end
+
+    it "creates a join request" do
+      expect { post :request_join, params: { id: group.id } }
+        .to change { GroupJoinRequest.count }.by(1)
+
+      expect(GroupJoinRequest.last.group).to eq(group)
+      expect(GroupJoinRequest.last.user).to eq(user)
+    end
+  end
+
+  describe "#accept_join" do
+    let!(:admin) { create(:user) }
+    let!(:group) { create(:group, admin: admin) }
+    let!(:user) { create(:user) }
+
+    before do
+      authenticate_user admin
+    end
+
+    context "when the request exists" do
+      before do
+        create(:group_join_request, group: group, user: user)
+      end
+
+      it "adds the user to the group and destroy the request" do
+        expect { post :accept_join, params: { id: group.id, email: user.email } }
+          .to change { GroupJoinRequest.count }.by(-1)
+          .and change { group.reload.users.count }.by(1)
+
+        expect(group.users).to include(user)
+      end
+    end
+
+    context "when the doesn't exist" do
+      it "doesn't add the user and it doesn't change join requests" do
+        expect { post :accept_join, params: { id: group.id, email: user.email } }
+          .to change { GroupJoinRequest.count }.by(0)
+          .and change { group.reload.users.count }.by(0)
+
+        expect(response.status).to eq(404)
+        expect(response.body).to include("User didn't request join")
+      end
     end
   end
 end

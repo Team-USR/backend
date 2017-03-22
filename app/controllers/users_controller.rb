@@ -42,10 +42,10 @@ class UsersController < ApplicationController
       .first(25)
 
     result = {
-      best_match_name: ActiveModel::Serializer::CollectionSerializer.new(@best_match_name, serializer: UserGetSerializer),
-      best_match_email: ActiveModel::Serializer::CollectionSerializer.new(@best_match_email, serializer: UserGetSerializer),
-      alternative_match_name: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_name, serializer: UserGetSerializer),
-      alternative_match_email: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_email, serializer: UserGetSerializer)
+      best_match_name: ActiveModel::Serializer::CollectionSerializer.new(@best_match_name, serializer: UserSerializer),
+      best_match_email: ActiveModel::Serializer::CollectionSerializer.new(@best_match_email, serializer: UserSerializer),
+      alternative_match_name: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_name, serializer: UserSerializer),
+      alternative_match_email: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_email, serializer: UserSerializer)
     }
     render json: result
   end

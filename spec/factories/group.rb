@@ -8,13 +8,13 @@ FactoryGirl.define do
     sequence(:name) { |n| "group#{n}" }
 
     after(:build) do |group, evaluator|
-      if evaluator.admin.present?
-        GroupsUser.create!(
-          group: group,
-          user: evaluator.admin,
-          role: "admin"
-        )
-      end
+      admin = evaluator.admin || FactoryGirl.create(:user)
+
+      GroupsUser.create!(
+        group: group,
+        user: admin,
+        role: "admin"
+      )
     end
   end
 end

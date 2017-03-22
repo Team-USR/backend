@@ -27,7 +27,7 @@ RSpec.describe Users::MineController, type: :controller do
           {
             "id" => group2.id,
             "name" => group2.name,
-            "admins" => [],
+            "admins" => group2.admins.map(&:email),
             "role" => "student"
           }
         ]
