@@ -30,6 +30,8 @@ Rails.application.routes.draw do
       post 'quizzes_update'
       get 'students', to: :students
       post 'users_update', to: :users_update
+      post 'request_join'
+      post 'accept_join'
     end
     collection do
       post 'search', to: :search
