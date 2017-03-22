@@ -13,6 +13,7 @@ RSpec.describe Questions::Cross, type: :model do
         ]
       })).to eq({
         correct: false,
+        points: -1,
         correct_rows: subject.rows.map(&:row)
       })
     end
@@ -26,6 +27,7 @@ RSpec.describe Questions::Cross, type: :model do
         ]
       })).to eq({
         correct: true,
+        points: 1,
         correct_rows: subject.rows.map(&:row)
       })
     end

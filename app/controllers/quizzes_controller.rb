@@ -508,9 +508,7 @@ class QuizzesController < ApplicationController
         }
       else
         checked = question.check(question_param)
-        if checked[:correct]
-          @quiz_session.score += question.points
-        end
+        @quiz_session.score += checked[:points]
         feedback << {
           id: question.id,
         }.merge(checked)
@@ -640,6 +638,7 @@ class QuizzesController < ApplicationController
       :title,
       :attempts,
       :release_date,
+      :negative_marking,
       questions_attributes: [
         :question,
         :type,

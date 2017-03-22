@@ -27,6 +27,7 @@ RSpec.describe Questions::MultipleChoice, type: :model do
         answer_ids: correct_answers
       })).to eq({
         correct: true,
+        points: 1,
         correct_answers: correct_answers
       })
     end
@@ -36,6 +37,7 @@ RSpec.describe Questions::MultipleChoice, type: :model do
         answer_ids: [subject.answers.find_by(is_correct: false)]
       })).to eq({
         correct: false,
+        points: -1,
         correct_answers: correct_answers
       })
     end

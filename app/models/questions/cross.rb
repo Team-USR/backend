@@ -7,8 +7,16 @@ class Questions::Cross < Question
   accepts_nested_attributes_for :metadata, :rows, :hints
 
   def check(question_params)
+    result = question_params[:rows] == rows.map(&:row)
+    pts = 0
+    if result == true
+      pts = points
+    else
+      pts = -points
+    end
     {
      correct: question_params[:rows] == rows.map(&:row),
+     points: pts,
      correct_rows: rows.map(&:row)
    }
   end

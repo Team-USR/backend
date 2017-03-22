@@ -7,17 +7,29 @@ class Questions::Match < Question
 
   def check(question_params)
     result = true
+    nr_of_correct_answers = 0
     question_params[:pairs].each do |pair_parameter|
       pair = Pair.find_by(
         left_choice_uuid: pair_parameter[:left_choice_id],
         right_choice_uuid: pair_parameter[:right_choice_id],
         question_id: id
       )
-      result = false if pair.nil?
+      if pair.nil?
+        result = false
+      else
+        nr_of_correct_answers += 1
+      end
+    end
+    pts = 0
+    if nr_of_correct_answers.zero?
+      pts -= points
+    else
+      pts = points / pairs.size * nr_of_correct_answers
     end
     result = false if question_params[:pairs].count != pairs.count
     {
       correct: result,
+      points: pts,
       correct_pairs: ActiveModel::Serializer::CollectionSerializer.new(pairs, each_serializer: PairSerializer)
     }
   end

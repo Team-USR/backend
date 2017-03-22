@@ -28,6 +28,7 @@ RSpec.describe Questions::SingleChoice, type: :model do
         answer_id: correct_answer.id
       })).to eq({
         correct: true,
+        points: 1,
         correct_answer: correct_answer.id
       })
     end
@@ -37,6 +38,7 @@ RSpec.describe Questions::SingleChoice, type: :model do
         answer_id: incorrect_answer.id
       })).to eq({
         correct: false,
+        points: -1,
         correct_answer: correct_answer.id
       })
     end

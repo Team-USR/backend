@@ -34,6 +34,7 @@ RSpec.describe Questions::Match, type: :model do
         pairs: pairs_param
       }).as_json).to eq(
         "correct" => true,
+        "points" => 1,
         "correct_pairs" => pairs_param
       )
     end
@@ -43,6 +44,7 @@ RSpec.describe Questions::Match, type: :model do
         pairs: pairs_param.drop(1)
       }).as_json).to eq(
         "correct" => false,
+        "points" => 0.5,
         "correct_pairs" => pairs_param
       )
     end
@@ -59,6 +61,7 @@ RSpec.describe Questions::Match, type: :model do
         pairs: wrong_pairs
       }).as_json).to eq(
         "correct" => false,
+        "points" => -1,
         "correct_pairs" => pairs_param
       )
     end
