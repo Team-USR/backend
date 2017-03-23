@@ -52,6 +52,8 @@ RSpec.describe Questions::Mix, type: :model do
   end
 
   describe "#has_one_main_sentence" do
+    subject { create(:mix_question, sentence_count: 0) }
+
     it "marks the question as invalid if there is no main question" do
       create(:sentence, text: "hello false", is_main: false, question: subject)
       create(:sentence, text: "hello false", is_main: false, question: subject)
@@ -59,9 +61,16 @@ RSpec.describe Questions::Mix, type: :model do
       expect(subject.reload.valid?).to eq(false)
     end
 
-    it "marks the question as invalid if there are multiple question" do
+    it "marks the question as invalid if there are many main sentences" do
       create(:sentence, text: "hello false", is_main: true, question: subject)
       create(:sentence, text: "hello false", is_main: true, question: subject)
+
+      expect(subject.reload.valid?).to eq(false)
+    end
+
+    it "marks the question as invalid if there is no main sentences" do
+      create(:sentence, text: "hello false", is_main: false, question: subject)
+      create(:sentence, text: "hello false", is_main: false, question: subject)
 
       expect(subject.reload.valid?).to eq(false)
     end
