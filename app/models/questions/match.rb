@@ -37,11 +37,7 @@ class Questions::Match < Question
   def save_format_correct?(save_params)
     save_params[:pairs].is_a?(Array) &&
       save_params[:pairs].all? do |pair_parameter|
-        Pair.find_by(
-          left_choice_uuid: pair_parameter[:left_choice_id],
-          right_choice_uuid: pair_parameter[:right_choice_id],
-          question_id: id
-        ).present?
+        pair_parameter.key?(:left_choice_id) && pair_parameter.key?(:right_choice_id)
       end
   end
 end
