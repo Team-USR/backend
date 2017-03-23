@@ -267,9 +267,9 @@ class GroupsController < ApplicationController
     }
   EOS
   def search
-    @best_match_name = Group.where(name: params.require(:input))
+    @best_match_name = Group.where("lower(name) = ? ", params.require(:input).downcase)
 
-    @alternative_match_name = Group.where('name LIKE ?', "%#{params.require(:input)}%").all
+    @alternative_match_name = Group.where('name ILIKE ?', "%#{params.require(:input)}%").all
       .reject{ |match| @best_match_name.include? match }
       .first(25)
 
