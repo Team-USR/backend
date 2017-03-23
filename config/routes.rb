@@ -24,8 +24,6 @@ Rails.application.routes.draw do
 
   resources :groups, only: [:edit, :create, :destroy] do
     member do
-      post 'add', to: :add
-      delete 'delete', to: :delete
       get 'quizzes', to: :quizzes
       post 'quizzes_update'
       get 'students', to: :students

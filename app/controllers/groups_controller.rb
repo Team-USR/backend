@@ -58,36 +58,6 @@ class GroupsController < ApplicationController
     end
   end
 
-  api :POST, '/groups/:id/add', "Adds an user to the group"
-  param :id, :number, required: true, desc: "ID of group"
-  param :user_id, :number, required: true, desc: "ID of user"
-  error 404, "Couldn't find group"
-  error 404, "Couldn't find user"
-  def add
-    @group = Group.find(params[:id])
-    authorize! :manage, @group
-    @user = User.find(params[:user_id])
-    @group_user = GroupsUser.new(group_id: @group.id, user_id: @user.id)
-
-    if @group_user.save
-      render json: @group_user, status: :created
-    else
-      render_activemodel_validations(@group_user.errors)
-    end
-  end
-
-  api :DELETE, '/groups/:id/delete', "Removes an user from the group"
-  param :id, :number, required: true, desc: "ID of group"
-  param :user_id, :number, required: true, desc: "ID of user"
-  error 404, "Couldn't find group"
-  error 404, "User is not in the group"
-  def delete
-    @group = Group.find(params[:id])
-    authorize! :manage, @group
-    @user_group = GroupsUser.find_by!(group_id: params[:id], user_id: params[:user_id])
-    @group.users.delete(@user_group.user)
-  end
-
   api :POST, '/groups/:id/users_update', "Updates (overrides) the users of the group"
   param :id, :number, required: true, desc: "ID of group"
   param :users, Array, of: String, required: true, desc: "List of emails"
