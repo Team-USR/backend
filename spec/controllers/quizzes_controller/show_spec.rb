@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe QuizzesController, type: :controller do
   describe "GET #show" do
     let(:user) { create(:user) }
-    let(:quiz) { create(:quiz, user: user, attempts: 1) }
+    let(:quiz) { create(:quiz, user: user, attempts: 2) }
     let(:params) { { id: quiz.id } }
 
     before do
@@ -66,6 +66,15 @@ RSpec.describe QuizzesController, type: :controller do
     end
 
     context "with an existing session submitted" do
+      let!(:session) do
+        create(
+          :quiz_session,
+          quiz: quiz,
+          user: user,
+          metadata: { "id": 1, "answer_id": 1 },
+          state: "submitted"
+        )
+      end
       it "creates a new session" do
         expect { get :show, params: params, as: :json }
           .to change { QuizSession.count }.by(1)
@@ -80,6 +89,25 @@ RSpec.describe QuizzesController, type: :controller do
             "metadata" => nil
           }
         )
+      end
+
+      context "with limit reached" do
+        let(:quiz) { create(:quiz, user: user, attempts: 1) }
+
+        it "throws a 421 error" do
+          get :show, params: params, as: :json
+          expect(response.status).to eq(405)
+        end
+
+        it "return an error message that says there are no more attempts left" do
+          get :show, params: params, as: :json
+          expect(JSON.parse(response.body)).to eq({
+            "errors" => [{
+              "code" => "no_attempts_left",
+              "detail" => "You have used all your attempts!"
+            }]
+          })
+        end
       end
     end
 

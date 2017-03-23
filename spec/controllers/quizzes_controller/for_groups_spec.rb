@@ -3,15 +3,21 @@ require 'rails_helper'
 RSpec.describe QuizzesController, type: :controller do
   describe "#for_groups" do
     let(:quiz) { create(:quiz) }
+    let(:user) { create(:user) }
     let(:params) do
       {
       "id": quiz.id,
       "groups": groups_params
       }
     end
+
+    before do
+      authenticate_user user
+    end
+
     context "assigning a quiz to two different groups" do
-      let(:group_1) { create(:group) }
-      let(:group_2) { create(:group) }
+      let(:group_1) { create(:group, admin: user) }
+      let(:group_2) { create(:group, admin: user) }
 
       let(:groups_params) do
         [
@@ -19,25 +25,27 @@ RSpec.describe QuizzesController, type: :controller do
           group_2.id
         ]
       end
-      it "returns the correct result" do
-          expect do
-            post :for_groups, params: params, as: :json
-          end.to change { GroupsQuiz.count }.by(2)
-          expect(group_1.quizzes.count).to eq(1)
-          expect(group_2.quizzes.count).to eq(1)
 
-          expect(response.status).to eq(201)
+      it "returns the correct result" do
+        expect do
+          post :for_groups, params: params, as: :json
+        end.to change { GroupsQuiz.count }.by(2)
+        expect(group_1.quizzes.count).to eq(1)
+        expect(group_2.quizzes.count).to eq(1)
+
+        expect(response.status).to eq(201)
       end
     end
 
     context "assigns a quiz to the same group" do
-      let(:group_1) { create(:group) }
+      let(:group_1) { create(:group, admin: user) }
       let(:groups_params) do
         [
           group_1.id,
           group_1.id
         ]
       end
+
       it "prints the correct error" do
         expect do
           post :for_groups, params: params, as: :json
@@ -52,6 +60,7 @@ RSpec.describe QuizzesController, type: :controller do
           -1
         ]
       end
+
       it "prints the correct error" do
         post :for_groups, params: params, as: :json
 

@@ -17,6 +17,29 @@ RSpec.describe QuizzesController, type: :controller do
       authenticate_user user
     end
 
+    context "with invalid quiz params" do
+      it "returns status 400" do
+        post :update, params: {
+          id: quiz.id, quiz: { title: nil }
+        }, as: :json
+        expect(response.status).to eq(422)
+      end
+
+      it "returns an appropiate error message" do
+        post :update, params: {
+          id: quiz.id, quiz: { title: nil }
+        }, as: :json
+        expect(JSON.parse(response.body)).to match(
+          "errors" => array_including(
+            {
+              "code" => "validation_error",
+              "detail" => "Title can't be blank"
+            }
+          )
+        )
+      end
+    end
+
     context "quiz not published yet" do
       it "updates the quiz" do
         params = {
