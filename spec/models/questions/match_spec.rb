@@ -70,7 +70,7 @@ RSpec.describe Questions::Match, type: :model do
   describe "#save_format_correct?" do
     subject { create(:match_question, pairs_count: 2) }
 
-    it "returns false for a correct format" do
+    it "returns true for a correct format" do
       hash = {
         pairs: [
           {
@@ -83,7 +83,7 @@ RSpec.describe Questions::Match, type: :model do
         .to eq(true)
     end
 
-    it "returns false if the the pairs array has a pair that doesn't exist" do
+    it "returns true if the the pairs array has a pair that doesn't exist" do
       hash = {
         pairs: [
           {
@@ -97,7 +97,7 @@ RSpec.describe Questions::Match, type: :model do
         ]
       }
       expect(subject.save_format_correct?(hash))
-        .to eq(false)
+        .to eq(true)
     end
 
     it "return false if the the pairs attribute is not an array" do
@@ -110,6 +110,18 @@ RSpec.describe Questions::Match, type: :model do
 
     it "return false if the the pairs attribute is not present" do
       hash = {}
+      expect(subject.save_format_correct?(hash))
+        .to eq(false)
+    end
+
+    it "returns false if the pairs attribute is not correct" do
+      hash = {
+        pairs: [
+          {
+            a: 1
+          }
+        ]
+      }
       expect(subject.save_format_correct?(hash))
         .to eq(false)
     end
