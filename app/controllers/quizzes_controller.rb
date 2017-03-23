@@ -1,14 +1,10 @@
 class QuizzesController < ApplicationController
-  before_action :authenticate_user!, except: [:index, :for_groups]
+  before_action :authenticate_user!
 
   resource_description do
     formats ['json']
     error 401, "Need to be logged in"
     error 401, "Unauthorized! Can't access resource"
-  end
-
-  def index
-    render json: Quiz.all, each_serializer: QuizSerializer
   end
 
   api :GET, "/quizzes/:id", "Shows a quiz and returns details about session"
@@ -168,7 +164,8 @@ class QuizzesController < ApplicationController
         if !@quiz.attempts.zero? && QuizSession.where(user_id: current_user.id).where(quiz_id: @quiz).count >= @quiz.attempts
           return render_error(
             status: :method_not_allowed,
-            code: "no_attempts_left"
+            code: "no_attempts_left",
+            detail: "You have used all your attempts!"
           )
         else
           @quiz_session = QuizSession.create!(user: current_user, quiz: @quiz, state: "in_progress")
@@ -382,7 +379,7 @@ class QuizzesController < ApplicationController
     elsif @quiz.update_attributes(quiz_params)
       render json: @quiz
     else
-      render json: @quiz.errors, status: :unprocessable_entity
+      render_activemodel_validations(@quiz.errors)
     end
   end
 
@@ -533,8 +530,11 @@ class QuizzesController < ApplicationController
   param :groups, Array, of: :number, required: true, desc: "IDs of groups"
   error 404, "Quiz not found"
   def for_groups
-    @groups = params.require(:groups).map { |id| Group.find(id) }.uniq
     @quiz = Quiz.find(params[:id])
+    @groups = params.require(:groups).map { |id| Group.find(id) }.uniq
+    @groups.each do |group|
+      authorize! :manage, group
+    end
     @quiz.groups = @groups
     @quiz.save!
     head :created
@@ -625,6 +625,7 @@ class QuizzesController < ApplicationController
   def transform_question_type
     params[:quiz][:questions_attributes].try(:each) do |question_params|
       next if question_params[:type].nil? && question_params[:id].present?
+
       type = Question.type_from_api(question_params[:type])
 
       if type.nil?

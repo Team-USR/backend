@@ -22,6 +22,50 @@ RSpec.describe QuizzesController, type: :controller do
       authenticate_user user
     end
 
+    context "with wrong type param" do
+      let(:questions_params) do
+        [
+          {
+            type: "random"
+          }
+        ]
+      end
+
+      it "returns status 400" do
+        post :create, params: params, as: :json
+        expect(response.status).to eq(400)
+      end
+
+      it "return an error that describes the error" do
+        post :create, params: params, as: :json
+        expect(JSON.parse(response.body)).to eq({
+          "errors" => [{
+            "code" => "invalid_parameter",
+            "detail" => "random is not a valid question type"
+          }]
+        })
+      end
+    end
+
+    context "with invalid quiz params" do
+      it "returns status 400" do
+        post :create, params: { quiz: { title: nil } }, as: :json
+        expect(response.status).to eq(422)
+      end
+
+      it "returns an appropiate error message" do
+        post :create, params: { quiz: { title: nil } }, as: :json
+        expect(JSON.parse(response.body)).to match(
+          "errors" => array_including(
+            {
+              "code" => "validation_error",
+              "detail" => "Title can't be blank"
+            }
+          )
+        )
+      end
+    end
+
     it "creates a quiz with the correct title and user" do
       post :create, params: params, as: :json
 
