@@ -9,6 +9,8 @@ class User < ApplicationRecord
   has_many :groups_users, dependent: :delete_all
   has_many :groups, -> { distinct }, through: :groups_users
 
+  has_many :group_join_requests
+
   validates_presence_of :name, :email
   validates :email, uniqueness: true
 

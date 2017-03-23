@@ -82,4 +82,26 @@ RSpec.describe Users::MineController, type: :controller do
       )
     end
   end
+
+  describe "#requests" do
+    let!(:user) { create(:user) }
+    let!(:group) { create(:group) }
+    let!(:request) { create(:group_join_request, user: user, group: group) }
+    let!(:another_request) { create(:group_join_request, group: group) }
+
+    before do
+      authenticate_user user
+    end
+
+    it "returns the correct requests" do
+      get :requests
+      expect(JSON.parse(response.body)).to eq([{
+        "requested_at" => request.created_at.strftime("Requested on %m/%d/%Y at %I:%M%p"),
+        "group" => {
+          "id" => group.id,
+          "name" => group.name
+        }
+      }])
+    end
+  end
 end

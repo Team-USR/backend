@@ -274,8 +274,8 @@ class GroupsController < ApplicationController
       .first(25)
 
     result = {
-      best_match_name: ActiveModel::Serializer::CollectionSerializer.new(@best_match_name, serializer: GroupSearchSerializer),
-      alternative_match_name: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_name, serializer: GroupSearchSerializer)
+      best_match_name: ActiveModel::Serializer::CollectionSerializer.new(@best_match_name, serializer: GroupSerializer),
+      alternative_match_name: ActiveModel::Serializer::CollectionSerializer.new(@alternative_match_name, serializer: GroupSerializer)
     }
     render json: result
   end
