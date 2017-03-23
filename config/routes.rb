@@ -51,6 +51,7 @@ Rails.application.routes.draw do
      collection do
        get 'groups'
        get 'quizzes'
+       get 'requests'
      end
    end
   end
