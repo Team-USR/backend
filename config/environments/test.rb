@@ -1,5 +1,11 @@
 Dotenv::Railtie.load
 
+if ENV["COVERAGE"].present?
+  require 'simplecov'
+  SimpleCov.start 'rails'
+  puts "SimpleCov started"
+end
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in config/application.rb.
 
