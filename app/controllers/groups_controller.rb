@@ -301,9 +301,26 @@ class GroupsController < ApplicationController
     group_join_request = GroupJoinRequest.find_by(group: @group, user: @user)
     if group_join_request.present?
       @group.users << group_join_request.user
-      group_join_request.destroy
+      group_join_request.destroy!
     else
       render_error(status: :not_found, code: "request_not_present", detail: "User didn't request join")
+    end
+  end
+
+  api :POST, '/groups/:id/decline_join', "Declines a request"
+  param :id, :number, required: true, desc: "ID of group"
+  param :email, String, required: true, desc: "Email of user who requested access"
+  error 404, "Request not found"
+  error 404, "Couldn't find group"
+  def decline_join
+    @group = Group.find(params[:id])
+    @user = User.find_by!(email: params.require(:email))
+    group_join_request = GroupJoinRequest.find_by(group: @group, user: @user)
+    if group_join_request.present?
+      group_join_request.destroy!
+      head :ok
+    else
+    render_error(status: :not_found, code: "request_not_present", detail: "User didn't request join")
     end
   end
 end

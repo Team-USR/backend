@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       post 'add_users', to: :add_users
       post 'request_join'
       post 'accept_join'
+      post 'decline_join'
     end
     collection do
       post 'search', to: :search
