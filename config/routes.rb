@@ -50,6 +50,7 @@ Rails.application.routes.draw do
        get 'groups'
        get 'quizzes'
        get 'requests'
+       get 'submitted'
      end
    end
   end

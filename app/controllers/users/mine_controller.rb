@@ -33,4 +33,9 @@ class Users::MineController < ApplicationController
   def requests
     render json: current_user.group_join_requests
   end
+
+  def submitted
+    sessions = QuizSession.where(user: current_user, state: "submitted")
+    render json: sessions
+  end
 end
