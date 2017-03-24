@@ -5,7 +5,7 @@ class Questions::Match < Question
   has_one :match_default, inverse_of: :question, as: :question, dependent: :destroy
   accepts_nested_attributes_for :match_default, allow_destroy: true
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     result = true
     nr_of_correct_answers = 0
     question_params[:pairs].each do |pair_parameter|
@@ -21,10 +21,10 @@ class Questions::Match < Question
       end
     end
     pts = 0
-    if nr_of_correct_answers.zero?
-      pts -= points
-    else
+    if !nr_of_correct_answers.zero?
       pts = points / pairs.size * nr_of_correct_answers
+    elsif negative_marking
+      pts = - points
     end
     result = false if question_params[:pairs].count != pairs.count
     {

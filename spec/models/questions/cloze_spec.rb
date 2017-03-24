@@ -26,7 +26,7 @@ RSpec.describe Questions::Match, type: :model do
           "random",
           "words"
         ]
-      })).to eq({
+      }, true)).to eq({
         correct: false,
         points: -1,
         correct_gaps: subject.gap_order.split(",")
@@ -36,7 +36,7 @@ RSpec.describe Questions::Match, type: :model do
     it "returns true for a correct list of words" do
       expect(subject.check({
         answer_gaps: subject.gap_order.split(",")
-      })).to eq({
+      }, true)).to eq({
         correct: true,
         points: 1,
         correct_gaps: subject.gap_order.split(",")

@@ -177,7 +177,7 @@ RSpec.describe QuizzesController, type: :controller do
       end
     end
 
-    context "when creating a cloze question" do
+    context "when creating a cross question" do
       let(:questions_params) { [cross_params] }
 
       it "creates the question" do

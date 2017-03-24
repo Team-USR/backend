@@ -23,7 +23,7 @@ RSpec.describe Questions::Mix, type: :model do
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
         answer: ["RANDOM sentence"]
-      })).to eq({
+      }, true)).to eq({
         correct: false,
         points: -1,
         correct_sentences: subject.sentences.map(&:text)
@@ -33,7 +33,7 @@ RSpec.describe Questions::Mix, type: :model do
     it 'returns true if the answer sent is the correct one' do
       expect(subject.check({
         answer: subject.sentences.first.text.split(" ")
-      })).to eq({
+      }, false)).to eq({
         correct: true,
         points: 1,
         correct_sentences: subject.sentences.map(&:text)

@@ -8,13 +8,13 @@ class Questions::Cloze < Question
     gaps.map(&:gap_text).join(",")
   end
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     pts = 0
     answers = question_params[:answer_gaps].zip(gap_order.split(",")).map { |a| a.first == a[1] }
-    if answers.count(true).zero?
-      pts -= points
-    else
+    if !answers.count(true).zero?
       pts += points / answers.size * answers.count(true)
+    elsif negative_marking
+      pts = - points
     end
     {
      correct: question_params[:answer_gaps].join(",") == gap_order,

@@ -15,10 +15,14 @@ class Questions::Mix < Question
       (save_params[:answer] - words).empty?
   end
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     correct = sentences.find_by(text: question_params[:answer].join(" ")).present?
-    pts = correct ? points : - points
-
+    pts = 0
+    if correct
+      pts = points
+    elsif negative_marking
+      pts = - points
+    end
     {
       correct: correct,
       points: pts,
