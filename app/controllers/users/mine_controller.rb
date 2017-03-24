@@ -6,10 +6,37 @@ class Users::MineController < ApplicationController
     error 401, "Need to be logged in"
   end
 
+  api :GET, '/users/mine/groups', "Returns user's groups"
+  example <<-EOS
+    [
+      {
+        "id": 1,
+        "name": "Group use2",
+        "creator": "mihnea@gmail.com",
+        "role": "admin"
+      },
+      {
+        "id": 2,
+        "name": "Group us2",
+        "creator": "mihnea@gmail.com",
+        "role": "student"
+      }
+    ]
+  EOS
   def groups
     render json: current_user.groups_users
   end
 
+  api :GET, '/users/mine/quizzes', "Returns user's all quizzes from all groups"
+  example <<-EOS
+    [
+      {
+        "id": 3,
+        "title": "My quiz",
+        "status": "not_started"
+      }
+    ]
+  EOS
   def quizzes
     render json: current_user.groups
     .reject{ |group_admined_by| group_admined_by.admins.include? current_user }
@@ -34,6 +61,21 @@ class Users::MineController < ApplicationController
     render json: current_user.group_join_requests
   end
 
+  api :GET, '/users/mine/submitted', "Returns the list of submitted quizzes by the user"
+  example <<-EOS
+    [
+      {
+        "state": "submitted",
+        "last_updated": "Last updated on 03/23/2017 at 01:01PM",
+        "metadata":
+          {
+            "test": "a"
+          },
+        "quiz_title": "My quiz",
+        "score": 10
+        }
+      ]
+  EOS
   def submitted
     sessions = QuizSession.where(user: current_user, state: "submitted")
     render json: sessions
