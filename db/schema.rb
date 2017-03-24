@@ -78,7 +78,7 @@ ActiveRecord::Schema.define(version: 20170323125059) do
   create_table "group_join_requests", force: :cascade do |t|
     t.integer  "group_id",                                   null: false
     t.integer  "user_id",                                    null: false
-    t.datetime "created_at", default: '2017-03-23 12:53:26', null: false
+    t.datetime "created_at", default: '2017-03-24 13:45:29', null: false
     t.datetime "updated_at"
     t.index ["group_id"], name: "index_group_join_requests_on_group_id", using: :btree
     t.index ["user_id"], name: "index_group_join_requests_on_user_id", using: :btree
