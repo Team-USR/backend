@@ -25,7 +25,7 @@ RSpec.describe Questions::MultipleChoice, type: :model do
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
         answer_ids: correct_answers
-      })).to eq({
+      }, true)).to eq({
         correct: true,
         points: 1,
         correct_answers: correct_answers
@@ -35,7 +35,7 @@ RSpec.describe Questions::MultipleChoice, type: :model do
     it 'returns true if the id of the answer is the correct one' do
       expect(subject.check({
         answer_ids: [subject.answers.find_by(is_correct: false)]
-      })).to eq({
+      }, true)).to eq({
         correct: false,
         points: -1,
         correct_answers: correct_answers

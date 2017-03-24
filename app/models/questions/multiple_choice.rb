@@ -16,14 +16,16 @@ class Questions::MultipleChoice < Question
       .all? { |answer_id| Answer.find_by(id: answer_id, question_id: id).present? }
   end
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     answers_submitted = question_params[:answer_ids]
       .map { |answer_id| Answer.find_by(id: answer_id, question_id: id) }
       .compact
     pts = 0
     nr_of_correct_answers = answers_submitted.reject { |a| !correct_answers.include? a }.size
     if(nr_of_correct_answers.zero?)
-      pts -= points
+      if negative_marking
+        pts -= points
+      end
     else
       pts = points / correct_answers.size * nr_of_correct_answers
     end

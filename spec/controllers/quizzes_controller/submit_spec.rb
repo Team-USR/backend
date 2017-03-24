@@ -82,11 +82,12 @@ RSpec.describe QuizzesController, type: :controller do
 
           expect(JSON.parse(response.body)).to eq(
             {
-              "points" => -1.0,
+              "points" => 0,
+              "total_points" => 1,
               "feedback" => [
                 {
                   "id" => single_choice_question.id,
-                  "points" => -1.0,
+                  "points" => 0,
                   "correct" => false,
                   "correct_answer" => correct_answer.id
                 }
@@ -105,6 +106,7 @@ RSpec.describe QuizzesController, type: :controller do
           expect(JSON.parse(response.body)).to eq(
             {
               "points" => 1,
+              "total_points" => 1,
               "feedback" => [
                 {
                   "id" => single_choice_question.id,
@@ -133,6 +135,7 @@ RSpec.describe QuizzesController, type: :controller do
         expect(JSON.parse(response.body)).to eq(
           {
             "points" => 0.0,
+            "total_points" => 0,
             "feedback" => [
               {
                 "id" => -3,

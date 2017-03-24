@@ -6,12 +6,12 @@ class Questions::Cross < Question
 
   accepts_nested_attributes_for :metadata, :rows, :hints
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     result = question_params[:rows] == rows.map(&:row)
     pts = 0
     if result == true
       pts = points
-    else
+    elsif negative_marking
       pts = -points
     end
     {

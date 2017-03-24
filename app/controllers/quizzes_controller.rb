@@ -501,6 +501,10 @@ class QuizzesController < ApplicationController
     @quiz_session = QuizSession.find_by!(user: current_user, quiz: @quiz, state: "in_progress")
     @quiz_session.score = 0
     feedback = []
+    total_points = 0
+    @quiz.questions.each do |question|
+      total_points += question.points
+    end
     params[:questions].each do |question_param|
       question = Question.find_by(id: question_param[:id], quiz_id: @quiz.id)
       if question.nil?
@@ -509,7 +513,7 @@ class QuizzesController < ApplicationController
           status: "Error; Question not found"
         }
       else
-        checked = question.check(question_param)
+        checked = question.check(question_param, @quiz.negative_marking)
         @quiz_session.score += checked[:points]
         feedback << {
           id: question.id,
@@ -521,6 +525,7 @@ class QuizzesController < ApplicationController
     @quiz_session.save
     render json: {
       points: @quiz_session.score,
+      total_points: total_points,
       feedback: feedback
     }
   end

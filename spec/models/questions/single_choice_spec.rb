@@ -26,7 +26,7 @@ RSpec.describe Questions::SingleChoice, type: :model do
     it 'returns false if the id of the answer is not the correct one' do
       expect(subject.check({
         answer_id: correct_answer.id
-      })).to eq({
+      }, true)).to eq({
         correct: true,
         points: 1,
         correct_answer: correct_answer.id
@@ -36,7 +36,7 @@ RSpec.describe Questions::SingleChoice, type: :model do
     it 'returns true if the id of the answer is the correct one' do
       expect(subject.check({
         answer_id: incorrect_answer.id
-      })).to eq({
+      }, true)).to eq({
         correct: false,
         points: -1,
         correct_answer: correct_answer.id

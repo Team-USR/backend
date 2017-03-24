@@ -11,7 +11,7 @@ RSpec.describe Questions::Cross, type: :model do
           "row",
           "row"
         ]
-      })).to eq({
+      }, true)).to eq({
         correct: false,
         points: -1,
         correct_rows: subject.rows.map(&:row)
@@ -25,7 +25,7 @@ RSpec.describe Questions::Cross, type: :model do
           "c*d",
           "e*f"
         ]
-      })).to eq({
+      }, true)).to eq({
         correct: true,
         points: 1,
         correct_rows: subject.rows.map(&:row)

@@ -4,12 +4,12 @@ class Questions::SingleChoice < Question
   accepts_nested_attributes_for :answers, allow_destroy: true
   validate :has_only_one_correct_answer
 
-  def check(question_params)
+  def check(question_params, negative_marking)
     answer = Answer.find_by(id: question_params[:answer_id], question_id: id)
     pts = 0
     if answer == correct_answer
       pts = points
-    else
+    elsif negative_marking == true
       pts -= points
     end
     {
