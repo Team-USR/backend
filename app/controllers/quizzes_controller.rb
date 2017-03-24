@@ -539,6 +539,7 @@ class QuizzesController < ApplicationController
     end
     @quiz_session.metadata = params[:questions]
     @quiz_session.state = "submitted"
+    @quiz_session.score = 0 if @quiz_session.score.negative?
     @quiz_session.save
     render json: {
       points: @quiz_session.score,
