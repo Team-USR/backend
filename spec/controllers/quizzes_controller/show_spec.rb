@@ -40,7 +40,8 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "state" => "in_progress",
             "last_updated" => quiz.quiz_sessions.first.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p"),
-            "metadata" => nil
+            "metadata" => nil,
+            "quiz_title" => quiz.title
           }
         )
       end
@@ -86,7 +87,8 @@ RSpec.describe QuizzesController, type: :controller do
           {
             "state" => "in_progress",
             "last_updated" => quiz.quiz_sessions.first.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p"),
-            "metadata" => nil
+            "metadata" => nil,
+            "quiz_title" => quiz.title
           }
         )
       end

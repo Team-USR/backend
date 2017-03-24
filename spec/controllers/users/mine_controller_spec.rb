@@ -127,6 +127,7 @@ RSpec.describe Users::MineController, type: :controller do
               {
                 "test" => "a"
               },
+            "quiz_title" => quiz.title,
             "score" => quiz_session.score
             }
           ]
