@@ -7,6 +7,6 @@ class QuizSessionSerializer < ActiveModel::Serializer
   end
 
   def quiz_title
-    Quiz.where(id: object.quiz_id).first.title
+    Quiz.where(id: object.quiz_id).first.title if Quiz.where(id: object.quiz_id).any?
   end
 end
