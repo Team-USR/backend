@@ -83,7 +83,7 @@ RSpec.describe Users::MineController, type: :controller do
     end
   end
 
-  describe "#requests" do
+  describe "GET #requests" do
     let!(:user) { create(:user) }
     let!(:group) { create(:group) }
     let!(:request) { create(:group_join_request, user: user, group: group) }
@@ -102,6 +102,35 @@ RSpec.describe Users::MineController, type: :controller do
           "name" => group.name
         }
       }])
+    end
+  end
+
+  describe "GET #submitted" do
+    let(:user) { create(:user) }
+    let!(:quiz) { create(:quiz, user: user, attempts: 1, published: true) }
+    let!(:quiz_session) do
+      create(:quiz_session, user: user, quiz: quiz, metadata: { "test": "a" }, state: "submitted")
+    end
+
+    before do
+      authenticate_user user
+    end
+
+    it "returns the submitted quizzes" do
+      get :submitted
+      expect(JSON.parse(response.body)).to eq(
+        [
+          {
+            "state" => "submitted",
+            "last_updated" => quiz_session.updated_at.strftime("Last updated on %m/%d/%Y at %I:%M%p"),
+            "metadata" =>
+              {
+                "test" => "a"
+              },
+            "score" => quiz_session.score
+            }
+          ]
+      )
     end
   end
 end
