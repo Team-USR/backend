@@ -36,6 +36,6 @@ class Users::MineController < ApplicationController
 
   def submitted
     sessions = QuizSession.where(user: current_user, state: "submitted")
-    render json: sessions, each_serializer: QuizSessionSerializer
+    render json: sessions
   end
 end
