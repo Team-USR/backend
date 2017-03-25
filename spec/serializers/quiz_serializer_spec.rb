@@ -1,8 +1,24 @@
 require 'rails_helper'
 
 RSpec.describe QuizSerializer, type: :Serializer do
+  let!(:quiz) { create(:quiz) }
+
+  it "contains main quizzes attributes" do
+    expect(QuizSerializer.new(quiz).as_json).to eq(
+      {
+        title: quiz.title,
+        attempts: quiz.attempts,
+        id: quiz.id,
+        negative_marking: quiz.negative_marking,
+        creator: quiz.user.name,
+        published: quiz.published,
+        release_date: quiz.release_date,
+        questions: []
+      }
+    )
+  end
+
   context "with scope edit" do
-    let!(:quiz) { create(:quiz) }
     let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
     let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
     let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
@@ -150,7 +166,6 @@ RSpec.describe QuizSerializer, type: :Serializer do
   end
 
   context "with scope show" do
-    let!(:quiz) { create(:quiz) }
     let!(:single_choice_question) { create(:single_choice_question, quiz: quiz, answers_count: 2) }
     let!(:multiple_choice_question) { create(:multiple_choice_question, quiz: quiz, answers_count: 2) }
     let!(:mix_question) { create(:mix_question, quiz: quiz, sentence_count: 2) }
