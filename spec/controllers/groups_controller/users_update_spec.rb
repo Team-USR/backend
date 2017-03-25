@@ -44,7 +44,7 @@ RSpec.describe GroupsController, type: :controller do
               "c@c.c",
             ]
           }
-      end.to enqueue_job(GroupInviteJob).twice
+      end.to change { GroupInvite.count }.by(2)
 
       expect(JSON.parse(response.body)).to match(
         [

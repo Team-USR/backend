@@ -84,6 +84,7 @@ class GroupsController < ApplicationController
     authorize! :manage, @group
 
     @users = []
+    @group_invites = []
 
     @users_status = params.require(:users).map do |user_email|
       if user = User.find_by_email(user_email)
@@ -93,7 +94,7 @@ class GroupsController < ApplicationController
           status: "added"
         }
       else
-        GroupInviteJob.perform_later(@group, user_email)
+        @group_invites << { email: user_email, group: @group }
         {
           email: user_email,
           status: "invited_to_join"
@@ -101,6 +102,7 @@ class GroupsController < ApplicationController
       end
     end
 
+    GroupInvite.create!(@group_invites)
     @group.update!(users: (@users + @group.admins))
 
     render json: @users_status, status: :ok
@@ -131,18 +133,21 @@ class GroupsController < ApplicationController
     authorize! :manage, @group
 
     @users = []
+    @group_invites = []
+    @new_users = []
 
     @users_status = params.require(:users).map do |user_email|
       if user = User.find_by_email(user_email)
         if !@group.users.include? user
-          @group.users << user
+          @new_users << user
         end
         {
           email: user_email,
           status: "added"
         }
       else
-        GroupInviteJob.perform_later(@group, user_email)
+        # GroupInviteJob.perform_later(@group, user_email)
+        @group_invites << { email: user_email, group: @group }
         {
           email: user_email,
           status: "invited_to_join"
@@ -150,7 +155,8 @@ class GroupsController < ApplicationController
       end
     end
 
-    @group.save!
+    @group.users << @new_users
+    GroupInvite.create!(@group_invites)
     render json: @users_status, status: :ok
   end
 

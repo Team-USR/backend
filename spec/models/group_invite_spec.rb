@@ -6,10 +6,10 @@ RSpec.describe GroupInvite, type: :model do
   it { should validate_presence_of(:email) }
 
   describe "#send_email" do
-    it "should send an email after create" do
+    it "should enqueue_job on mailer queue" do
       expect {
         create(:group_invite)
-      }.to change { ActionMailer::Base.deliveries.count }.by(1)
+      }.to have_enqueued_job.on_queue('mailers')
     end
   end
 end
