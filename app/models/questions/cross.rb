@@ -1,6 +1,6 @@
 class Questions::Cross < Question
   belongs_to :quiz
-  has_one :metadata, class_name: CrossMetadata, inverse_of: :question, as: :question
+  has_one :metadata, class_name: CrossMetadata, inverse_of: :question, as: :question, required: true
   has_many :rows, -> { order(:created_at) }, class_name: CrossRow, inverse_of: :question, as: :question
   has_many :hints, class_name: CrossHint, inverse_of: :question, as: :question
 
