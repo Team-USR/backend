@@ -34,7 +34,7 @@ RSpec.describe GroupsController, type: :controller do
       expect(response.status).to eq(200)
     end
 
-    it "schedules a job for each user  that doesn't have an email" do
+    it "creates an invite for all users without an email" do
       expect do
         post :add_users, params:
           {
@@ -44,7 +44,7 @@ RSpec.describe GroupsController, type: :controller do
               "c@c.c",
             ]
           }
-      end.to enqueue_job(GroupInviteJob).twice
+      end.to change { GroupInvite.count }.by(2)
 
       expect(JSON.parse(response.body)).to match(
         [

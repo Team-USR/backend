@@ -7,6 +7,6 @@ class GroupInvite < ApplicationRecord
   private
 
   def send_email
-    GroupInviteMailer.send_invite(self).deliver_now
+    GroupInviteMailer.send_invite(self).deliver_later
   end
 end
