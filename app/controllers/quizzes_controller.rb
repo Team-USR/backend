@@ -388,6 +388,7 @@ class QuizzesController < ApplicationController
   error 404, "Quiz not found"
   description <<-EOS
   Submit the answers of the quiz
+
       {
         "questions":
         [
@@ -436,9 +437,10 @@ class QuizzesController < ApplicationController
           },
           {
             "id": 41,
-            "rows": [
+            "rows":
+            [
               "row1",
-              "row2"
+              "row2",
               "* is empty channel"
             ]
           }
