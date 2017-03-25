@@ -12,9 +12,9 @@ RSpec.describe Questions::MultipleChoice, type: :model do
     end
 
     context "with answers_count = 0" do
-      it "creates 0 answers" do
-        expect(create(:multiple_choice_question, answers_count: 0).answers.count)
-          .to eq(0)
+      it "returns an error" do
+        expect { create(:multiple_choice_question, answers_count: 0) }
+          .to raise_error
       end
     end
   end
@@ -44,13 +44,17 @@ RSpec.describe Questions::MultipleChoice, type: :model do
   end
 
   describe "#has_at_least_one_correct_answer" do
-    subject { create(:multiple_choice_question) }
+    subject { build(:multiple_choice_question, answers_count: 0) }
     it "marks the question as invalid if there's no correct answer" do
-      create(:answer, is_correct: false, question: subject)
-      create(:answer, is_correct: false, question: subject)
-      create(:answer, is_correct: false, question: subject)
-      create(:answer, is_correct: false, question: subject)
-      expect(subject.reload.valid?).to eq(false)
+      subject.answers << build(:answer, is_correct: false)
+      subject.answers << build(:answer, is_correct: false)
+      subject.answers << build(:answer, is_correct: false)
+      subject.answers << build(:answer, is_correct: false)
+
+      expect(subject.valid?).to eq(false)
+      expect(subject.errors.full_messages).to eq([
+        "Answers doesn't have any correct answers"
+      ])
     end
   end
 

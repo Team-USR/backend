@@ -11,7 +11,7 @@ RSpec.describe QuizzesController, type: :controller do
 
     before do
       quiz.questions << create(:single_choice_question, answers_count: 4)
-      quiz.questions << create(:single_choice_question, answers_count: 0)
+      quiz.questions << create(:single_choice_question, answers_count: 1)
       quiz.questions << create(:multiple_choice_question, answers_count: 5)
       quiz.questions << create(:mix_question, quiz: quiz)
       authenticate_user user
@@ -59,7 +59,7 @@ RSpec.describe QuizzesController, type: :controller do
           .and change { Questions::Match.count }.by(1)
           .and change { Questions::SingleChoice.count }.by(-1)
           .and change { Questions::MultipleChoice.count }.from(1).to(0)
-          .and change { Answer.count }.by(- 5 - 4 + 2)
+          .and change { Answer.count }.by(- 5 - 4 - 1 + 2)
           .and change { Questions::Mix.count }.by(-1)
       end
     end
