@@ -2,6 +2,7 @@ class Questions::MultipleChoice < Question
   belongs_to :quiz
 
   has_many :answers, inverse_of: :question, as: :question, dependent: :destroy
+  validates :answers, length: { minimum: 1 }
   accepts_nested_attributes_for :answers, allow_destroy: true
 
   validate :has_at_least_one_correct_answer
@@ -37,7 +38,7 @@ class Questions::MultipleChoice < Question
   end
 
   def has_at_least_one_correct_answer
-    if answers.any? && answers.select { |a| a.is_correct }.empty?
+    if answers.select { |a| a.is_correct }.empty?
       errors.add(:answers, "doesn't have any correct answers")
     end
   end

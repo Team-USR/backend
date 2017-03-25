@@ -1,6 +1,7 @@
 class Questions::SingleChoice < Question
   belongs_to :quiz
   has_many :answers, inverse_of: :question, as: :question, dependent: :destroy
+  validates :answers, length: { minimum: 1 }
   accepts_nested_attributes_for :answers, allow_destroy: true
   validate :has_only_one_correct_answer
 
