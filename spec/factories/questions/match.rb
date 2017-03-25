@@ -2,6 +2,8 @@ require 'faker'
 
 FactoryGirl.define do
   factory :match_question, class: Questions::Match, parent: :question do
+    association :match_default
+
     transient do
       pairs_count 0
     end
@@ -17,5 +19,9 @@ FactoryGirl.define do
     association :question, factory: :match_question
     left_choice Faker::Lorem.word
     right_choice Faker::Lorem.word
+  end
+
+  factory :match_default do
+    sequence(:default_text) { |n| "default_text#{n}" }
   end
 end
