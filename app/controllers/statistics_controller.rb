@@ -4,7 +4,6 @@ class StatisticsController < ApplicationController
   resource_description do
     formats ['json']
     error 401, "Need to be logged in"
-    error 401, "Unauthorized! Can't access resource"
   end
 
   api :GET, "/statistics/average_marks_groups", "Returns the average marks for each group the user is in"
