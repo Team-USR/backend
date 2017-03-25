@@ -2,10 +2,19 @@ require 'faker'
 
 FactoryGirl.define do
   factory :cross_question, class: Questions::Cross, parent: :question do
+    after(:build) do |question|
+      if question.metadata.nil?
+        question.metadata = create(
+          :cross_metadata,
+          height: 3,
+          width: 3,
+          question: question
+        )
+      end
+    end
+
     factory :cross_question_with_data do
       after(:build) do |question|
-        question.metadata = create(:cross_metadata, height: 3, width: 3)
-
         question.rows << create(:cross_row, row: "ab*")
         question.rows << create(:cross_row, row: "c*d")
         question.rows << create(:cross_row, row: "e*f")
