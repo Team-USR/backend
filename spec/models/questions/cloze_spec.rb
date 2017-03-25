@@ -23,7 +23,6 @@ RSpec.describe Questions::Match, type: :model do
         "Cloze sentence must exist"
       ])
     end
-
   end
 
   describe "#check" do
