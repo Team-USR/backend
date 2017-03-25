@@ -10,12 +10,18 @@ RSpec.describe Questions::Match, type: :model do
           .to eq(4)
       end
     end
+  end
 
-    context "with gap_count = 0" do
-      it "creates 0 gaps" do
-        expect(create(:cloze_question, gap_count: 0).gaps.count)
-          .to eq(0)
-      end
+  describe "require cloze_sentence" do
+    it "is invalid without a cloze_sentence" do
+      q = Questions::Cloze.new(
+        question: "1",
+        quiz: create(:quiz)
+      )
+      expect(q.valid?).to eq(false)
+      expect(q.errors.full_messages).to eq([
+        "Cloze sentence must exist"
+      ])
     end
   end
 
