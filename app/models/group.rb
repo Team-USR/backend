@@ -26,7 +26,7 @@ class Group < ApplicationRecord
     quiz_sessions = quizzes
       .flat_map { |q| q.quiz_sessions.where(state: "submitted") }
     if quiz_sessions.any?
-      quiz_sessions.sum(&:score) / quiz_sessions.size
+      quiz_sessions.sum(&:score).to_f / quiz_sessions.size.to_f
     else
       nil
     end
