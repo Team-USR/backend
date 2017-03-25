@@ -258,7 +258,13 @@ PLATFORMS
   x86-mingw32
 
 DEPENDENCIES
+  actionmailer
+  actionpack
+  actionview
   active_model_serializers
+  activejob
+  activerecord
+  activesupport
   apipie-rails
   bcrypt
   cancancan
@@ -273,8 +279,8 @@ DEPENDENCIES
   pry
   puma (~> 3.0)
   rack-cors
-  rails (~> 5.0.1)
   rails-controller-testing
+  railties
   rspec-rails
   rubocop
   shoulda
@@ -282,6 +288,7 @@ DEPENDENCIES
   simplecov
   spring
   spring-watcher-listen (~> 2.0.0)
+  sprockets-rails
   tzinfo-data
 
 RUBY VERSION
