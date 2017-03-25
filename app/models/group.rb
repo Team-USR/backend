@@ -22,16 +22,6 @@ class Group < ApplicationRecord
     pending_invites.map(&:email)
   end
 
-  def quizzes_average
-    quiz_sessions = quizzes
-      .flat_map { |q| q.quiz_sessions.where(state: "submitted") }
-    if quiz_sessions.any?
-      quiz_sessions.sum(&:score).to_f / quiz_sessions.size.to_f
-    else
-      nil
-    end
-  end
-
   def quizzes_marks
     quiz_sessions = quizzes
       .flat_map { |q| q.quiz_sessions.where(state: "submitted") }
