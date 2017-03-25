@@ -1,7 +1,7 @@
 class Questions::Cloze < Question
   belongs_to :quiz
   has_many :gaps, -> { order(:created_at) }, inverse_of: :question, as: :question, dependent: :destroy
-  has_one :cloze_sentence, inverse_of: :question, as: :question, dependent: :destroy
+  has_one :cloze_sentence, inverse_of: :question, as: :question, dependent: :destroy, required: true
   accepts_nested_attributes_for :gaps, :cloze_sentence, allow_destroy: true
 
   def gap_order
