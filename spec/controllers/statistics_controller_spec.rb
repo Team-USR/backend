@@ -45,50 +45,38 @@ RSpec.describe StatisticsController, type: :controller do
     let(:grp) { create(:group, admin: user) }
     let(:grp2) { create(:group, admin: user) }
     let(:g_u) { create(:groups_users, group: grp, user: user, role: "admin") }
-    let(:g_u) { create(:groups_users, group: grp, user: user2, role: "student") }
-    let(:g_u2) { create(:groups_users, group: grp2, user: user, role: "admin") }
-    let(:g_u2) { create(:groups_users, group: grp2, user: user2, role: "student") }
+    let(:g_u2) { create(:groups_users, group: grp, user: user2, role: "student") }
+    let(:g_u3) { create(:groups_users, group: grp2, user: user, role: "admin") }
+    let(:g_u4) { create(:groups_users, group: grp2, user: user2, role: "student") }
     let(:quiz) { create(:quiz, user: user, attempts: 2) }
     let(:quiz2) { create(:quiz, user: user) }
-    let(:session1) { create(:quiz_session, user: user, quiz: quiz, score: 5, state: "submitted") }
-    let(:session2) { create(:quiz_session, user: user, quiz: quiz, score: 6, state: "submitted") }
+    let(:session1) { create(:quiz_session, user: user2, quiz: quiz, score: 5, state: "submitted") }
+    let(:session2) { create(:quiz_session, user: user2, quiz: quiz, score: 6, state: "submitted") }
 
     before do
       authenticate_user user2
       grp.users << user2
       grp2.users << user2
       grp.quizzes << quiz
-      grp2.quizzes << quiz2
+      grp2.quizzes << quiz
       quiz.quiz_sessions << session1
       quiz.quiz_sessions << session2
     end
 
+    let(:params) { { id: grp2.id } }
+
     it "returns the right average" do
-      get :marks_groups_quizzes
+      get :marks_groups_quizzes, params: params, as: :json
       expect(JSON.parse(response.body)).to eq(
         [
           {
-            "group_id" => grp.id,
-            "group_name" => grp.name,
-            "marks" => {
-              quiz.id.to_s => [
-                {
-                  "quiz_id" => quiz.id,
-                  "quiz_title" => quiz.title,
-                  "score" => session1.score
-                },
-                {
-                  "quiz_id" => quiz.id,
-                  "quiz_title" => quiz.title,
-                  "score" => session2.score
-                }
-              ]
-            }
-          },
-          {
             "group_id" => grp2.id,
             "group_name" => grp2.name,
-            "marks" => nil
+            "marks" =>
+            {
+              "quiz_name" => quiz.title,
+              "score" => 6.0
+            }
           }
         ]
       )
