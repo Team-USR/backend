@@ -41,38 +41,24 @@ class StatisticsController < ApplicationController
     render json: averages
   end
 
-  api :GET, "/statistics/marks_groups_quizzes", "Returns the marks for each attempt that a user submitted for a specific quiz"
+  api :GET, "/statistics/marks_groups_quizzes/:id", "Returns the marks for each attempt that a user submitted for a specific quiz"
   description <<-EOS
-    Returns the marks for each attempt that a user submitted for a specific quiz and return this data
+    Returns the maximum marks from all attempts that a user submitted for a quiz in the specified group and return this data
     grouped by the groups that the user is in. If there is no attempt for a quiz , this will return for the marks field a null value.
     The resource is usable in student mode.
   EOS
   example <<-EOS
   [
-  {
-    "group_id": 4,
-    "group_name": "test-group",
-    "marks": null
-  },
-  {
-    "group_id": 9,
-    "group_name": "test-group 3",
-    "marks": null
-  },
-  {
-    "group_id": 10,
-    "group_name": "testing groups",
-    "marks": {
-      "13": [
-        {
-          "quiz_id": 13,
-          "quiz_title": "Title",
-          "score": 1
-        }
-      ]
+    {
+      "group_id" => 10,
+      "group_name" => "My group",
+      "marks" =>
+      {
+        "quiz_name" => "My quiz",
+        "score" => 6.0
+      }
     }
-  }
-]
+  ]
   EOS
   def marks_groups_quizzes
     marks = current_user.groups_users.student.
