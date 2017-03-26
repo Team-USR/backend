@@ -41,7 +41,7 @@ class StatisticsController < ApplicationController
     render json: averages
   end
 
-  api :GET, "/statistics/marks_groups_quizzes/:id", "Returns the marks for each attempt that a user submitted for a specific quiz"
+  api :GET, "/statistics/marks_groups_quizzes?id=GROUP_ID", "Returns the marks for each attempt that a user submitted for a specific quiz"
   description <<-EOS
     Returns the maximum marks from all attempts that a user submitted for a quiz in the specified group and return this data
     grouped by the groups that the user is in. If there is no attempt for a quiz , this will return for the marks field a null value.
