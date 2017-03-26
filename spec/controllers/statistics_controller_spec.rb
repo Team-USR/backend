@@ -27,7 +27,7 @@ RSpec.describe StatisticsController, type: :controller do
           {
             "group_id" => grp.id,
             "group_name" => grp.name,
-            "average" => (session1.score + session2.score) / 2
+            "average" => ((session1.score + session2.score) / 2).to_s
           },
           {
             "group_id" => grp2.id,
