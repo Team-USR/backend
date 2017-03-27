@@ -6,6 +6,11 @@ RSpec.describe User, type: :model do
   it { should validate_uniqueness_of(:email) }
   it { should validate_presence_of(:name) }
 
+  describe "#user" do
+    it { should_not allow_value("a").for(:name) }
+    it { should allow_value("abcd").for(:name) }
+  end
+
   describe "#student?" do
     context "with a simple user" do
       it "returns false" do
