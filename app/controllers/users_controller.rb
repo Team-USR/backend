@@ -30,8 +30,8 @@ class UsersController < ApplicationController
     }
   EOS
   def search
-    @best_match_name = User.where(name: params[:input])
-    @best_match_email = User.where(email: params[:input])
+    @best_match_name = User.where("lower(name) = ? ", params.require(:input).downcase)
+    @best_match_email = User.where("lower(email) = ? ", params.require(:input).downcase)
 
     @alternative_match_name = User.where('name LIKE ?', "%#{params[:input]}%").all
       .reject{ |match| @best_match_name.include? match }
