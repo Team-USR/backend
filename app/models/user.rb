@@ -12,6 +12,7 @@ class User < ApplicationRecord
   has_many :group_join_requests
 
   validates_presence_of :name, :email
+  validates :name, length: { minimum: 3, maximum: 50 }
   validates :email, uniqueness: true
 
   after_create :check_invites
