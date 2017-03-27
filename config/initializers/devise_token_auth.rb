@@ -44,5 +44,5 @@ DeviseTokenAuth.setup do |config|
   # By default, only Bearer Token authentication is implemented out of the box.
 
   config.default_confirm_success_url = "test"
-  # config.check_current_password_before_update = :attributes
+  config.check_current_password_before_update = :attributes
 end
