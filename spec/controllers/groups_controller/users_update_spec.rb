@@ -59,5 +59,16 @@ RSpec.describe GroupsController, type: :controller do
         ]
       )
     end
+
+    context "with no users" do
+      it "removes everyone but the admin" do
+        post :users_update, params:
+          {
+            id: group.id
+          }
+        expect(group.reload.users.map(&:email).sort)
+          .to eq([user].map(&:email))
+      end
+    end
   end
 end
