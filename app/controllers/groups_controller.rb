@@ -201,7 +201,7 @@ class GroupsController < ApplicationController
   def quizzes_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    if params.key?(:quizzes) && (!params[:quizzes].empty? || !params[:quizzes].nil?)
+    if params[:quizzes].present? && params[:quizzes].is_a?(Array)
       @quizzes = params.require(:quizzes).map { |id| Quiz.find(id) }.uniq
       @group.update!(quizzes: @quizzes)
     else

@@ -30,5 +30,13 @@ RSpec.describe GroupsController, type: :controller do
 
       expect(group.reload.quizzes).to be_empty
     end
+
+    it "deletes quizzes when array is not present" do
+      post :quizzes_update, params: {
+        id: group.id
+      }
+
+      expect(group.reload.quizzes).to be_empty
+    end
   end
 end
