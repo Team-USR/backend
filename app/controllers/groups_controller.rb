@@ -201,8 +201,12 @@ class GroupsController < ApplicationController
   def quizzes_update
     @group = Group.find(params[:id])
     authorize! :manage, @group
-    @quizzes = params.require(:quizzes).map { |id| Quiz.find(id) }.uniq
-    @group.update!(quizzes: @quizzes)
+    if !params[:quizzes].empty?
+      @quizzes = params.require(:quizzes).map { |id| Quiz.find(id) }.uniq
+      @group.update!(quizzes: @quizzes)
+    else
+      @group.quizzes.destroy_all
+    end
     head :ok
   end
 
