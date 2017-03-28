@@ -12,9 +12,4 @@ RSpec.describe CrossRow, type: :model do
   it { should allow_value('*ab*z*').for(:row) }
   it { should allow_value('*ab*z**').for(:row) }
   it { should allow_value('*a*b*z**').for(:row) }
-
-  it { should_not allow_value('').for(:row) }
-  it { should_not allow_value('1').for(:row) }
-  it { should_not allow_value('a1').for(:row) }
-  it { should_not allow_value('*1').for(:row) }
 end
